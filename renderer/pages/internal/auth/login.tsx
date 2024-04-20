@@ -1,8 +1,16 @@
 import React from 'react'
 import { FcAssistant, FcUnlock } from 'react-icons/fc'
 import NeonPOS from '../../../assets/NeonPOS.png'
+import { useRouter } from 'next/router'
 
 function Login() {
+
+  const router = useRouter();
+
+  const LoginProcess = () => {
+    router.push("/internal/home/home");
+  }
+  
   return (
     <div className={`w-full h-full bg-primary absolute flex flex-1 flex-row`}>
         <div className={`h-full bg-secondary flex flex-1`} />
@@ -27,7 +35,7 @@ function Login() {
               </div>
             </div>
             <div className='w-full max-w-[370px] pt-[10px] flex flex-col items-center gap-[15px]'>
-                <button className='bg-accent-secondary hover:bg-accent-hover cursor-pointer w-full max-w-[200px] shadow-sm h-[40px] text-white font-semibold rounded-[7px]'>Login</button>
+                <button onClick={LoginProcess} className='bg-accent-secondary hover:bg-accent-hover cursor-pointer w-full max-w-[200px] shadow-sm h-[40px] text-white font-semibold rounded-[7px]'>Login</button>
             </div>
           </div>
         </div>
