@@ -15,4 +15,4 @@ const useraccount = usermongoose.Schema({
     }
 });
 
-module.exports = usermongoose.model("UserAccount", useraccount, "useraccount");
+module.exports = usermongoose.model("UserAccount", useraccount, "useraccounts");
