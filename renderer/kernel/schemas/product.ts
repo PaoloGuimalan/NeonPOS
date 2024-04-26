@@ -1,16 +1,16 @@
-const productmongoose = require("mongoose");
+import productmongoose from "mongoose";
 
-const product = productmongoose.Schema({
-    productID: {type: userpermissionmongoose.Schema.Types.Mixed, require: true},
-    productName: {type: userpermissionmongoose.Schema.Types.Mixed, require: true},
+const product = new productmongoose.Schema({
+    productID: {type: productmongoose.Schema.Types.Mixed, require: true},
+    productName: {type: productmongoose.Schema.Types.Mixed, require: true},
     productPrice: Number,
     productQuantity: Number,
-    previews: [{type: userpermissionmongoose.Schema.Types.Mixed, require: true}],
+    previews: [{type: productmongoose.Schema.Types.Mixed, require: true}],
     addedBy: {
-        accountID: {type: userpermissionmongoose.Schema.Types.Mixed, require: true},
-        deviceID: {type: userpermissionmongoose.Schema.Types.Mixed, require: true}
+        accountID: {type: productmongoose.Schema.Types.Mixed, require: true},
+        deviceID: {type: productmongoose.Schema.Types.Mixed, require: true}
     },
-    dateAdded: {type: userpermissionmongoose.Schema.Types.Mixed, require: true}
+    dateAdded: {type: productmongoose.Schema.Types.Mixed, require: true}
 });
 
-module.exports = productmongoose.model("Product", product, "products")
+export default productmongoose.model("Product", product, "products")

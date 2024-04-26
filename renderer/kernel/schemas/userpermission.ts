@@ -1,10 +1,10 @@
-const userpermissionmongoose = require("mongoose");
+import userpermissionmongoose from "mongoose";
 
-const userpermission = userpermissionmongoose.Schema({
+const userpermission = new userpermissionmongoose.Schema({
     permissionID: {type: userpermissionmongoose.Schema.Types.Mixed, require: true},
     permissionType: {type: userpermissionmongoose.Schema.Types.Mixed, require: true},
     allowedUsers: [{type: userpermissionmongoose.Schema.Types.Mixed, require: true}],
     isEnabled: {type: userpermissionmongoose.Schema.Types.Mixed, require: true},
 });
 
-module.exports = userpermissionmongoose.model("UserPermission", userpermission, "userpermissions");
+export default userpermissionmongoose.model("UserPermission", userpermission, "userpermissions");

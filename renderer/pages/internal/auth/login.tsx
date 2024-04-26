@@ -1,17 +1,31 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FcAssistant, FcUnlock } from 'react-icons/fc'
 import NeonPOS from '../../../assets/NeonPOS.png'
 import { useRouter } from 'next/router'
 import Axios from 'axios';
+import { LoginRequest } from '../../../helpers/https/requests';
 
 function Login() {
+
+  const [accountID, setaccountID] = useState<string>("");
+  const [password, setpassword] = useState<string>("");
 
   const router = useRouter();
 
   const LoginProcess = () => {
-    // router.push("/internal/home/home");
-    Axios.get('/api/auth/route').then((response) => {
-      console.log(response);
+    LoginRequest({
+      accountID,
+      password
+    }).then((response) => {
+      if(response.data.status){
+        if(response.data.result){
+          router.push("/internal/home/home");
+          return;
+        }
+      }
+
+      setaccountID("");
+      setpassword("");
     }).catch((err) => {
       console.log(err);
     })
@@ -31,13 +45,13 @@ function Login() {
                 <div className='w-[45px] flex items-center justify-center'>
                   <FcAssistant style={{ fontSize: "22px" }} />
                 </div>
-                <input placeholder='Employee ID' className='bg-transparent outline-none text-[14px] w-full h-full flex flex-1' />
+                <input placeholder='Employee ID' value={accountID} onChange={(e) => { setaccountID(e.target.value) }} className='bg-transparent outline-none text-[14px] w-full h-full flex flex-1' />
               </div>
               <div className='border-[1px] shadow-sm h-[45px] rounded-[7px] flex flex-row' >
                 <div className='w-[45px] flex items-center justify-center'>
                   <FcUnlock style={{ fontSize: "22px" }} />
                 </div>
-                <input placeholder='Password' className='bg-transparent outline-none text-[14px] w-full h-full flex flex-1' />
+                <input placeholder='Password' type='password' value={password} onChange={(e) => { setpassword(e.target.value); }} className='bg-transparent outline-none text-[14px] w-full h-full flex flex-1' />
               </div>
             </div>
             <div className='w-full max-w-[370px] pt-[10px] flex flex-col items-center gap-[15px]'>

@@ -1,6 +1,6 @@
-const usermongoose = require("mongoose");
+import usermongoose from "mongoose";
 
-const useraccount = usermongoose.Schema({
+const useraccount = new usermongoose.Schema({
     accountID: {type: usermongoose.Schema.Types.Mixed, require: true},
     accountType: {type: usermongoose.Schema.Types.Mixed, require: true},
     accountName: {
@@ -8,6 +8,7 @@ const useraccount = usermongoose.Schema({
         middlename: {type: usermongoose.Schema.Types.Mixed},
         lastname: {type: usermongoose.Schema.Types.Mixed, require: true}
     },
+    password: {type: usermongoose.Schema.Types.Mixed, require: true},
     dateCreated: {type: usermongoose.Schema.Types.Mixed, require: true},
     createdBy: {
         accountID: {type: usermongoose.Schema.Types.Mixed, require: true},
@@ -15,4 +16,4 @@ const useraccount = usermongoose.Schema({
     }
 });
 
-module.exports = usermongoose.model("UserAccount", useraccount, "useraccounts");
+export default usermongoose.models.UserAccount || usermongoose.model("UserAccount", useraccount, "useraccounts");
