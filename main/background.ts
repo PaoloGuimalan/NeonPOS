@@ -34,28 +34,28 @@ if (isProd) {
     },
   })
 
-  const externalWindow = createWindow('external', {
-    // kiosk: true,
-    width: width,
-    height: height,
-    frame: false,
-    // skipTaskbar: true,
-    fullscreen: false,
-    x: externalDisplay.bounds.x,
-    y: externalDisplay.bounds.y,
-    webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
-      nodeIntegration: true,
-    },
-  })
+  // const externalWindow = createWindow('external', {
+  //   // kiosk: true,
+  //   width: width,
+  //   height: height,
+  //   frame: false,
+  //   // skipTaskbar: true,
+  //   fullscreen: false,
+  //   x: externalDisplay.bounds.x,
+  //   y: externalDisplay.bounds.y,
+  //   webPreferences: {
+  //     preload: path.join(__dirname, 'preload.js'),
+  //     nodeIntegration: true,
+  //   },
+  // })
 
   if (isProd) {
     await mainWindow.loadURL('app://./home')
-    await externalWindow.loadURL('app://./external/external')
+    // await externalWindow.loadURL('app://./external/external')
   } else {
     const port = process.argv[2]
     await mainWindow.loadURL(`http://localhost:${port}/home`)
-    await externalWindow.loadURL(`http://localhost:${port}/external/external`)
+    // await externalWindow.loadURL(`http://localhost:${port}/external/external`)
     // mainWindow.webContents.openDevTools()
   }
 

@@ -2,13 +2,19 @@ import React from 'react'
 import { FcAssistant, FcUnlock } from 'react-icons/fc'
 import NeonPOS from '../../../assets/NeonPOS.png'
 import { useRouter } from 'next/router'
+import Axios from 'axios';
 
 function Login() {
 
   const router = useRouter();
 
   const LoginProcess = () => {
-    router.push("/internal/home/home");
+    // router.push("/internal/home/home");
+    Axios.get('/api/auth/route').then((response) => {
+      console.log(response);
+    }).catch((err) => {
+      console.log(err);
+    })
   }
   
   return (

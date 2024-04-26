@@ -7,4 +7,8 @@ module.exports = {
   webpack: (config) => {
     return config
   },
+  experimental: {
+    appDir: true,
+    serverComponentsExternalPackages: ["mongoose"]
+  }
 }
