@@ -1,23 +1,45 @@
 import { useRouter } from 'next/router';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion';
 import { AiOutlineLogout } from "react-icons/ai";
 import { MdAccountCircle, MdDashboard, MdInventory, MdOutlineRestaurantMenu } from "react-icons/md";
 import Routes from './routes';
 import { routing } from '../../../utils/routesoptions';
+import { AuthenticationInterface } from '../../../helpers/typings/interfaces';
+import { useDispatch, useSelector } from 'react-redux';
+import { SET_AUTHENTICATION } from '../../../helpers/redux/types/types';
+import { authenticationstate } from '../../../helpers/redux/types/states';
 
 function Home() {
 
+  const authentication: AuthenticationInterface = useSelector((state: any) => state.authentication);
+  const dispatch = useDispatch();
   const router = useRouter();
 
   const [currenttab, setcurrenttab] = useState<string>("");
 
+  useEffect(() => {
+    if(!authentication.auth){
+      router.push("/internal/auth/login");
+    }
+  }, [authentication]);
+
   const LogoutProcess = () => {
-    router.push("/internal/auth/login");
+    dispatch({
+      type: SET_AUTHENTICATION,
+      payload: {
+        authentication: {
+          auth: false,
+          user: authenticationstate
+        }
+      }
+    })
+    // router.push("/internal/auth/login");
   }
 
   return (
-    <div className={`w-full h-full bg-primary absolute flex flex-1 flex-row`}>
+    authentication.auth && (
+      <div className={`w-full h-full bg-primary absolute flex flex-1 flex-row`}>
         <div className='flex bg-accent-tertiary flex flex-1 flex-col max-w-[80px] items-center pt-[15px]'>
             <div className='bg-transparent w-full flex flex-1 flex-col items-center p-[7px] pr-[0px] gap-[7px]'>
               <motion.button
@@ -87,6 +109,7 @@ function Home() {
           <Routes tab={currenttab} />
         </div>
     </div>
+    )
   )
 }
 

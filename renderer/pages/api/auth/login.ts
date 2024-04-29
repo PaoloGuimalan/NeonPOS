@@ -7,7 +7,7 @@ export default async function POST(req: NextApiRequest, res: NextApiResponse) {
 	establishconnection().then(() => {
 		const accountID = req.body.accountID;
 		const password = req.body.password;
-		UserAccount.findOne({ accountID: accountID, password: password }).then((result) => {
+		UserAccount.findOne({ accountID: accountID, password: password }, { password: 0 }).then((result) => {
 			res.send({ status: true, result: result });
 		}).catch((err) => {
 			res.send({ status: false, result: err });

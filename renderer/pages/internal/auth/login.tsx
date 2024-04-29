@@ -1,15 +1,17 @@
 import React, { useState } from 'react'
 import { FcAssistant, FcUnlock } from 'react-icons/fc'
 import NeonPOS from '../../../assets/NeonPOS.png'
-import { useRouter } from 'next/router'
-import Axios from 'axios';
 import { LoginRequest } from '../../../helpers/https/requests';
+import { useDispatch } from 'react-redux';
+import { SET_AUTHENTICATION } from '../../../helpers/redux/types/types';
+import { useRouter } from 'next/router';
 
 function Login() {
 
   const [accountID, setaccountID] = useState<string>("");
   const [password, setpassword] = useState<string>("");
 
+  const dispatch = useDispatch();
   const router = useRouter();
 
   const LoginProcess = () => {
@@ -19,6 +21,18 @@ function Login() {
     }).then((response) => {
       if(response.data.status){
         if(response.data.result){
+          dispatch({
+            type: SET_AUTHENTICATION,
+            payload: {
+              authentication: {
+                auth: true,
+                user: {
+                  ...response.data.result,
+                  permissions: []
+                }
+              }
+            }
+          })
           router.push("/internal/home/home");
           return;
         }
