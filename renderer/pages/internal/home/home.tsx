@@ -44,8 +44,12 @@ function Home() {
             <div className='bg-transparent w-full flex flex-1 flex-col items-center p-[7px] pr-[0px] gap-[7px]'>
               {authentication.user.permissions.includes("navigate_dashboard") && (
                 <motion.button
+                animate={{
+                  backgroundColor: currenttab === routing.DASHBOARD_ROUTE ? "white" : "transparent",
+                  color: currenttab === routing.DASHBOARD_ROUTE ? "#616161" : "white"
+                }}
                 whileHover={{
-                  background: "white",
+                  backgroundColor: "white",
                   color: "#616161"
                 }}
                 onClick={() => {
@@ -58,8 +62,12 @@ function Home() {
               )}
               {authentication.user.permissions.includes("navigate_menu") && (
                 <motion.button
+                animate={{
+                  backgroundColor: currenttab === routing.MENU_ROUTE ? "white" : "transparent",
+                  color: currenttab === routing.MENU_ROUTE ? "#616161" : "white"
+                }}
                 whileHover={{
-                  background: "white",
+                  backgroundColor: "white",
                   color: "#616161"
                 }}
                 onClick={() => {
@@ -72,8 +80,12 @@ function Home() {
               )}
               {authentication.user.permissions.includes("navigate_inventory") && (
                 <motion.button
+                animate={{
+                  backgroundColor: currenttab === routing.INVENTORY_ROUTE ? "white" : "transparent",
+                  color: currenttab === routing.INVENTORY_ROUTE ? "#616161" : "white"
+                }}
                 whileHover={{
-                  background: "white",
+                  backgroundColor: "white",
                   color: "#616161"
                 }}
                 onClick={() => {
@@ -86,8 +98,12 @@ function Home() {
               )}
               {authentication.user.permissions.includes("navigate_permissions") && (
                 <motion.button
+                animate={{
+                  backgroundColor: currenttab === routing.PERMISSIONS_ROUTE ? "white" : "transparent",
+                  color: currenttab === routing.PERMISSIONS_ROUTE ? "#616161" : "white"
+                }}
                 whileHover={{
-                  background: "white",
+                  backgroundColor: "white",
                   color: "#616161"
                 }}
                 onClick={() => {
@@ -100,8 +116,12 @@ function Home() {
               )}
               {authentication.user.permissions.includes("navigate_account") && (
                 <motion.button
+                animate={{
+                  backgroundColor: currenttab === routing.ACCOUNT_ROUTE ? "white" : "transparent",
+                  color: currenttab === routing.ACCOUNT_ROUTE ? "#616161" : "white"
+                }}
                 whileHover={{
-                  background: "white",
+                  backgroundColor: "white",
                   color: "#616161"
                 }}
                 onClick={() => {
