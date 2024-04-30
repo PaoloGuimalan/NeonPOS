@@ -7,4 +7,4 @@ const userpermission = new userpermissionmongoose.Schema({
     isEnabled: {type: userpermissionmongoose.Schema.Types.Mixed, require: true},
 });
 
-export default userpermissionmongoose.model("UserPermission", userpermission, "userpermissions");
+export default userpermissionmongoose.models.UserPermission || userpermissionmongoose.model("UserPermission", userpermission, "userpermissions");

@@ -13,4 +13,4 @@ const product = new productmongoose.Schema({
     dateAdded: {type: productmongoose.Schema.Types.Mixed, require: true}
 });
 
-export default productmongoose.model("Product", product, "products")
+export default productmongoose.models.Product || productmongoose.model("Product", product, "products");

@@ -21,14 +21,15 @@ function Login() {
     }).then((response) => {
       if(response.data.status){
         if(response.data.result){
+          const permissionsmapper = response.data.result[0].permissions.map((mp: any) => mp.permissionType);
           dispatch({
             type: SET_AUTHENTICATION,
             payload: {
               authentication: {
                 auth: true,
                 user: {
-                  ...response.data.result,
-                  permissions: []
+                  ...response.data.result[0],
+                  permissions: permissionsmapper
                 }
               }
             }

@@ -5,7 +5,7 @@ import UserAccount from '../../../kernel/schemas/useracccount';
 import { createUniqueAccountID } from '../../../kernel/helpers/authhelper';
 import { makeID } from '../../../kernel/reusables/generatefns';
 
-export default async function GET(req: NextApiRequest, res: NextApiResponse) {
+export default async function POST(req: NextApiRequest, res: NextApiResponse) {
 	establishconnection().then(async () => {
         const newAccountID = await createUniqueAccountID("ACC_ID_" + makeID(15));
 		const newaccount = new UserAccount({

@@ -13,4 +13,4 @@ const order = new ordermongoose.Schema({
     dateUpdated: {type: ordermongoose.Schema.Types.Mixed, require: true}
 });
 
-export default ordermongoose.model("Order", order, "orders");
+export default ordermongoose.models.Order || ordermongoose.model("Order", order, "orders");
