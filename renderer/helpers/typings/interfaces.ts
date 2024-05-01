@@ -3,6 +3,15 @@ export interface LoginPayloadInterface {
     password: string;
 }
 
+export interface RegisterAccountInterface {
+    firstname: string;
+    middlename: string;
+    lastname: string;
+    accountType: string;
+    password: string;
+    creatorAccountID: string;
+}
+
 export interface CreateNewPermissionPayloadInterface {
     permissionType: string;
     allowedUsers: string[];
@@ -32,4 +41,19 @@ export interface PermissionInterface {
     permissionType: string;
     allowedUsers: string[];
     isEnabled: boolean;
+}
+
+export interface UserAccountInterface {
+    accountID: string,
+    accountType: string,
+    accountName: {
+        firstname: string,
+        middlename: string,
+        lastname: string
+    },
+    dateCreated: string,
+    createdBy: {
+        accountID: string,
+        deviceID: string
+    }
 }

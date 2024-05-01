@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import { CreateNewPermissionPayloadInterface, LoginPayloadInterface } from '../typings/interfaces';
+import { CreateNewPermissionPayloadInterface, LoginPayloadInterface, RegisterAccountInterface } from '../typings/interfaces';
 
 async function LoginRequest(payload: LoginPayloadInterface){
     return await Axios.post('/api/auth/login', payload).then((response) => {
@@ -28,8 +28,26 @@ async function CreateNewPermissionRequest(payload: CreateNewPermissionPayloadInt
   })
 }
 
+async function GetUsersRequest(){
+  return await Axios.get('/api/auth/getusers').then((response) => {
+    return response;
+  }).catch((err) => {
+    throw new Error(err);
+  })
+}
+
+async function RegisterAccountRequest(payload: RegisterAccountInterface) {
+  return await Axios.post('/api/auth/register', payload).then((response) => {
+    return response;
+  }).catch((err) => {
+    throw new Error(err);
+  })
+}
+
 export {
     LoginRequest,
+    RegisterAccountRequest,
     GetPermissionsRequest,
-    CreateNewPermissionRequest
+    CreateNewPermissionRequest,
+    GetUsersRequest
 }
