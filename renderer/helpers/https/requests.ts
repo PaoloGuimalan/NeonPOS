@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import { LoginPayloadInterface } from '../typings/interfaces';
+import { CreateNewPermissionPayloadInterface, LoginPayloadInterface } from '../typings/interfaces';
 
 async function LoginRequest(payload: LoginPayloadInterface){
     return await Axios.post('/api/auth/login', payload).then((response) => {
@@ -9,6 +9,27 @@ async function LoginRequest(payload: LoginPayloadInterface){
     })
 }
 
+async function GetPermissionsRequest(){
+  return await Axios.get('/api/settings/getpermissions').then((response) => {
+    return response;
+  }).catch((err) => {
+    throw new Error(err);
+  })
+}
+
+async function CreateNewPermissionRequest(payload: CreateNewPermissionPayloadInterface){
+  return await Axios.post('/api/settings/permissions', {
+    permissionType: payload.permissionType,
+    allowedUsers: payload.allowedUsers
+  }).then((response) => {
+    return response;
+  }).catch((err) => {
+    throw new Error(err);
+  })
+}
+
 export {
-    LoginRequest
+    LoginRequest,
+    GetPermissionsRequest,
+    CreateNewPermissionRequest
 }

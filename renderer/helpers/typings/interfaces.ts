@@ -3,6 +3,11 @@ export interface LoginPayloadInterface {
     password: string;
 }
 
+export interface CreateNewPermissionPayloadInterface {
+    permissionType: string;
+    allowedUsers: string[];
+}
+
 export interface AuthenticationInterface {
     auth: boolean | null,
     user: {
@@ -20,4 +25,11 @@ export interface AuthenticationInterface {
             deviceID: string
         }
     }
+}
+
+export interface PermissionInterface {
+    permissionID: string;
+    permissionType: string;
+    allowedUsers: string[];
+    isEnabled: boolean;
 }
