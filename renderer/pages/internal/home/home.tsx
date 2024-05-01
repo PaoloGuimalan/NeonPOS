@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion';
 import { AiOutlineLogout } from "react-icons/ai";
-import { MdAccountCircle, MdDashboard, MdInventory, MdLock, MdOutlineRestaurantMenu } from "react-icons/md";
+import { MdAccountBox, MdAccountCircle, MdDashboard, MdInventory, MdLock, MdOutlineRestaurantMenu } from "react-icons/md";
 import Routes from './routes';
 import { routing } from '../../../utils/routesoptions';
 import { AuthenticationInterface } from '../../../helpers/typings/interfaces';
@@ -112,6 +112,24 @@ function Home() {
                 className='text-white w-full h-[70px] rounded-tl-[10px] rounded-bl-[10px] flex flex-col gap-[5px] items-center justify-center'>
                   <MdLock style={{ fontSize: "30px" }} />
                   <span className='text-[12px]'>Permissions</span>
+                </motion.button>
+              )}
+              {authentication.user.permissions.includes("navigate_users") && (
+                <motion.button
+                animate={{
+                  backgroundColor: currenttab === routing.USERS_ROUTE ? "white" : "transparent",
+                  color: currenttab === routing.USERS_ROUTE ? "#616161" : "white"
+                }}
+                whileHover={{
+                  backgroundColor: "white",
+                  color: "#616161"
+                }}
+                onClick={() => {
+                  setcurrenttab(routing.USERS_ROUTE);
+                }}
+                className='text-white w-full h-[70px] rounded-tl-[10px] rounded-bl-[10px] flex flex-col gap-[5px] items-center justify-center'>
+                  <MdAccountBox style={{ fontSize: "30px" }} />
+                  <span className='text-[12px]'>Users</span>
                 </motion.button>
               )}
               {authentication.user.permissions.includes("navigate_account") && (

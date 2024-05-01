@@ -47,11 +47,13 @@ function Permissions() {
     <div className='w-full flex flex-row bg-shade'>
         <div className='flex flex-1 flex-col p-[20px] gap-[10px]'>
             <span className='font-semibold text-[20px]'>Permissions</span>
-            <div className='w-full flex flex-col gap-[0px] bg-white p-[15px] pt-[20px] h-full'>
-                <div className='bg-header border-[1px] p-[15px] flex flex-row'>
-                  <span className='text-[15px] flex flex-1 font-semibold'>Type</span>
-                  <span className='text-[15px] flex flex-1 font-semibold'>Allowed Users</span>
-                  <span className='text-[15px] flex font-semibold w-full max-w-[180px]'>Actions</span>
+            <div className='w-full flex flex-col gap-[0px] bg-white p-[15px] pt-[0px] h-full overflow-y-scroll'>
+                <div className='pt-[20px] sticky top-0 bg-white'>
+                  <div className='bg-header border-[1px] p-[15px] flex flex-row'>
+                    <span className='text-[15px] flex flex-1 font-semibold'>Type</span>
+                    <span className='text-[15px] flex flex-1 font-semibold'>Allowed Users</span>
+                    <span className='text-[15px] flex font-semibold w-full max-w-[180px]'>Actions</span>
+                  </div>
                 </div>
                 {permissions.map((mp: PermissionInterface, i: number) => {
                   return(
