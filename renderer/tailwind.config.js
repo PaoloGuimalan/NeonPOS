@@ -14,6 +14,7 @@ module.exports = {
       black: colors.black,
       red: colors.red,
       orange: colors.orange,
+      green: colors.green,
       transparent: colors.transparent,
       primary: "#ffffff",
       secondary: "#e8e8e8",
@@ -27,7 +28,8 @@ module.exports = {
         hover: "#e87fda"
       },
       text: {
-        primary: "#eceaea"
+        primary: "#eceaea",
+        secondary: "#616161"
       }
     },
     extend: {},

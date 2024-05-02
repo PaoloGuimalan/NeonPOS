@@ -12,6 +12,14 @@ export interface RegisterAccountInterface {
     creatorAccountID: string;
 }
 
+export interface AddProductRequestInterface {
+    productName: string;
+    productPrice: number;
+    productQuantity: number;
+    accountID: string;
+    category: string;
+}
+
 export interface CreateNewPermissionPayloadInterface {
     permissionType: string;
     allowedUsers: string[];
@@ -56,4 +64,18 @@ export interface UserAccountInterface {
         accountID: string,
         deviceID: string
     }
+}
+
+export interface ProductDataInterface {
+    addedBy: {
+        accountID: string, 
+        deviceID: string
+    }
+    category: string;
+    dateAdded: string;
+    previews: string[];
+    productID: string;
+    productName: string;
+    productPrice: number;
+    productQuantity: number;
 }

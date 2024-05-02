@@ -5,6 +5,7 @@ const product = new productmongoose.Schema({
     productName: {type: productmongoose.Schema.Types.Mixed, require: true},
     productPrice: Number,
     productQuantity: Number,
+    category: {type: productmongoose.Schema.Types.Mixed, require: true},
     previews: [{type: productmongoose.Schema.Types.Mixed, require: true}],
     addedBy: {
         accountID: {type: productmongoose.Schema.Types.Mixed, require: true},
