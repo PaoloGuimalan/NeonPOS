@@ -79,3 +79,8 @@ export interface ProductDataInterface {
     productPrice: number;
     productQuantity: number;
 }
+
+export interface CartItemInterface {
+    product: ProductDataInterface;
+    quantity: number;
+}
