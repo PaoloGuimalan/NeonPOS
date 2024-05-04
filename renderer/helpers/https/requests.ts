@@ -1,8 +1,10 @@
 import Axios from 'axios';
 import { AddProductRequestInterface, CreateNewPermissionPayloadInterface, LoginPayloadInterface, RegisterAccountInterface } from '../typings/interfaces';
 
+const BACKDOOR = 'http://localhost:3000'
+
 async function LoginRequest(payload: LoginPayloadInterface){
-    return await Axios.post('/api/auth/login', payload).then((response) => {
+    return await Axios.post(`${BACKDOOR}/api/auth/login`, payload).then((response) => {
       return response;
     }).catch((err) => {
       throw new Error(err);
@@ -10,7 +12,7 @@ async function LoginRequest(payload: LoginPayloadInterface){
 }
 
 async function GetPermissionsRequest(){
-  return await Axios.get('/api/settings/getpermissions').then((response) => {
+  return await Axios.get(`${BACKDOOR}/api/settings/getpermissions`).then((response) => {
     return response;
   }).catch((err) => {
     throw new Error(err);
@@ -18,7 +20,7 @@ async function GetPermissionsRequest(){
 }
 
 async function CreateNewPermissionRequest(payload: CreateNewPermissionPayloadInterface){
-  return await Axios.post('/api/settings/permissions', {
+  return await Axios.post(`${BACKDOOR}/api/settings/permissions`, {
     permissionType: payload.permissionType,
     allowedUsers: payload.allowedUsers
   }).then((response) => {
@@ -29,7 +31,7 @@ async function CreateNewPermissionRequest(payload: CreateNewPermissionPayloadInt
 }
 
 async function GetUsersRequest(){
-  return await Axios.get('/api/auth/getusers').then((response) => {
+  return await Axios.get(`${BACKDOOR}/api/auth/getusers`).then((response) => {
     return response;
   }).catch((err) => {
     throw new Error(err);
@@ -37,7 +39,7 @@ async function GetUsersRequest(){
 }
 
 async function RegisterAccountRequest(payload: RegisterAccountInterface) {
-  return await Axios.post('/api/auth/register', payload).then((response) => {
+  return await Axios.post(`${BACKDOOR}/api/auth/register`, payload).then((response) => {
     return response;
   }).catch((err) => {
     throw new Error(err);
@@ -45,7 +47,7 @@ async function RegisterAccountRequest(payload: RegisterAccountInterface) {
 }
 
 async function AddProductRequest(payload: AddProductRequestInterface) {
-  return await Axios.post('/api/menu/addproduct', payload).then((response) => {
+  return await Axios.post(`${BACKDOOR}/api/menu/addproduct`, payload).then((response) => {
     return response;
   }).catch((err) => {
     throw new Error(err);
@@ -53,7 +55,7 @@ async function AddProductRequest(payload: AddProductRequestInterface) {
 }
 
 async function GetProductsListRequest() {
-  return await Axios.get('/api/menu/getproducts').then((response) => {
+  return await Axios.get(`${BACKDOOR}/api/menu/getproducts`).then((response) => {
     return response;
   }).catch((err) => {
     throw new Error(err);
