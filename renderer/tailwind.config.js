@@ -21,6 +21,7 @@ module.exports = {
       tertiary: "#6db33f",
       shade: "#f0f2f5",
       header: "#fafafa",
+      modal: "rgba(0,0,0,0.8)",
       accent: {
         primary: "#606970",
         secondary: "#c724b1",
