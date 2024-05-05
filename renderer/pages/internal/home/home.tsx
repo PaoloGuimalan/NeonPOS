@@ -1,18 +1,21 @@
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion';
 import { AiOutlineLogout } from "react-icons/ai";
 import { MdAccountBox, MdAccountCircle, MdDashboard, MdInventory, MdLock, MdOutlineRestaurantMenu } from "react-icons/md";
 import Routes from './routes';
 import { routing } from '../../../utils/routesoptions';
-import { AuthenticationInterface } from '../../../helpers/typings/interfaces';
+import { AlertsItem, AuthenticationInterface } from '../../../helpers/typings/interfaces';
 import { useDispatch, useSelector } from 'react-redux';
 import { SET_AUTHENTICATION } from '../../../helpers/redux/types/types';
 import { authenticationstate } from '../../../helpers/redux/types/states';
+import Alert from '../../../components/widgets/alert';
+import { dispatchclearalerts } from '../../../helpers/reusables/alertdispatching';
 
 function Home() {
 
   const authentication: AuthenticationInterface = useSelector((state: any) => state.authentication);
+  const alerts: AlertsItem[] = useSelector((state: any) => state.alerts);
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -25,6 +28,7 @@ function Home() {
   }, [authentication]);
 
   const LogoutProcess = () => {
+    dispatchclearalerts(dispatch);
     dispatch({
       type: SET_AUTHENTICATION,
       payload: {
@@ -37,9 +41,27 @@ function Home() {
     // router.push("/internal/auth/login");
   }
 
+  const scrollDivAlerts = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if(scrollDivAlerts.current){
+      const scrollHeight = scrollDivAlerts.current.scrollHeight;
+      const clientHeight = scrollDivAlerts.current.clientHeight;
+      const maxScrollTop = scrollHeight - clientHeight
+      scrollDivAlerts.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+    }
+  },[alerts, scrollDivAlerts]);
+
   return (
     authentication.auth && (
       <div className={`w-full h-full bg-primary absolute flex flex-1 flex-row`}>
+        <div id='div_alerts_container' ref={scrollDivAlerts}>
+          {alerts.map((al: any, i: number) => {
+            return(
+              <Alert key={i} al={al} />
+            )
+          })}
+        </div>
         <div className='flex bg-accent-tertiary flex flex-1 flex-col max-w-[80px] items-center pt-[15px]'>
             <div className='bg-transparent w-full flex flex-1 flex-col items-center p-[7px] pr-[0px] gap-[7px]'>
               {authentication.user.permissions.includes("navigate_dashboard") && (

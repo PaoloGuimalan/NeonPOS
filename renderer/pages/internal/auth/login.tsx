@@ -5,6 +5,7 @@ import { LoginRequest } from '../../../helpers/https/requests';
 import { useDispatch } from 'react-redux';
 import { SET_AUTHENTICATION } from '../../../helpers/redux/types/types';
 import { useRouter } from 'next/router';
+import { dispatchnewalert } from '../../../helpers/reusables/alertdispatching';
 
 function Login() {
 
@@ -35,14 +36,19 @@ function Login() {
             }
           })
           router.push("/internal/home/home");
+          dispatchnewalert(dispatch, "success", "Successfully logged in");
           return;
         }
+      }
+      else{
+        dispatchnewalert(dispatch, "warning", "Credentials are incorrect");
       }
 
       setaccountID("");
       setpassword("");
     }).catch((err) => {
       console.log(err);
+      dispatchnewalert(dispatch, "error", "Error logging in");
     })
   }
   

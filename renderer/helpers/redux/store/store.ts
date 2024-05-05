@@ -1,8 +1,9 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import { setauthentication } from '../actions/actions';
+import { setalerts, setauthentication } from '../actions/actions';
 
 const combiner = combineReducers({
-    authentication: setauthentication
+    authentication: setauthentication,
+    alerts: setalerts
 })
 
 const store = configureStore({

@@ -2,10 +2,11 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { IoCartSharp } from 'react-icons/io5';
 import { MdAddToPhotos, MdClose } from 'react-icons/md';
 import { AuthenticationInterface, CartItemInterface, ProductDataInterface } from '../../../../helpers/typings/interfaces';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AddProductRequest, GetProductsListRequest } from '../../../../helpers/https/requests';
 import Confirmordermodal from '../../../../components/modals/confirmordermodal';
 import { motion } from 'framer-motion';
+import { dispatchnewalert } from '../../../../helpers/reusables/alertdispatching';
 
 function Menu() {
 
@@ -26,6 +27,8 @@ function Menu() {
   const [passcode, setpasscode] = useState<string>("");
 
   const cartTotalHolder = useMemo(() => cartlist.map((mp: CartItemInterface) => (mp.product.productPrice * mp.quantity)).reduce(function(a, b) { return a + b; }, 0), [cartlist]);
+
+  const dispatch = useDispatch();
 
   const ClearAddProductFields = () => {
     setproductName("");
@@ -66,6 +69,9 @@ function Menu() {
   const ConfirmOrder = () => {
     if(cartlist.length > 0 && amountreceived >= cartTotalHolder){
       setconfirmmodaltrigger(true);
+    }
+    else{
+      dispatchnewalert(dispatch, "warning", "Order is still incomplete");
     }
   }
 

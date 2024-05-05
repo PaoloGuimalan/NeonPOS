@@ -84,3 +84,9 @@ export interface CartItemInterface {
     product: ProductDataInterface;
     quantity: number;
 }
+
+export interface AlertsItem {
+    id: number;
+    type: string;
+    content: string;
+}
