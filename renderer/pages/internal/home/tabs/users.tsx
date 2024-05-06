@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { GetUsersRequest, RegisterAccountRequest } from '../../../../helpers/https/requests';
-import { AuthenticationInterface, UserAccountInterface } from '../../../../helpers/typings/interfaces';
+import { AuthenticationInterface, SettingsInterface, UserAccountInterface } from '../../../../helpers/typings/interfaces';
 import { useSelector } from 'react-redux';
 
 function Users() {
 
   const authentication: AuthenticationInterface = useSelector((state: any) => state.authentication);
+  const settings: SettingsInterface = useSelector((state: any) => state.settings);
 
   const [userslist, setuserslist] = useState<UserAccountInterface[]>([]);
 
@@ -19,7 +20,7 @@ function Users() {
   const [confirmpassword, setconfirmpassword] = useState<string>("");
 
   const GetUsersProcess = () => {
-    GetUsersRequest().then((response) => {
+    GetUsersRequest(settings.userID).then((response) => {
       if(response.data.status){
         if(response.data.result){
           setuserslist(response.data.result);
@@ -47,7 +48,9 @@ function Users() {
           lastname: lastname,
           accountType: accountType,
           password: password,
-          creatorAccountID: authentication.user.accountID
+          creatorAccountID: authentication.user.accountID,
+          deviceID: settings.deviceID,
+          userID: settings.userID
         }).then((response) => {
           if(response.data.status){
             GetUsersProcess();
@@ -62,10 +65,10 @@ function Users() {
 
   useEffect(() => {
     GetUsersProcess();
-  },[]);
+  },[settings]);
 
   return (
-    <div className='w-full flex flex-row bg-shade'>
+    <div className='w-full flex flex-row bg-shade font-Inter'>
         <div className='flex flex-1 flex-col p-[20px] gap-[10px]'>
             <span className='font-semibold text-[20px]'>Users</span>
             <div className='w-full flex flex-row gap-[5px] p-[15px] pt-[15px] h-full overflow-y-scroll'>

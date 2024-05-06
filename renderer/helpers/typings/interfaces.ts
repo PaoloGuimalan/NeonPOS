@@ -1,6 +1,7 @@
 export interface LoginPayloadInterface {
     accountID: string;
     password: string;
+    userID: string;
 }
 
 export interface RegisterAccountInterface {
@@ -10,6 +11,8 @@ export interface RegisterAccountInterface {
     accountType: string;
     password: string;
     creatorAccountID: string;
+    userID: string;
+    deviceID: string;
 }
 
 export interface AddProductRequestInterface {
@@ -18,11 +21,15 @@ export interface AddProductRequestInterface {
     productQuantity: number;
     accountID: string;
     category: string;
+    deviceID: string;
+    userID: string;
 }
 
 export interface CreateNewPermissionPayloadInterface {
     permissionType: string;
     allowedUsers: string[];
+    userID: string;
+    deviceID: string;
 }
 
 export interface AuthenticationInterface {
@@ -94,4 +101,10 @@ export interface AlertsItem {
 export interface InitialSetupDeviceVerificationRequestInterface {
     userID: string;
     deviceID: string;
+}
+
+export interface SettingsInterface {
+    userID: string;
+    deviceID: string;
+    setup: string;
 }

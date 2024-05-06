@@ -1,15 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Login from './internal/auth/login'
-import { AlertsItem, AuthenticationInterface } from '../helpers/typings/interfaces'
-import { useSelector } from 'react-redux'
+import { AlertsItem, AuthenticationInterface, SettingsInterface } from '../helpers/typings/interfaces'
+import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router';
 import Alert from '../components/widgets/alert';
 import Setup from './setup/setup';
+import { SET_SETTINGS } from '../helpers/redux/types/types';
 
 export default function HomePage() {
 
   const authentication: AuthenticationInterface = useSelector((state: any) => state.authentication);
   const alerts: AlertsItem[] = useSelector((state: any) => state.alerts);
+  const settings: SettingsInterface = useSelector((state: any) => state.settings);
+  const dispatch = useDispatch();
   const router = useRouter();
 
   const [isSettingsDone, setisSettingsDone] = useState<boolean | null>(null);
@@ -32,15 +35,32 @@ export default function HomePage() {
   }, [authentication]);
 
   useEffect(() => {
-    const settings = localStorage.getItem("settings");
+    const settingsstorage = localStorage.getItem("settings");
 
-    if(settings){
+    if(settingsstorage){
       setisSettingsDone(true);
+      dispatch({
+        type: SET_SETTINGS,
+        payload: {
+          settings: JSON.parse(settingsstorage)
+        }
+      });
     }
     else{
       setisSettingsDone(false);
     }
   }, []);
+
+  useEffect(() => {
+    const settingsstorage = localStorage.getItem("settings");
+
+    if(settingsstorage){
+      setisSettingsDone(true);
+    }
+    else{
+      setisSettingsDone(false);
+    }
+  }, [settings]);
 
   return (
     <React.Fragment>

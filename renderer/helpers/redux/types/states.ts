@@ -1,4 +1,6 @@
-export const authenticationstate = {
+import { AuthenticationInterface, SettingsInterface } from "../../typings/interfaces";
+
+export const authenticationstate : AuthenticationInterface = {
     auth: null,
     user: {
         accountID: "",
@@ -15,4 +17,10 @@ export const authenticationstate = {
             deviceID: ""
         }
     }
+}
+
+export const settingsstate : SettingsInterface = {
+    userID: "",
+    deviceID: "",
+    setup: ""
 }

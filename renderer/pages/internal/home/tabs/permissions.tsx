@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { CreateNewPermissionRequest, GetPermissionsRequest } from '../../../../helpers/https/requests'
-import { PermissionInterface } from '../../../../helpers/typings/interfaces'
+import { PermissionInterface, SettingsInterface } from '../../../../helpers/typings/interfaces'
 import { IoClose } from 'react-icons/io5';
+import { useSelector } from 'react-redux';
 
 function Permissions() {
+
+  const settings: SettingsInterface = useSelector((state: any) => state.settings);
 
   const [permissions, setpermissions] = useState<PermissionInterface[]>([]);
 
@@ -11,7 +14,7 @@ function Permissions() {
   const [allowedusers, setallowedusers] = useState<string[]>([]);
 
   const GetPermissionsProcess = () => {
-    GetPermissionsRequest().then((response) => {
+    GetPermissionsRequest(settings.userID).then((response) => {
       if(response.data.status){
         if(response.data.result){
           setpermissions(response.data.result);
@@ -26,7 +29,9 @@ function Permissions() {
     if(permissionType.trim() !== "" && allowedusers.length > 0){
       CreateNewPermissionRequest({
         permissionType: permissionType,
-        allowedUsers: allowedusers
+        allowedUsers: allowedusers,
+        userID: settings.userID,
+        deviceID: settings.deviceID
       }).then((response) => {
         if(response.data.status){
           GetPermissionsProcess();
@@ -41,10 +46,10 @@ function Permissions() {
 
   useEffect(() => {
     GetPermissionsProcess();
-  },[])
+  },[settings]);
 
   return (
-    <div className='w-full flex flex-row bg-shade'>
+    <div className='w-full flex flex-row bg-shade font-Inter'>
         <div className='flex flex-1 flex-col p-[20px] gap-[10px]'>
             <span className='font-semibold text-[20px]'>Permissions</span>
             <div className='w-full flex flex-col gap-[0px] bg-white p-[15px] pt-[0px] h-full overflow-y-scroll'>
@@ -62,9 +67,9 @@ function Permissions() {
                         <span className='text-[14px]'>{mp.permissionType}</span>
                       </div>
                       <div className='flex flex-1 flex-row gap-[5px]'>
-                        {mp.allowedUsers.map((mpp: string, i: number) => {
+                        {mp.allowedUsers.map((mpp: string, ii: number) => {
                           return (
-                            <div className='text-[14px] bg-accent-tertiary text-white flex p-[5px] pl-[8px] pr-[8px]'>
+                            <div key={ii} className='text-[14px] bg-accent-tertiary text-white flex p-[5px] pl-[8px] pr-[8px]'>
                               <span>{mpp}</span>
                             </div>
                           )

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { IoCartSharp } from 'react-icons/io5';
 import { MdAddToPhotos, MdClose } from 'react-icons/md';
-import { AuthenticationInterface, CartItemInterface, ProductDataInterface } from '../../../../helpers/typings/interfaces';
+import { AuthenticationInterface, CartItemInterface, ProductDataInterface, SettingsInterface } from '../../../../helpers/typings/interfaces';
 import { useDispatch, useSelector } from 'react-redux';
 import { AddProductRequest, GetProductsListRequest } from '../../../../helpers/https/requests';
 import ReusableModal from '../../../../components/modals/reusablemodal';
@@ -11,6 +11,7 @@ import { dispatchnewalert } from '../../../../helpers/reusables/alertdispatching
 function Menu() {
 
   const authentication: AuthenticationInterface = useSelector((state: any) => state.authentication);
+  const settings: SettingsInterface = useSelector((state: any) => state.settings);
 
   const [togglewidget, settogglewidget] = useState<string>("cart");
   const [productlist, setproductlist] = useState<ProductDataInterface[]>([]);
@@ -38,7 +39,7 @@ function Menu() {
   }
 
   const GetProductsListProcess = () => {
-    GetProductsListRequest().then((response) => {
+    GetProductsListRequest(settings.userID).then((response) => {
       if(response.data.status){
         setproductlist(response.data.result);
       }
@@ -54,7 +55,9 @@ function Menu() {
         productPrice: productPrice,
         productQuantity: productQuantity,
         accountID: authentication.user.accountID,
-        category: category
+        category: category,
+        deviceID: settings.deviceID,
+        userID: settings.userID
       }).then((response) => {
         if(response.data.status){
           GetProductsListProcess();
@@ -81,10 +84,10 @@ function Menu() {
 
   useEffect(() => {
     GetProductsListProcess();
-  },[]);
+  },[settings]);
 
   return (
-    <div className='w-full flex flex-row bg-shade'>
+    <div className='w-full flex flex-row bg-shade font-Inter'>
         {confirmmodaltrigger && (
           <ReusableModal shaded={true} padded={true} children={
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.4 }} className='bg-white w-[95%] h-[95%] max-w-[900px] max-h-[700px] p-[20px] rounded-[7px] flex flex-col'>

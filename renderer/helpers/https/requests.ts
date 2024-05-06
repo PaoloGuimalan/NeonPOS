@@ -12,8 +12,8 @@ async function LoginRequest(payload: LoginPayloadInterface){
     })
 }
 
-async function GetPermissionsRequest(){
-  return await Axios.get(`${BACKDOOR}/api/settings/getpermissions`).then((response) => {
+async function GetPermissionsRequest(userID: string){
+  return await Axios.get(`${BACKDOOR}/api/settings/getpermissions/${userID}`).then((response) => {
     return response;
   }).catch((err) => {
     throw new Error(err);
@@ -23,7 +23,9 @@ async function GetPermissionsRequest(){
 async function CreateNewPermissionRequest(payload: CreateNewPermissionPayloadInterface){
   return await Axios.post(`${BACKDOOR}/api/settings/permissions`, {
     permissionType: payload.permissionType,
-    allowedUsers: payload.allowedUsers
+    allowedUsers: payload.allowedUsers,
+    userID: payload.userID,
+    deviceID: payload.deviceID
   }).then((response) => {
     return response;
   }).catch((err) => {
@@ -31,8 +33,8 @@ async function CreateNewPermissionRequest(payload: CreateNewPermissionPayloadInt
   })
 }
 
-async function GetUsersRequest(){
-  return await Axios.get(`${BACKDOOR}/api/auth/getusers`).then((response) => {
+async function GetUsersRequest(userID: string){
+  return await Axios.get(`${BACKDOOR}/api/auth/getusers/${userID}`).then((response) => {
     return response;
   }).catch((err) => {
     throw new Error(err);
@@ -55,8 +57,8 @@ async function AddProductRequest(payload: AddProductRequestInterface) {
   })
 }
 
-async function GetProductsListRequest() {
-  return await Axios.get(`${BACKDOOR}/api/menu/getproducts`).then((response) => {
+async function GetProductsListRequest(userID: string) {
+  return await Axios.get(`${BACKDOOR}/api/menu/getproducts/${userID}`).then((response) => {
     return response;
   }).catch((err) => {
     throw new Error(err);

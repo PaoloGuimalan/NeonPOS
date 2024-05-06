@@ -1,24 +1,50 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FcAssistant, FcUnlock } from 'react-icons/fc'
 import NeonPOS from '../../../assets/NeonPOS.png'
 import { LoginRequest } from '../../../helpers/https/requests';
-import { useDispatch } from 'react-redux';
-import { SET_AUTHENTICATION } from '../../../helpers/redux/types/types';
+import { useDispatch, useSelector } from 'react-redux';
+import { SET_AUTHENTICATION, SET_SETTINGS } from '../../../helpers/redux/types/types';
 import { useRouter } from 'next/router';
 import { dispatchnewalert } from '../../../helpers/reusables/alertdispatching';
+import { MdClose, MdSettings } from 'react-icons/md';
+import ReusableModal from '../../../components/modals/reusablemodal';
+import { motion } from 'framer-motion';
+import { settingsstate } from '../../../helpers/redux/types/states';
+import { SettingsInterface } from '../../../helpers/typings/interfaces';
 
 function Login() {
+
+  const settings: SettingsInterface = useSelector((state: any) => state.settings);
 
   const [accountID, setaccountID] = useState<string>("");
   const [password, setpassword] = useState<string>("");
 
+  const [toggleSettingsModal, settoggleSettingsModal] = useState<boolean>(false);
+
   const dispatch = useDispatch();
   const router = useRouter();
+
+  useEffect(() => {
+    const settingsstorage = localStorage.getItem("settings");
+
+    if(settingsstorage){
+      dispatch({
+        type: SET_SETTINGS,
+        payload: {
+          settings: JSON.parse(settingsstorage)
+        }
+      });
+    }
+    else{
+      router.push("/home");
+    }
+  }, []);
 
   const LoginProcess = () => {
     LoginRequest({
       accountID,
-      password
+      password,
+      userID: settings.userID
     }).then((response) => {
       if(response.data.status){
         if(response.data.result){
@@ -51,11 +77,44 @@ function Login() {
       dispatchnewalert(dispatch, "error", "Error logging in");
     })
   }
+
+  const ResetSetup = () => {
+    localStorage.removeItem("settings");
+    dispatch({
+      type: SET_SETTINGS,
+      payload: {
+        settings: settingsstate
+      }
+    })
+    settoggleSettingsModal(false);
+  }
   
   return (
-    <div className={`w-full h-full bg-primary absolute flex flex-1 flex-row`}>
+    <div className={`w-full h-full bg-primary absolute flex flex-1 flex-row font-Inter`}>
         <div className={`h-full bg-secondary flex flex-1`} />
+        {toggleSettingsModal && (
+          <ReusableModal shaded={true} padded={false} children={
+            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.4 }} className='bg-white w-[95%] h-[95%] max-w-[400px] max-h-[110px] rounded-[7px] p-[20px] pb-[5px] flex flex-col'>
+              <div className='w-full flex flex-row'>
+                <div className='flex flex-1'>
+                  <span className='text-[16px] font-semibold'>Reset Settings</span>
+                </div>
+                <div className='w-fit'>
+                  <button onClick={() => { settoggleSettingsModal(false); }}><MdClose /></button>
+                </div>
+              </div>
+              <div className='w-full flex flex-1 flex-col items-center justify-center gap-[3px]'>
+                  <button onClick={ResetSetup} className='h-[30px] w-full bg-red-500 cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
+                    <span className='text-[14px]'>Reset</span>
+                  </button>
+              </div>
+            </motion.div>
+          } />
+        )}
         <div className='h-full bg-secondary flex flex-1 justify-center items-center max-w-[600px] p-[20px]'>
+          <button onClick={() => { settoggleSettingsModal(!toggleSettingsModal) }} className='absolute bottom-[10px] left-[10px] p-[10px] rounded-[7px]'>
+            <MdSettings className='text-accent-tertiary' style={{ fontSize: "25px" }} />
+          </button>
           <div className='bg-primary w-full max-w-[500px] h-full max-h-[700px] flex flex-col gap-[15px] justify-center items-center rounded-[10px] shadow-md p-[10px]'>
             <div className='w-full max-w-[370px] flex flex-col gap-[50px] items-center justify-start pb-[10px]'>
                 <img src={NeonPOS.src} className='h-[100px]' />

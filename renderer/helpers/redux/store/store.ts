@@ -1,9 +1,10 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import { setalerts, setauthentication } from '../actions/actions';
+import { setalerts, setauthentication, setsettings } from '../actions/actions';
 
 const combiner = combineReducers({
     authentication: setauthentication,
-    alerts: setalerts
+    alerts: setalerts,
+    settings: setsettings
 })
 
 const store = configureStore({

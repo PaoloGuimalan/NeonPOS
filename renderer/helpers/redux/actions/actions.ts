@@ -1,7 +1,7 @@
-import { AlertsItem, AuthenticationInterface } from "../../typings/interfaces";
+import { AlertsItem, AuthenticationInterface, SettingsInterface } from "../../typings/interfaces";
 import { ActionProp } from "../../typings/props";
-import { authenticationstate } from "../types/states";
-import { SET_ALERTS, SET_AUTHENTICATION, SET_CLEAR_ALERTS, SET_FILTERED_ALERTS, SET_MUTATE_ALERTS } from "../types/types";
+import { authenticationstate, settingsstate } from "../types/states";
+import { SET_ALERTS, SET_AUTHENTICATION, SET_CLEAR_ALERTS, SET_FILTERED_ALERTS, SET_MUTATE_ALERTS, SET_SETTINGS } from "../types/types";
 
 export const setauthentication = (state: AuthenticationInterface = authenticationstate, action: ActionProp) => {
     switch(action.type){
@@ -32,6 +32,15 @@ export const setalerts = (state: AlertsItem[] = [], action: any) => {
             return filterstate;
         case SET_CLEAR_ALERTS:
             return action.payload.alerts
+        default:
+            return state;
+    }
+}
+
+export const setsettings = (state: SettingsInterface = settingsstate, action: any) => {
+    switch(action.type){
+        case SET_SETTINGS:
+            return action.payload.settings;
         default:
             return state;
     }
