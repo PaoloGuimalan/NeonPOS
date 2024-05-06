@@ -3,6 +3,8 @@ export interface ActionProp {
     payload: any;
 }
 
-export interface ConfirmordermodalProp{
+export interface ReusableModalProp{
+    shaded: boolean;
+    padded: boolean;
     children: React.ReactNode;
 }

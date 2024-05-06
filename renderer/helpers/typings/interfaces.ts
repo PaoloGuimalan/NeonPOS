@@ -90,3 +90,8 @@ export interface AlertsItem {
     type: string;
     content: string;
 }
+
+export interface InitialSetupDeviceVerificationRequestInterface {
+    userID: string;
+    deviceID: string;
+}

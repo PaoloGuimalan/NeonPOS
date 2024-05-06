@@ -33,7 +33,11 @@ module.exports = {
         secondary: "#616161"
       }
     },
-    extend: {},
+    extend: {
+      fontFamily: {
+        Inter: ['Inter', 'sans-serif']
+      }
+    },
   },
   plugins: [],
 }

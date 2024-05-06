@@ -4,7 +4,7 @@ import { MdAddToPhotos, MdClose } from 'react-icons/md';
 import { AuthenticationInterface, CartItemInterface, ProductDataInterface } from '../../../../helpers/typings/interfaces';
 import { useDispatch, useSelector } from 'react-redux';
 import { AddProductRequest, GetProductsListRequest } from '../../../../helpers/https/requests';
-import Confirmordermodal from '../../../../components/modals/confirmordermodal';
+import ReusableModal from '../../../../components/modals/reusablemodal';
 import { motion } from 'framer-motion';
 import { dispatchnewalert } from '../../../../helpers/reusables/alertdispatching';
 
@@ -86,7 +86,7 @@ function Menu() {
   return (
     <div className='w-full flex flex-row bg-shade'>
         {confirmmodaltrigger && (
-          <Confirmordermodal children={
+          <ReusableModal shaded={true} padded={true} children={
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.4 }} className='bg-white w-[95%] h-[95%] max-w-[900px] max-h-[700px] p-[20px] rounded-[7px] flex flex-col'>
               <div className='w-full flex flex-row'>
                 <div className='flex flex-1'>

@@ -1,7 +1,8 @@
 import Axios from 'axios';
-import { AddProductRequestInterface, CreateNewPermissionPayloadInterface, LoginPayloadInterface, RegisterAccountInterface } from '../typings/interfaces';
+import { AddProductRequestInterface, CreateNewPermissionPayloadInterface, InitialSetupDeviceVerificationRequestInterface, LoginPayloadInterface, RegisterAccountInterface } from '../typings/interfaces';
 
 const BACKDOOR = 'http://localhost:3000'
+const NEONSERVICE = 'https://neonaiserver.onrender.com'
 
 async function LoginRequest(payload: LoginPayloadInterface){
     return await Axios.post(`${BACKDOOR}/api/auth/login`, payload).then((response) => {
@@ -62,6 +63,14 @@ async function GetProductsListRequest() {
   })
 }
 
+async function InitialSetupDeviceVerificationRequest(payload: InitialSetupDeviceVerificationRequestInterface) {
+  return await Axios.post(`${NEONSERVICE}/access/manualdeviceverification`, payload).then((response) => {
+    return response;
+  }).catch((err) => {
+    throw new Error(err);
+  })
+}
+
 export {
     LoginRequest,
     RegisterAccountRequest,
@@ -69,5 +78,6 @@ export {
     CreateNewPermissionRequest,
     GetUsersRequest,
     AddProductRequest,
-    GetProductsListRequest
+    GetProductsListRequest,
+    InitialSetupDeviceVerificationRequest
 }
