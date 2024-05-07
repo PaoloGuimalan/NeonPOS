@@ -101,10 +101,12 @@ export interface AlertsItem {
 export interface InitialSetupDeviceVerificationRequestInterface {
     userID: string;
     deviceID: string;
+    connectionToken: string;
 }
 
 export interface SettingsInterface {
     userID: string;
     deviceID: string;
+    connectionToken: string;
     setup: string;
 }

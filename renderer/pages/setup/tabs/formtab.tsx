@@ -13,6 +13,7 @@ function Formtab() {
 
   const [NSUSRID, setNSUSRID] = useState<string>("");
   const [NSDVCID, setNSDVCID] = useState<string>("");
+  const [connectionToken, setconnectionToken] = useState<string>("");
   const [SetupType, setSetupType] = useState<string>("POS");
 
   const [isVerifying, setisVerifying] = useState<boolean>(false);
@@ -21,17 +22,19 @@ function Formtab() {
   const router = useRouter();
 
   const VerifyCredentials = () => {
-    if(NSUSRID.trim() !== "" && NSDVCID.trim() !== ""){
+    if(NSUSRID.trim() !== "" && NSDVCID.trim() !== "" && connectionToken.trim() !== ""){
         setisVerifying(true);
         InitialSetupDeviceVerificationRequest({
             userID: NSUSRID,
-            deviceID: NSDVCID
+            deviceID: NSDVCID,
+            connectionToken: connectionToken
         }).then((response) => {
             if(response.data.status){
                 dispatchnewalert(dispatch, "success", response.data.message);
                 localStorage.setItem("settings", JSON.stringify({
                     userID: NSUSRID,
                     deviceID: NSDVCID,
+                    connectionToken: connectionToken,
                     setup: SetupType
                 }));
                 dispatchclearalerts(dispatch);
@@ -83,7 +86,7 @@ function Formtab() {
                 maxHeight: "0px"
             }}
             animate={{
-                maxHeight: "600px"
+                maxHeight: "660px"
             }}
             transition={{
                 delay: 1,
@@ -111,6 +114,10 @@ function Formtab() {
                             <div className='flex flex-col w-full gap-[5px]'>
                                 <span className='text-[12px] font-Inter font-semibold'>Neon Service Device ID</span>
                                 <input placeholder='eg: USR_00000_0000000000' value={NSDVCID} onChange={(e) => { setNSDVCID(e.target.value) }} className='font-Inter bg-transparent border-[1px] h-[35px] pl-[10px] pr-[10px] outline-none text-[12px] w-full rounded-[4px]' />
+                            </div>
+                            <div className='flex flex-col w-full gap-[5px]'>
+                                <span className='text-[12px] font-Inter font-semibold'>Connection Token</span>
+                                <input placeholder='Input connection token of this device provided in Neon Remote' value={connectionToken} onChange={(e) => { setconnectionToken(e.target.value) }} className='font-Inter bg-transparent border-[1px] h-[35px] pl-[10px] pr-[10px] outline-none text-[12px] w-full rounded-[4px]' />
                             </div>
                             <div className='flex flex-col w-full gap-[5px]'>
                                 <span className='text-[12px] font-Inter font-semibold'>Setup Type</span>

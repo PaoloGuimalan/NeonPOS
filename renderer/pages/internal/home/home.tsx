@@ -5,16 +5,18 @@ import { AiOutlineLogout } from "react-icons/ai";
 import { MdAccountBox, MdAccountCircle, MdDashboard, MdInventory, MdLock, MdOutlineRestaurantMenu } from "react-icons/md";
 import Routes from './routes';
 import { routing } from '../../../utils/routesoptions';
-import { AlertsItem, AuthenticationInterface } from '../../../helpers/typings/interfaces';
+import { AlertsItem, AuthenticationInterface, SettingsInterface } from '../../../helpers/typings/interfaces';
 import { useDispatch, useSelector } from 'react-redux';
 import { SET_AUTHENTICATION } from '../../../helpers/redux/types/types';
 import { authenticationstate } from '../../../helpers/redux/types/states';
 import Alert from '../../../components/widgets/alert';
 import { dispatchclearalerts } from '../../../helpers/reusables/alertdispatching';
+import { CloseSSENotifications, SSENotificationsTRequest } from '../../../helpers/https/sse';
 
 function Home() {
 
   const authentication: AuthenticationInterface = useSelector((state: any) => state.authentication);
+  const settings: SettingsInterface = useSelector((state: any) => state.settings);
   const alerts: AlertsItem[] = useSelector((state: any) => state.alerts);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -28,6 +30,7 @@ function Home() {
   }, [authentication]);
 
   const LogoutProcess = () => {
+    CloseSSENotifications();
     dispatchclearalerts(dispatch);
     dispatch({
       type: SET_AUTHENTICATION,
@@ -51,6 +54,12 @@ function Home() {
       scrollDivAlerts.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
     }
   },[alerts, scrollDivAlerts]);
+
+  useEffect(() => {
+    if(settings){
+      SSENotificationsTRequest(dispatch, authentication, settings);
+    }
+  },[settings])
 
   return (
     authentication.auth && (
