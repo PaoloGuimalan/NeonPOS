@@ -22,5 +22,6 @@ export const authenticationstate : AuthenticationInterface = {
 export const settingsstate : SettingsInterface = {
     userID: "",
     deviceID: "",
-    setup: ""
+    setup: "",
+    connectionToken: ""
 }
