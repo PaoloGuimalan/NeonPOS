@@ -104,6 +104,10 @@ export interface InitialSetupDeviceVerificationRequestInterface {
     connectionToken: string;
 }
 
+export interface GetFilesListResponseNeonRemoteInterface{
+    token: string;
+}
+
 export interface SettingsInterface {
     userID: string;
     deviceID: string;

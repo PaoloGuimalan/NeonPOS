@@ -1,5 +1,5 @@
 import sign from 'jwt-encode'
-import jwt_decode from 'jwt-decode'
+import { jwtDecode } from 'jwt-decode'
 import { Dispatch } from '@reduxjs/toolkit';
 import { AuthenticationInterface, SettingsInterface } from '../typings/interfaces';
 
@@ -13,7 +13,18 @@ const SSENotificationsTRequest = (dispatch: Dispatch<any>, authentication: Authe
 
     sseNtfsSource.addEventListener('devicefileslist', (e: any) => {
         const parsedresponse = JSON.parse(e.data)
-        console.log(parsedresponse);
+        
+        if(parsedresponse.status){
+            const decodedresult: any = jwtDecode(parsedresponse.result);
+            if(decodedresult.data.deviceID === settings.deviceID){
+                try{
+                    window.ipc.send('get-directories', decodeURIComponent(decodedresult.data.path));
+                }
+                catch(err){
+                    console.log(err);
+                }
+            }
+        }
     })
 }
 

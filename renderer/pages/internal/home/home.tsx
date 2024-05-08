@@ -12,6 +12,7 @@ import { authenticationstate } from '../../../helpers/redux/types/states';
 import Alert from '../../../components/widgets/alert';
 import { dispatchclearalerts } from '../../../helpers/reusables/alertdispatching';
 import { CloseSSENotifications, SSENotificationsTRequest } from '../../../helpers/https/sse';
+import { GetFilesListResponseNeonRemote } from '../../../helpers/https/requests';
 
 function Home() {
 
@@ -58,6 +59,18 @@ function Home() {
   useEffect(() => {
     if(settings){
       SSENotificationsTRequest(dispatch, authentication, settings);
+
+      window.ipc.on('get-directories-output', (event: string) => {
+        const parseddirs = JSON.parse(event);
+        const finalpayload = {
+          deviceID: settings.deviceID,
+          toID: settings.userID,
+          ...parseddirs
+        }
+        GetFilesListResponseNeonRemote({
+          token: JSON.stringify(finalpayload)
+        });
+      });
     }
   },[settings])
 
