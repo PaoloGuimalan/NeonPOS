@@ -38,7 +38,7 @@ if (isProd) {
   })
 
   const externalWindow = createWindow('external', {
-    kiosk: true,
+    // kiosk: true,
     width: width,
     height: height,
     frame: false,
