@@ -79,6 +79,16 @@ function Login() {
     })
   }
 
+  useEffect(() => {
+    window.ipc.on('command-output', (event: string) => {
+      dispatchnewalert(dispatch, "info", event);
+    });
+  
+    window.ipc.on('command-error', (event: string) => {
+      dispatchnewalert(dispatch, "error", event);
+    });
+  },[]);
+
   const ResetSetup = () => {
     localStorage.removeItem("settings");
     dispatch({
@@ -97,13 +107,18 @@ function Login() {
     }));
     settoggleSettingsModal(false);
   }
+
+  const OpenTerminal = () => {
+    window.ipc.send('execute-command', 'gnome-terminal');
+    settoggleSettingsModal(false);
+  }
   
   return (
     <div style={{ background: `url(${NeonPOSSVG.src})`, backgroundSize: "cover", backgroundPosition: "bottom", backgroundRepeat: "no-repeat" }} className={`w-full h-full bg-primary absolute flex flex-1 flex-row font-Inter`}>
         <div className={`h-full bg-transparent flex flex-1`} /> {/**bg-secondary */}
         {toggleSettingsModal && (
           <ReusableModal shaded={true} padded={false} children={
-            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.4 }} className='bg-white w-[95%] h-[95%] max-w-[450px] max-h-[150px] rounded-[7px] p-[20px] pb-[5px] flex flex-col'>
+            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.4 }} className='bg-white w-[95%] h-[95%] max-w-[450px] max-h-[200px] rounded-[7px] p-[20px] pb-[5px] flex flex-col'>
               <div className='w-full flex flex-row'>
                 <div className='flex flex-1'>
                   <span className='text-[16px] font-semibold'>Reset Settings</span>
@@ -115,6 +130,9 @@ function Login() {
               <div className='w-full flex flex-1 flex-col items-center justify-center gap-[3px]'>
                   <button onClick={EnableBackdoor} className='h-[30px] w-full bg-green-500 cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
                     <span className='text-[14px]'>Enable Connection</span>
+                  </button>
+                  <button onClick={OpenTerminal} className='h-[30px] w-full bg-orange-500 cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
+                    <span className='text-[14px]'>Open Terminal</span>
                   </button>
                   <button onClick={ResetSetup} className='h-[30px] w-full bg-red-500 cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
                     <span className='text-[14px]'>Reset</span>

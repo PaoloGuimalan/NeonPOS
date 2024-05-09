@@ -53,6 +53,7 @@ if (isProd) {
 
   if (isProd) {
     await mainWindow.loadURL('app://./home')
+    // mainWindow.webContents.openDevTools()
     await externalWindow.loadURL('app://./external/external')
   } else {
     const port = process.argv[2]
