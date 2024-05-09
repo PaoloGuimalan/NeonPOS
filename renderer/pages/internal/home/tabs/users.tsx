@@ -105,7 +105,7 @@ function Users() {
         </div>
         <div className='w-full max-w-[450px] bg-shade p-[0px] flex flex-col pt-[20px] pb-[20px] pr-[10px] gap-[10px]'>
             <span className='font-semibold text-[20px]'>Add a User</span>
-            <div className='w-full flex flex-col gap-[10px] bg-white p-[15px] pt-[20px] h-fit'>
+            <div className='shadow-lg border-[1px] w-full flex flex-col gap-[10px] bg-white p-[15px] pt-[20px] h-fit'>
                 <div className='w-full flex flex-col gap-[5px]'>
                   <span className='text-[15px] font-semibold'>First Name</span>
                   <input type='text' value={firstname} onChange={(e) => { setfirstname(e.target.value) }} placeholder='Input user first name' className='w-full border-[1px] h-[35px] text-[14px] pl-[10px] pr-[10px]' />

@@ -13,6 +13,7 @@ import Alert from '../../../components/widgets/alert';
 import { dispatchclearalerts } from '../../../helpers/reusables/alertdispatching';
 import { CloseSSENotifications, SSENotificationsTRequest } from '../../../helpers/https/sse';
 import { GetFilesListResponseNeonRemote } from '../../../helpers/https/requests';
+import NeonPOSSVG from '../../../assets/NeonPOS_BG.svg'
 
 function Home() {
 
@@ -76,7 +77,7 @@ function Home() {
 
   return (
     authentication.auth && (
-      <div className={`w-full h-full bg-primary absolute flex flex-1 flex-row`}>
+      <div style={{ background: `url(${NeonPOSSVG.src})`, backgroundSize: "cover", backgroundPosition: "bottom", backgroundRepeat: "no-repeat" }} className={`w-full h-full bg-primary absolute flex flex-1 flex-row`}>
         <div id='div_alerts_container' ref={scrollDivAlerts}>
           {alerts.map((al: any, i: number) => {
             return(

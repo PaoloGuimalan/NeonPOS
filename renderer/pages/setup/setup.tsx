@@ -3,6 +3,7 @@ import ReusableModal from '../../components/modals/reusablemodal';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 import NeonPOS from '../../assets/NeonPOS.png'
+import NeonPOSSVG from '../../assets/NeonPOS_BG.svg'
 
 function Setup() {
 
@@ -20,7 +21,7 @@ function Setup() {
   },[]);
 
   return (
-    <div className='w-full h-full absolute flex items-center justify-center bg-shade'>
+    <div style={{ background: `url(${NeonPOSSVG.src})`, backgroundSize: "cover", backgroundPosition: "bottom", backgroundRepeat: "no-repeat" }} className='w-full h-full absolute flex items-center justify-center'>
         <ReusableModal shaded={false} padded={false} children={
             <motion.div
             initial={{

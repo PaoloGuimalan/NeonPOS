@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import ReusableModal from '../../../components/modals/reusablemodal'
 import { motion } from 'framer-motion'
 import NeonPOS from '../../../assets/NeonPOS.png'
+import NeonPOSSVG from '../../../assets/NeonPOS_BG.svg'
 import { AlertsItem } from '../../../helpers/typings/interfaces';
 import { useDispatch, useSelector } from 'react-redux';
 import Alert from '../../../components/widgets/alert';
@@ -72,7 +73,7 @@ function Formtab() {
   },[alerts, scrollDivAlerts]);
 
   return (
-    <div className='w-full h-full absolute flex items-center bg-shade'>
+    <div style={{ background: `url(${NeonPOSSVG.src})`, backgroundSize: "cover", backgroundPosition: "bottom", backgroundRepeat: "no-repeat" }} className='w-full h-full absolute flex items-center'>
         <div id='div_alerts_container' ref={scrollDivAlerts}>
             {alerts.map((al: any, i: number) => {
             return(
@@ -92,7 +93,7 @@ function Formtab() {
                 delay: 1,
                 duration: 1
             }}
-            className='bg-white w-[95%] h-[95%] max-w-[700px] shadow-md rounded-[10px] overflow-y-hidden'>
+            className='border-[1px] bg-white w-[95%] h-[95%] max-w-[700px] shadow-md rounded-[10px] overflow-y-hidden'>
                 <div className='w-full h-full p-[25px] flex flex-col gap-[10px]'>
                     <div className='w-full flex flex-row'>
                         <img src={NeonPOS.src} className='h-[60px]' />

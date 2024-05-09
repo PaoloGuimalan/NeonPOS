@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { FcAssistant, FcUnlock } from 'react-icons/fc'
 import NeonPOS from '../../../assets/NeonPOS.png'
+import NeonPOSSVG from '../../../assets/NeonPOS_BG.svg'
 import { LoginRequest } from '../../../helpers/https/requests';
 import { useDispatch, useSelector } from 'react-redux';
 import { SET_AUTHENTICATION, SET_SETTINGS } from '../../../helpers/redux/types/types';
@@ -90,8 +91,8 @@ function Login() {
   }
   
   return (
-    <div className={`w-full h-full bg-primary absolute flex flex-1 flex-row font-Inter`}>
-        <div className={`h-full bg-secondary flex flex-1`} />
+    <div style={{ background: `url(${NeonPOSSVG.src})`, backgroundSize: "cover", backgroundPosition: "bottom", backgroundRepeat: "no-repeat" }} className={`w-full h-full bg-primary absolute flex flex-1 flex-row font-Inter`}>
+        <div className={`h-full bg-transparent flex flex-1`} /> {/**bg-secondary */}
         {toggleSettingsModal && (
           <ReusableModal shaded={true} padded={false} children={
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.4 }} className='bg-white w-[95%] h-[95%] max-w-[400px] max-h-[110px] rounded-[7px] p-[20px] pb-[5px] flex flex-col'>
@@ -111,11 +112,11 @@ function Login() {
             </motion.div>
           } />
         )}
-        <div className='h-full bg-secondary flex flex-1 justify-center items-center max-w-[600px] p-[20px]'>
+        <div className='h-full bg-transparent flex flex-1 justify-center items-center max-w-[600px] p-[20px]'>
           <button onClick={() => { settoggleSettingsModal(!toggleSettingsModal) }} className='absolute bottom-[10px] left-[10px] p-[10px] rounded-[7px]'>
             <MdSettings className='text-accent-tertiary' style={{ fontSize: "25px" }} />
           </button>
-          <div className='bg-primary w-full max-w-[500px] h-full max-h-[700px] flex flex-col gap-[15px] justify-center items-center rounded-[10px] shadow-md p-[10px]'>
+          <div className='bg-primary shadow-lg border-[1px] w-full max-w-[500px] h-full max-h-[700px] flex flex-col gap-[15px] justify-center items-center rounded-[10px] shadow-md p-[10px]'>
             <div className='w-full max-w-[370px] flex flex-col gap-[50px] items-center justify-start pb-[10px]'>
                 <img src={NeonPOS.src} className='h-[100px]' />
                 <span className='text-[20px] font-semibold text-accent-secondary'>Login</span>

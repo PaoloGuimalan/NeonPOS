@@ -114,3 +114,10 @@ export interface SettingsInterface {
     connectionToken: string;
     setup: string;
 }
+
+export interface InvoiceInterface {
+    cartlist: CartItemInterface[];
+    total: number;
+    amountreceived: number;
+    change: number;
+}

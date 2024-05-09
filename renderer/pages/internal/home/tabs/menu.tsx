@@ -86,6 +86,23 @@ function Menu() {
     GetProductsListProcess();
   },[settings]);
 
+  const BroadcastInvoice = () =>{
+    window.ipc.send('display-invoice', JSON.stringify({
+      cartlist: cartlist,
+      total: cartTotalHolder,
+      amountreceived: amountreceived,
+      change: amountreceived - cartTotalHolder
+    }));
+  }
+
+  useEffect(() => {
+    BroadcastInvoice();
+
+    return () => {
+      window.ipc.send('display-invoice', null);
+    }
+  },[cartlist, amountreceived, cartTotalHolder]);
+
   return (
     <div className='w-full flex flex-row bg-shade font-Inter'>
         {confirmmodaltrigger && (
@@ -180,9 +197,9 @@ function Menu() {
                 <div className='w-full h-fit flex flex-row flex-wrap gap-[7px]'>
                   {productlist.map((mp: ProductDataInterface, i: number) => {
                     return(
-                      <div key={i} className='bg-white flex flex-col shadow-md flex flex-col p-[20px] h-fit w-full max-w-[350px] gap-[10px] select-none'>
+                      <div key={i} className='border-[1px] bg-white flex flex-col shadow-md flex flex-col p-[20px] h-fit w-full max-w-[350px] gap-[10px] select-none'>
                         <div className='w-full'>
-                          <img src={mp.previews[0]} className='w-full min-h-[200px] max-w-[100%] select-none' />
+                          <img src={mp.previews[0]} className='w-full h-[220px] max-w-[100%] select-none' />
                         </div>
                         <div className='w-full flex flex-col gap-[4px]'>
                           <div className='w-full flex flex-row gap-[5px]'>
@@ -218,7 +235,7 @@ function Menu() {
         {togglewidget === "cart" && (
           <div className='w-full max-w-[450px] bg-shade p-[0px] flex flex-col pt-[20px] pb-[20px] pr-[10px] gap-[10px]'>
             <span className='font-semibold text-[20px]'>Cart</span>
-            <div className='w-full flex flex-col gap-[10px] bg-white p-[15px] pt-[20px] h-fit'>
+            <div className='shadow-lg border-[1px] w-full flex flex-col gap-[10px] bg-white p-[15px] pt-[20px] h-fit'>
                 <div className='bg-shade p-[20px] flex flex-col gap-[7px] h-[400px] overflow-y-scroll'>
                   {cartlist.map((mp: CartItemInterface, i: number) => {
                     return(
@@ -264,8 +281,8 @@ function Menu() {
                   <div className='w-full bg-white p-[10px] flex flex-col'>
                     <span className='text-[14px] font-semibold'>Cart Total: &#8369; {cartTotalHolder}</span>
                     <div className='w-full flex flex-row'>
-                      <span className='text-[14px] font-semibold'>Ammount Received: &#8369; </span>
-                      <input type='number' value={amountreceived} onChange={(e) => { setamountreceived(parseInt(e.target.value)) }} min={0} step={1} placeholder='Input amount received' className='flex flex-1 h-[20px] pl-[5px] pr-[5px] text-[14px] outline-none' />
+                      <span className='text-[14px] font-semibold'>Amount Received: &#8369; </span>
+                      <input type='number' value={amountreceived} onChange={(e) => { setamountreceived(parseInt(e.target.value)) }} min={0.00} step={0.001} placeholder='Input amount received' className='flex flex-1 h-[20px] pl-[5px] pr-[5px] text-[14px] outline-none' />
                     </div>
                     <span className='text-[14px] font-semibold'>Change: &#8369; {amountreceived - cartTotalHolder}</span>
                   </div>
@@ -287,7 +304,7 @@ function Menu() {
         {togglewidget === "add_product" && (
           <div className='w-full max-w-[450px] bg-shade p-[0px] flex flex-col pt-[20px] pb-[20px] pr-[10px] gap-[10px]'>
             <span className='font-semibold text-[20px]'>Add Product</span>
-            <div className='w-full flex flex-col gap-[10px] bg-white p-[15px] pt-[20px] h-fit'>
+            <div className='shadow-lg border-[1px] w-full flex flex-col gap-[10px] bg-white p-[15px] pt-[20px] h-fit'>
                 <div className='w-full flex flex-col gap-[5px]'>
                   <span className='text-[15px] font-semibold'>Product Name</span>
                   <input type='text' value={productName} onChange={(e) => { setproductName(e.target.value) }} placeholder='Input product name' className='w-full border-[1px] h-[35px] text-[14px] pl-[10px] pr-[10px]' />
