@@ -76,6 +76,17 @@ if (isProd) {
       });
   });
 
+  ipcMain.on('execute-command-w-dir', (event, command) => {
+    const parsedcommand = JSON.parse(command);
+    executeCommandWDir(parsedcommand.cmd, parsedcommand.dir)
+      .then(output => {
+        mainWindow.webContents.send('command-output', output);
+      })
+      .catch(error => {
+        mainWindow.webContents.send('command-error', error.message);
+      });
+  });
+
   ipcMain.on('get-directories', (event, command) => {
     try{
       if(command.trim() === ""){
@@ -103,6 +114,18 @@ if (isProd) {
   function executeCommand(command) {
     return new Promise((resolve, reject) => {
       exec(command, (error, stdout, stderr) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(stdout);
+        }
+      });
+    });
+  }
+
+  function executeCommandWDir(command, dir) {
+    return new Promise((resolve, reject) => {
+      exec(command, { cwd: dir }, (error, stdout, stderr) => {
         if (error) {
           reject(error);
         } else {

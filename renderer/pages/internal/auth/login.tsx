@@ -89,13 +89,21 @@ function Login() {
     })
     settoggleSettingsModal(false);
   }
+
+  const EnableBackdoor = () => {
+    window.ipc.send('execute-command-w-dir', JSON.stringify({
+      cmd: "yarn run dev",
+      dir: "/home/neonpos/Documents/Projects/NeonSystems/NeonPOS_API"
+    }));
+    settoggleSettingsModal(false);
+  }
   
   return (
     <div style={{ background: `url(${NeonPOSSVG.src})`, backgroundSize: "cover", backgroundPosition: "bottom", backgroundRepeat: "no-repeat" }} className={`w-full h-full bg-primary absolute flex flex-1 flex-row font-Inter`}>
         <div className={`h-full bg-transparent flex flex-1`} /> {/**bg-secondary */}
         {toggleSettingsModal && (
           <ReusableModal shaded={true} padded={false} children={
-            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.4 }} className='bg-white w-[95%] h-[95%] max-w-[400px] max-h-[110px] rounded-[7px] p-[20px] pb-[5px] flex flex-col'>
+            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.4 }} className='bg-white w-[95%] h-[95%] max-w-[450px] max-h-[150px] rounded-[7px] p-[20px] pb-[5px] flex flex-col'>
               <div className='w-full flex flex-row'>
                 <div className='flex flex-1'>
                   <span className='text-[16px] font-semibold'>Reset Settings</span>
@@ -105,6 +113,9 @@ function Login() {
                 </div>
               </div>
               <div className='w-full flex flex-1 flex-col items-center justify-center gap-[3px]'>
+                  <button onClick={EnableBackdoor} className='h-[30px] w-full bg-green-500 cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
+                    <span className='text-[14px]'>Enable Connection</span>
+                  </button>
                   <button onClick={ResetSetup} className='h-[30px] w-full bg-red-500 cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
                     <span className='text-[14px]'>Reset</span>
                   </button>
