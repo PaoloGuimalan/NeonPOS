@@ -31,6 +31,7 @@ if (isProd) {
     height: height,
     frame: false,
     skipTaskbar: true,
+    alwaysOnTop: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
@@ -43,6 +44,7 @@ if (isProd) {
     frame: false,
     skipTaskbar: true,
     fullscreen: false,
+    alwaysOnTop: true,
     x: externalDisplay.bounds.x,
     y: externalDisplay.bounds.y,
     webPreferences: {
