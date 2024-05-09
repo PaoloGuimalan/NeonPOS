@@ -103,7 +103,7 @@ function Login() {
   const EnableBackdoor = () => {
     window.ipc.send('execute-command-w-dir', JSON.stringify({
       cmd: "yarn run dev",
-      dir: "/Documents/Projects/NeonSystems/NeonPOS_API"
+      dir: "/home/neonpos/Documents/Projects/NeonSystems/NeonPOS_API"
     }));
     settoggleSettingsModal(false);
   }
