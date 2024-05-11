@@ -1,5 +1,5 @@
 [Desktop Entry]
 Name=NeonOS
 Comment=Neon POS powered by Neon Service
-Exec=/home/neonpos/Documents/Projects/NeonSystems/NeonPOS/dist/linux-unpacked/neon-os
+Exec=/bin/bash -c '/home/neonpos/Documents/Projects/NeonSystems/NeonPOS_API/exec.sh'
 Type=Application
