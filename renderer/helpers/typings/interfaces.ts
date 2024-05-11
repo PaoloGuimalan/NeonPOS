@@ -88,6 +88,7 @@ export interface ProductDataInterface {
 }
 
 export interface CartItemInterface {
+    pendingID: number;
     product: ProductDataInterface;
     quantity: number;
 }

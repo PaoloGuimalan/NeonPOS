@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { GetUsersRequest, RegisterAccountRequest } from '../../../../helpers/https/requests';
 import { AuthenticationInterface, SettingsInterface, UserAccountInterface } from '../../../../helpers/typings/interfaces';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { dispatchnewalert } from '../../../../helpers/reusables/alertdispatching';
 
 function Users() {
 
   const authentication: AuthenticationInterface = useSelector((state: any) => state.authentication);
   const settings: SettingsInterface = useSelector((state: any) => state.settings);
+
+  const dispatch = useDispatch();
 
   const [userslist, setuserslist] = useState<UserAccountInterface[]>([]);
 
@@ -40,7 +43,7 @@ function Users() {
   }
 
   const RegisterAccountProcess = () => {
-    if((password === confirmpassword) && password.trim() !== ""){
+    if((password === confirmpassword) && password.trim() !== "" && authentication.user.permissions.includes("add_new_user")){
       if(firstname.trim() !== "" && lastname.trim() !== "" && accountType !== "--Select Type--"){
         RegisterAccountRequest({
           firstname: firstname,
@@ -60,6 +63,12 @@ function Users() {
           console.log(err);
         })
       }
+      else{
+        dispatchnewalert(dispatch, "warning", "Please complete the fields");
+      }
+    }
+    else{
+      dispatchnewalert(dispatch, "warning", "Please ensure of completing the fields or having permission");
     }
   }
 
@@ -89,12 +98,16 @@ function Users() {
                             </div>
                           </div>
                           <div className='flex flex-row justify-end gap-[4px]'>
-                            <button className='text-[14px] w-fit bg-orange-500 text-white flex p-[5px] pl-[8px] pr-[8px] rounded-[4px]'>
-                              <span>Disable</span>
-                            </button>
-                            <button className='text-[14px] w-fit bg-red-500 text-white flex p-[5px] pl-[8px] pr-[8px] rounded-[4px]'>
-                              <span>Remove</span>
-                            </button>
+                            {authentication.user.permissions.includes("disable_user") && (
+                              <button className='text-[14px] w-fit bg-orange-500 text-white flex p-[5px] pl-[8px] pr-[8px] rounded-[4px]'>
+                                <span>Disable</span>
+                              </button>
+                            )}
+                            {authentication.user.permissions.includes("delete_user") && (
+                              <button className='text-[14px] w-fit bg-red-500 text-white flex p-[5px] pl-[8px] pr-[8px] rounded-[4px]'>
+                                <span>Remove</span>
+                              </button>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -103,45 +116,47 @@ function Users() {
                 </div>
             </div>
         </div>
-        <div className='w-full max-w-[450px] bg-shade p-[0px] flex flex-col pt-[20px] pb-[20px] pr-[10px] gap-[10px]'>
+        {authentication.user.permissions.includes("add_new_user") && (
+          <div className='w-full max-w-[450px] bg-shade p-[0px] flex flex-col pt-[20px] pb-[20px] pr-[10px] gap-[10px]'>
             <span className='font-semibold text-[20px]'>Add a User</span>
-            <div className='shadow-lg border-[1px] w-full flex flex-col gap-[10px] bg-white p-[15px] pt-[20px] h-fit'>
-                <div className='w-full flex flex-col gap-[5px]'>
-                  <span className='text-[15px] font-semibold'>First Name</span>
-                  <input type='text' value={firstname} onChange={(e) => { setfirstname(e.target.value) }} placeholder='Input user first name' className='w-full border-[1px] h-[35px] text-[14px] pl-[10px] pr-[10px]' />
-                  <span className='text-[15px] font-semibold'>Middle Name</span>
-                  <input type='text' value={middlename} onChange={(e) => { setmiddlename(e.target.value) }} placeholder='Input user middle name (optional)' className='w-full border-[1px] h-[35px] text-[14px] pl-[10px] pr-[10px]' />
-                  <span className='text-[15px] font-semibold'>Last Name</span>
-                  <input type='text' value={lastname} onChange={(e) => { setlastname(e.target.value) }} placeholder='Input user last name' className='w-full border-[1px] h-[35px] text-[14px] pl-[10px] pr-[10px]' />
-                </div>
-                <div className='w-full flex flex-col gap-[5px]'>
-                  <span className='text-[15px] font-semibold'>Account Type</span>
-                  <div className='w-full flex flex-row gap-[5px]'>
-                    <select value={accountType} onChange={(e) => { setaccountType(e.target.value) }} className='w-full border-[1px] h-[35px] text-[14px] pl-[10px] pr-[10px]' >
-                      <option value={null}>--Select Type--</option>
-                      <option value="Admin">Admin</option>
-                      <option value="Manager">Manager</option>
-                      <option value="Cashier">Cashier</option>
-                      <option value="Waiter">Waiter</option>
-                    </select>
+              <div className='shadow-lg border-[1px] w-full flex flex-col gap-[10px] bg-white p-[15px] pt-[20px] h-fit'>
+                  <div className='w-full flex flex-col gap-[5px]'>
+                    <span className='text-[15px] font-semibold'>First Name</span>
+                    <input type='text' value={firstname} onChange={(e) => { setfirstname(e.target.value) }} placeholder='Input user first name' className='w-full border-[1px] h-[35px] text-[14px] pl-[10px] pr-[10px]' />
+                    <span className='text-[15px] font-semibold'>Middle Name</span>
+                    <input type='text' value={middlename} onChange={(e) => { setmiddlename(e.target.value) }} placeholder='Input user middle name (optional)' className='w-full border-[1px] h-[35px] text-[14px] pl-[10px] pr-[10px]' />
+                    <span className='text-[15px] font-semibold'>Last Name</span>
+                    <input type='text' value={lastname} onChange={(e) => { setlastname(e.target.value) }} placeholder='Input user last name' className='w-full border-[1px] h-[35px] text-[14px] pl-[10px] pr-[10px]' />
                   </div>
-                </div>
-                <div className='w-full flex flex-col gap-[5px]'>
-                  <span className='text-[15px] font-semibold'>Password</span>
-                  <input type='password' value={password} onChange={(e) => { setpassword(e.target.value) }} placeholder='Input desired password' className='w-full border-[1px] h-[35px] text-[14px] pl-[10px] pr-[10px]' />
-                  <span className='text-[15px] font-semibold'>Confirm Password</span>
-                  <input type='password' value={confirmpassword} onChange={(e) => { setconfirmpassword(e.target.value) }} placeholder='Input desired password' className='w-full border-[1px] h-[35px] text-[14px] pl-[10px] pr-[10px]' />
-                </div>
-                <div className='w-full h-fit flex flex-col gap-[5px] pt-[10px]'>
-                  <button onClick={RegisterAccountProcess} className='h-[30px] bg-accent-tertiary cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
-                    <span className='text-[14px]'>Add</span>
-                  </button>
-                  <button onClick={ClearFields} className='h-[30px] bg-red-500 cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
-                    <span className='text-[14px]'>Clear</span>
-                  </button>
-                </div>
-            </div>
-        </div>
+                  <div className='w-full flex flex-col gap-[5px]'>
+                    <span className='text-[15px] font-semibold'>Account Type</span>
+                    <div className='w-full flex flex-row gap-[5px]'>
+                      <select value={accountType} onChange={(e) => { setaccountType(e.target.value) }} className='w-full border-[1px] h-[35px] text-[14px] pl-[10px] pr-[10px]' >
+                        <option value={null}>--Select Type--</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Manager">Manager</option>
+                        <option value="Cashier">Cashier</option>
+                        <option value="Waiter">Waiter</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className='w-full flex flex-col gap-[5px]'>
+                    <span className='text-[15px] font-semibold'>Password</span>
+                    <input type='password' value={password} onChange={(e) => { setpassword(e.target.value) }} placeholder='Input desired password' className='w-full border-[1px] h-[35px] text-[14px] pl-[10px] pr-[10px]' />
+                    <span className='text-[15px] font-semibold'>Confirm Password</span>
+                    <input type='password' value={confirmpassword} onChange={(e) => { setconfirmpassword(e.target.value) }} placeholder='Input desired password' className='w-full border-[1px] h-[35px] text-[14px] pl-[10px] pr-[10px]' />
+                  </div>
+                  <div className='w-full h-fit flex flex-col gap-[5px] pt-[10px]'>
+                    <button onClick={RegisterAccountProcess} className='h-[30px] bg-accent-tertiary cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
+                      <span className='text-[14px]'>Add</span>
+                    </button>
+                    <button onClick={ClearFields} className='h-[30px] bg-red-500 cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
+                      <span className='text-[14px]'>Clear</span>
+                    </button>
+                  </div>
+              </div>
+          </div>
+        )}
     </div>
   )
 }

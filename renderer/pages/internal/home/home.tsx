@@ -26,6 +26,10 @@ function Home() {
   const [currenttab, setcurrenttab] = useState<string>("");
 
   useEffect(() => {
+    dispatchclearalerts(dispatch);
+  },[]);
+
+  useEffect(() => {
     if(!authentication.auth){
       router.push("/home");
     }
