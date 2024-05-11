@@ -55,6 +55,11 @@ export default function HomePage() {
     const settingsstorage = localStorage.getItem("settings");
 
     if(settingsstorage){
+      if(!isSettingsDone){
+        if(JSON.parse(settingsstorage).setup === "POS"){
+          window.ipc.send("enable-external", JSON.parse(settingsstorage).setup);
+        }
+      }
       setisSettingsDone(true);
     }
     else{

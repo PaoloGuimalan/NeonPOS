@@ -98,6 +98,7 @@ function Login() {
       }
     })
     settoggleSettingsModal(false);
+    window.ipc.send("close-external", "");
   }
 
   // const EnableBackdoor = () => {
