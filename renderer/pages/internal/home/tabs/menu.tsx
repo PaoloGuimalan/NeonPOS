@@ -1,13 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { IoCartSharp } from 'react-icons/io5';
 import { MdAddToPhotos, MdClose } from 'react-icons/md';
-import { AuthenticationInterface, CartItemInterface, ProductDataInterface, SettingsInterface } from '../../../../helpers/typings/interfaces';
+import { AuthenticationInterface, CartItemInterface, ProductDataInterface, ReceiptHolderInterface, SettingsInterface } from '../../../../helpers/typings/interfaces';
 import { useDispatch, useSelector } from 'react-redux';
 import { AddProductRequest, CreateOrderRequest, GetProductsListRequest, LoginRequest } from '../../../../helpers/https/requests';
 import ReusableModal from '../../../../components/modals/reusablemodal';
 import { motion } from 'framer-motion';
 import { dispatchnewalert } from '../../../../helpers/reusables/alertdispatching';
 import { arrayMax } from '../../../../helpers/reusables/numbersorters';
+import { dateGetter, timeGetter } from '../../../../helpers/reusables/generatefns';
 
 function Menu() {
 
@@ -107,8 +108,21 @@ function Menu() {
     }).then((response) => {
       if(response.data.status){
         dispatchnewalert(dispatch, "success", "Order has been saved");
-        ClearCartFields();
+        const printTemplateData: ReceiptHolderInterface = {
+          cashier: authentication.user.accountName.firstname,
+          orderID: response.data.result.orderID,
+          deviceID: settings.deviceID,
+          date: dateGetter(),
+          time: timeGetter(),
+          cartlist: cartlist,
+          total: cartTotalHolder.toString(),
+          amount: amountreceived.toString(),
+          change: (amountreceived - cartTotalHolder).toString(),
+        }
+
+        window.ipc.send("ready-print", JSON.stringify(printTemplateData));
         setconfirmmodaltrigger(false);
+        ClearCartFields();
       }
       else{
         dispatchnewalert(dispatch, "warning", response.data.message);

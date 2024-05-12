@@ -10,6 +10,15 @@
   }
 }
 
+@page {
+  /* prevents electron's additional margins around sheet-content (the first printedPage of: the html already sized 8.5x22) */
+  margin-top: 0cm;
+  margin-left: 0cm;
+  margin-right: 0cm;
+  /* prevents electron from printing a blank page between each sheet (the first and second printedPages of the tall html) */
+  margin-bottom: -.5cm;
+}
+
 @layer components {
   .btn-blue {
     @apply text-white font-bold px-4 py-2 rounded bg-blue-600 hover:bg-blue-500;

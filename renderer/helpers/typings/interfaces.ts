@@ -133,3 +133,15 @@ export interface CreateOrderRequestInterface {
         deviceID: string
     }
 }
+
+export interface ReceiptHolderInterface {
+    cashier: string;
+    orderID: string;
+    deviceID: string;
+    date: string;
+    time: string;
+    cartlist: CartItemInterface[];
+    total: string;
+    amount: string;
+    change: string;
+}

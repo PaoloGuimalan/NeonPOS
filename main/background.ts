@@ -37,7 +37,8 @@ if (isProd) {
     },
   })
 
-  var externalWindow = null;
+  var externalWindow: Electron.BrowserWindow = null;
+  var receiptWindow: Electron.BrowserWindow = null;
 
   if (isProd) {
     await mainWindow.loadURL('app://./home')
@@ -52,6 +53,23 @@ if (isProd) {
 
   ipcMain.on('enable-external', async (event, command) => {
     if(!externalWindow){
+      receiptWindow = createWindow('receipt', {
+        // kiosk: true,
+        width: 300,
+        height: 0,
+        frame: false,
+        skipTaskbar: true,
+        fullscreen: false,
+        x: 0,
+        y: height + 30,
+        resizable: false,
+        // alwaysOnTop: true,
+        webPreferences: {
+          preload: path.join(__dirname, 'preload.js'),
+          nodeIntegration: true,
+        },
+      })
+
       externalWindow = createWindow('external', {
         // kiosk: true,
         width: width,
@@ -71,18 +89,38 @@ if (isProd) {
       if (isProd) {
         // mainWindow.webContents.openDevTools()
         await externalWindow.loadURL('app://./external/external')
+        await receiptWindow.loadURL('app://./external/receipt')
       } else {
         const port = process.argv[2]
         await externalWindow.loadURL(`http://localhost:${port}/external/external`)
+        await receiptWindow.loadURL(`http://localhost:${port}/external/receipt`)
         // mainWindow.webContents.openDevTools()
       }
     }
   })
 
+  ipcMain.on('ready-print', async (event, command) => {
+    if(receiptWindow){
+      receiptWindow.webContents.send('receipt-output', command);
+    }
+  })
+
+  ipcMain.on('print-receipt', async (event, command) => {
+    if(receiptWindow){
+      console.log("Printing");
+      receiptWindow.webContents.print({});
+    }
+  });
+
   ipcMain.on('close-external', async (event, command) => {
     if(externalWindow){
       externalWindow.close();
       externalWindow = null;
+    }
+
+    if(receiptWindow){
+      receiptWindow.close();
+      receiptWindow = null;
     }
   });
 
