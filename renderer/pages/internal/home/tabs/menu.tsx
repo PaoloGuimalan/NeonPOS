@@ -3,7 +3,7 @@ import { IoCartSharp } from 'react-icons/io5';
 import { MdAddToPhotos, MdClose } from 'react-icons/md';
 import { AuthenticationInterface, CartItemInterface, ProductDataInterface, SettingsInterface } from '../../../../helpers/typings/interfaces';
 import { useDispatch, useSelector } from 'react-redux';
-import { AddProductRequest, GetProductsListRequest } from '../../../../helpers/https/requests';
+import { AddProductRequest, CreateOrderRequest, GetProductsListRequest, LoginRequest } from '../../../../helpers/https/requests';
 import ReusableModal from '../../../../components/modals/reusablemodal';
 import { motion } from 'framer-motion';
 import { dispatchnewalert } from '../../../../helpers/reusables/alertdispatching';
@@ -37,6 +37,12 @@ function Menu() {
     setproductPrice(0);
     setproductQuantity(0);
     setcategory("");
+  }
+
+  const ClearCartFields = () => {
+    setcartlist([]);
+    setamountreceived(0);
+    setpasscode("");
   }
 
   const GetProductsListProcess = () => {
@@ -88,8 +94,52 @@ function Menu() {
     }
   }
 
+  const SubmitOrder = () => {
+    CreateOrderRequest({
+      orderSet: cartlist,
+      totalAmount: cartTotalHolder,
+      receivedAmount: amountreceived,
+      orderMadeBy: {
+          accountID: authentication.user.accountID,
+          userID: settings.userID,
+          deviceID: settings.deviceID
+      }
+    }).then((response) => {
+      if(response.data.status){
+        dispatchnewalert(dispatch, "success", "Order has been saved");
+        ClearCartFields();
+        setconfirmmodaltrigger(false);
+      }
+      else{
+        dispatchnewalert(dispatch, "warning", response.data.message);
+      }
+    }).catch((err) => {
+      dispatchnewalert(dispatch, "error", "Error creating order");
+    })
+  }
+
   const FinalizeOrder = () => {
-    console.log(passcode);
+    // console.log(passcode);
+    if(passcode.trim() !== ""){
+      LoginRequest({
+        accountID: authentication.user.accountID,
+        password: passcode,
+        userID: settings.userID
+      }).then((response) => {
+        if(response.data.status){
+          dispatchnewalert(dispatch, "success", "Passcode verified");
+          SubmitOrder();
+        }
+        else{
+          dispatchnewalert(dispatch, "warning", "Incorrect passcode");
+        }
+      }).catch((err) => {
+        dispatchnewalert(dispatch, "error", "Failed to verify passcode");
+      })
+    }
+    else{
+      dispatchnewalert(dispatch, "warning", "Please provide your passcode");
+    }
   }
 
   useEffect(() => {

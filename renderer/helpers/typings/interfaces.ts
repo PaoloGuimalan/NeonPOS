@@ -122,3 +122,14 @@ export interface InvoiceInterface {
     amountreceived: number;
     change: number;
 }
+
+export interface CreateOrderRequestInterface {
+    orderSet: CartItemInterface[];
+    totalAmount: number,
+    receivedAmount: number,
+    orderMadeBy: {
+        accountID: string,
+        userID: string,
+        deviceID: string
+    }
+}
