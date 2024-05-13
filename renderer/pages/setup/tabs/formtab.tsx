@@ -38,6 +38,7 @@ function Formtab() {
                     connectionToken: connectionToken,
                     setup: SetupType
                 }));
+                window.ipc.send("setup-type-reload", SetupType);
                 dispatchclearalerts(dispatch);
                 router.push("/home");
             }

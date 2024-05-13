@@ -42,16 +42,79 @@ if (isProd) {
 
   if (isProd) {
     await mainWindow.loadURL('app://./home')
+    mainWindow.webContents
+    .executeJavaScript('localStorage.getItem("settings");', true)
+    .then(result => {
+      const ls = JSON.parse(result);
+      if(ls){
+        if(ls.setup === "Portable"){
+          mainWindow.setSkipTaskbar(false);
+          mainWindow.setAlwaysOnTop(false);
+        }
+        else if(ls.setup === "POS"){
+          mainWindow.setSkipTaskbar(true);
+          mainWindow.setAlwaysOnTop(true);
+        }
+      }
+    });
     // mainWindow.webContents.openDevTools()
     // await externalWindow.loadURL('app://./external/external')
   } else {
     const port = process.argv[2]
     await mainWindow.loadURL(`http://localhost:${port}/home`)
+    mainWindow.webContents
+    .executeJavaScript('localStorage.getItem("settings");', true)
+    .then(result => {
+      const ls = JSON.parse(result);
+      if(ls){
+        if(ls.setup === "Portable"){
+          mainWindow.setSkipTaskbar(false);
+          mainWindow.setAlwaysOnTop(false);
+        }
+        else if(ls.setup === "POS"){
+          mainWindow.setSkipTaskbar(true);
+          mainWindow.setAlwaysOnTop(true);
+        }
+      }
+    });
     // await externalWindow.loadURL(`http://localhost:${port}/external/external`)
     // mainWindow.webContents.openDevTools()
   }
 
+  ipcMain.on("setup-type-reload", async (event, command) => {
+    if(mainWindow){
+      if(command){
+        if(command === "Portable"){
+          mainWindow.setSkipTaskbar(false);
+          mainWindow.setAlwaysOnTop(false);
+        }
+        else if(command === "POS"){
+          mainWindow.setSkipTaskbar(true);
+          mainWindow.setAlwaysOnTop(true);
+        }
+      }
+    }
+  })
+
   ipcMain.on('enable-external', async (event, command) => {
+    if(mainWindow){
+      mainWindow.webContents
+      .executeJavaScript('localStorage.getItem("settings");', true)
+      .then(result => {
+        const ls = JSON.parse(result);
+        if(ls){
+          if(ls.setup === "Portable"){
+            mainWindow.setSkipTaskbar(false);
+            mainWindow.setAlwaysOnTop(false);
+          }
+          else if(ls.setup === "POS"){
+            mainWindow.setSkipTaskbar(true);
+            mainWindow.setAlwaysOnTop(true);
+          }
+        }
+      });
+    }
+
     if(!externalWindow){
       receiptWindow = createWindow('receipt', {
         // kiosk: true,
@@ -113,6 +176,24 @@ if (isProd) {
   });
 
   ipcMain.on('close-external', async (event, command) => {
+    if(mainWindow){
+      mainWindow.webContents
+      .executeJavaScript('localStorage.getItem("settings");', true)
+      .then(result => {
+        const ls = JSON.parse(result);
+        if(ls){
+          if(ls.setup === "Portable"){
+            mainWindow.setSkipTaskbar(false);
+            mainWindow.setAlwaysOnTop(false);
+          }
+          else if(ls.setup === "POS"){
+            mainWindow.setSkipTaskbar(true);
+            mainWindow.setAlwaysOnTop(true);
+          }
+        }
+      });
+    }
+
     if(externalWindow){
       externalWindow.close();
       externalWindow = null;
