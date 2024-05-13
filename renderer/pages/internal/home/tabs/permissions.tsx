@@ -2,11 +2,16 @@ import React, { useEffect, useState } from 'react'
 import { CreateNewPermissionRequest, GetPermissionsRequest } from '../../../../helpers/https/requests'
 import { PermissionInterface, SettingsInterface } from '../../../../helpers/typings/interfaces'
 import { IoClose } from 'react-icons/io5';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { dispatchnewalert } from '../../../../helpers/reusables/alertdispatching';
+import Buttonloader from '../../../../components/loaders/buttonloader';
 
 function Permissions() {
 
   const settings: SettingsInterface = useSelector((state: any) => state.settings);
+  const dispatch = useDispatch();
+
+  const [isPermissionSaving, setisPermissionSaving] = useState<boolean>(false);
 
   const [permissions, setpermissions] = useState<PermissionInterface[]>([]);
 
@@ -27,6 +32,7 @@ function Permissions() {
 
   const CreateNewPermissionProcess = () => {
     if(permissionType.trim() !== "" && allowedusers.length > 0){
+      setisPermissionSaving(true);
       CreateNewPermissionRequest({
         permissionType: permissionType,
         allowedUsers: allowedusers,
@@ -37,10 +43,16 @@ function Permissions() {
           GetPermissionsProcess();
           setpermissionType("");
           setallowedusers([]);
+          dispatchnewalert(dispatch, "success", "New permission has been added");
         }
+        setisPermissionSaving(false);
       }).catch((err) => {
+        setisPermissionSaving(false);
         console.log(err);
       })
+    }
+    else{
+      dispatchnewalert(dispatch, "warning", "Please complete the fields");
     }
   }
 
@@ -164,8 +176,12 @@ function Permissions() {
                   </div>
                 </div>
                 <div className='w-full h-fit flex flex-col gap-[5px] pt-[10px]'>
-                  <button onClick={CreateNewPermissionProcess} className='h-[30px] bg-accent-tertiary cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
-                    <span className='text-[14px]'>Add</span>
+                  <button disabled={isPermissionSaving} onClick={CreateNewPermissionProcess} className='h-[30px] bg-accent-tertiary cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
+                    {isPermissionSaving ? (
+                      <Buttonloader />
+                    ) : (
+                      <span className='text-[14px]'>Add</span>
+                    )}
                   </button>
                   <button className='h-[30px] bg-red-500 cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
                     <span className='text-[14px]'>Clear</span>

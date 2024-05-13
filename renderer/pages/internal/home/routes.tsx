@@ -7,6 +7,7 @@ import Inventory from './tabs/inventory';
 import Account from './tabs/account';
 import Permissions from './tabs/permissions';
 import Users from './tabs/users';
+import Orders from './tabs/orders';
 
 function Routes({ tab }: RoutesProp) {
   switch(tab){
@@ -14,6 +15,8 @@ function Routes({ tab }: RoutesProp) {
         return <Dashboard />;
     case routing.MENU_ROUTE:
         return <Menu />;
+    case routing.ORDERS_ROUTE:
+        return <Orders />;
     case routing.INVENTORY_ROUTE:
         return <Inventory />;
     case routing.PERMISSIONS_ROUTE:

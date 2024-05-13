@@ -9,6 +9,7 @@ import { motion } from 'framer-motion';
 import { dispatchnewalert } from '../../../../helpers/reusables/alertdispatching';
 import { arrayMax } from '../../../../helpers/reusables/numbersorters';
 import { dateGetter, timeGetter } from '../../../../helpers/reusables/generatefns';
+import Buttonloader from '../../../../components/loaders/buttonloader';
 
 function Menu() {
 
@@ -17,6 +18,9 @@ function Menu() {
 
   const [togglewidget, settogglewidget] = useState<string>("cart");
   const [productlist, setproductlist] = useState<ProductDataInterface[]>([]);
+
+  const [isFinalizingOrder, setisFinalizingOrder] = useState<boolean>(false);
+  const [isSubmittingNewProduct, setisSubmittingNewProduct] = useState<boolean>(false);
 
   const [productName, setproductName] = useState<string>("");
   const [productPrice, setproductPrice] = useState<number>(0);
@@ -58,6 +62,7 @@ function Menu() {
 
   const AddProductProcess = () => {
     if(productName.trim() !== "" && productPrice > 0 && productQuantity > 0 && category !== "--Select Category--"){
+      setisSubmittingNewProduct(true);
       AddProductRequest({
         productName: productName,
         productPrice: productPrice,
@@ -67,13 +72,18 @@ function Menu() {
         deviceID: settings.deviceID,
         userID: settings.userID
       }).then((response) => {
+        setisSubmittingNewProduct(false);
         if(response.data.status){
           GetProductsListProcess();
           ClearAddProductFields();
         }
       }).catch((err) => {
+        setisSubmittingNewProduct(false);
         console.log(err);
       })
+    }
+    else{
+      dispatchnewalert(dispatch, "warning", "Please complete the fields");
     }
   }
 
@@ -135,6 +145,7 @@ function Menu() {
   const FinalizeOrder = () => {
     // console.log(passcode);
     if(passcode.trim() !== ""){
+      setisFinalizingOrder(true);
       LoginRequest({
         accountID: authentication.user.accountID,
         password: passcode,
@@ -143,11 +154,14 @@ function Menu() {
         if(response.data.status){
           dispatchnewalert(dispatch, "success", "Passcode verified");
           SubmitOrder();
+          setisFinalizingOrder(false);
         }
         else{
           dispatchnewalert(dispatch, "warning", "Incorrect passcode");
+          setisFinalizingOrder(false);
         }
       }).catch((err) => {
+        setisFinalizingOrder(false);
         dispatchnewalert(dispatch, "error", "Failed to verify passcode");
       })
     }
@@ -241,8 +255,12 @@ function Menu() {
                     </div>
                   </div>
                   <div className='w-full h-fit flex flex-col gap-[5px] pt-[10px]'>
-                    <button onClick={FinalizeOrder} className='h-[35px] bg-accent-tertiary cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
-                      <span className='text-[14px]'>Finalize</span>
+                    <button disabled={isFinalizingOrder} onClick={FinalizeOrder} className='h-[35px] bg-accent-tertiary cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
+                      {isFinalizingOrder ? (
+                        <Buttonloader />
+                      ) : (
+                        <span className='text-[14px]'>Finalize</span>
+                      )}
                     </button>
                     <button onClick={() => {
                       setpasscode("");
@@ -414,8 +432,12 @@ function Menu() {
                   </div>
                 </div>
                 <div className='w-full h-fit flex flex-col gap-[5px] pt-[10px]'>
-                  <button onClick={AddProductProcess} className='h-[30px] bg-accent-tertiary cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
-                    <span className='text-[14px]'>Add</span>
+                  <button disabled={isSubmittingNewProduct} onClick={AddProductProcess} className='h-[30px] bg-accent-tertiary cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
+                    {isSubmittingNewProduct ? (
+                      <Buttonloader />
+                    ) : (
+                      <span className='text-[14px]'>Add</span>
+                    )}
                   </button>
                   <button onClick={ClearAddProductFields} className='h-[30px] bg-red-500 cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
                     <span className='text-[14px]'>Clear</span>

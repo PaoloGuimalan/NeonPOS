@@ -14,6 +14,7 @@ import { dispatchclearalerts } from '../../../helpers/reusables/alertdispatching
 import { CloseSSENotifications, SSENotificationsTRequest } from '../../../helpers/https/sse';
 import { GetFilesListResponseNeonRemote } from '../../../helpers/https/requests';
 import NeonPOSSVG from '../../../assets/NeonPOS_BG.svg'
+import { IoReceiptSharp } from 'react-icons/io5';
 
 function Home() {
 
@@ -125,6 +126,24 @@ function Home() {
                 className='text-white w-full h-[70px] rounded-tl-[10px] rounded-bl-[10px] flex flex-col gap-[5px] items-center justify-center'>
                   <MdOutlineRestaurantMenu style={{ fontSize: "30px" }} />
                   <span className='text-[12px]'>Menu</span>
+                </motion.button>
+              )}
+              {authentication.user.permissions.includes("navigate_orders") && (
+                <motion.button
+                animate={{
+                  backgroundColor: currenttab === routing.ORDERS_ROUTE ? "white" : "transparent",
+                  color: currenttab === routing.ORDERS_ROUTE ? "#616161" : "white"
+                }}
+                whileHover={{
+                  backgroundColor: "white",
+                  color: "#616161"
+                }}
+                onClick={() => {
+                  setcurrenttab(routing.ORDERS_ROUTE);
+                }}
+                className='text-white w-full h-[70px] rounded-tl-[10px] rounded-bl-[10px] flex flex-col gap-[5px] items-center justify-center'>
+                  <IoReceiptSharp style={{ fontSize: "30px" }} />
+                  <span className='text-[12px]'>Orders</span>
                 </motion.button>
               )}
               {authentication.user.permissions.includes("navigate_inventory") && (

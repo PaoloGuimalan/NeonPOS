@@ -12,6 +12,7 @@ import ReusableModal from '../../../components/modals/reusablemodal';
 import { motion } from 'framer-motion';
 import { settingsstate } from '../../../helpers/redux/types/states';
 import { SettingsInterface } from '../../../helpers/typings/interfaces';
+import Buttonloader from '../../../components/loaders/buttonloader';
 
 function Login() {
 
@@ -21,6 +22,7 @@ function Login() {
   const [password, setpassword] = useState<string>("");
 
   const [toggleSettingsModal, settoggleSettingsModal] = useState<boolean>(false);
+  const [isLoggingIn, setisLoggingIn] = useState<boolean>(false);
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -42,11 +44,13 @@ function Login() {
   }, []);
 
   const LoginProcess = () => {
+    setisLoggingIn(true);
     LoginRequest({
       accountID,
       password,
       userID: settings.userID
     }).then((response) => {
+      setisLoggingIn(false);
       if(response.data.status){
         if(response.data.result){
           const permissionsmapper = response.data.result[0].permissions.map((mp: any) => mp.permissionType);
@@ -74,6 +78,7 @@ function Login() {
       setaccountID("");
       setpassword("");
     }).catch((err) => {
+      setisLoggingIn(false);
       console.log(err);
       dispatchnewalert(dispatch, "error", "Error logging in");
     })
@@ -167,7 +172,13 @@ function Login() {
               </div>
             </div>
             <div className='w-full max-w-[370px] pt-[10px] flex flex-col items-center gap-[15px]'>
-                <button onClick={LoginProcess} className='bg-accent-secondary hover:bg-accent-hover cursor-pointer w-full max-w-[200px] shadow-sm h-[40px] text-white font-semibold rounded-[7px]'>Login</button>
+                <button disabled={isLoggingIn} onClick={LoginProcess} className='bg-accent-secondary hover:bg-accent-hover cursor-pointer w-full max-w-[200px] shadow-sm h-[40px] text-white font-semibold rounded-[7px]'>
+                  {isLoggingIn ? (
+                    <Buttonloader />
+                  ) : (
+                    <span>Login</span>
+                  )}
+                </button>
             </div>
           </div>
         </div>
