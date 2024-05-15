@@ -76,6 +76,7 @@ export interface UserAccountInterface {
 export interface ProductDataInterface {
     addedBy: {
         accountID: string, 
+        userID: string,
         deviceID: string
     }
     category: string;
