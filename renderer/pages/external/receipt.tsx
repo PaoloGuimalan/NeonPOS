@@ -90,6 +90,9 @@ function Receipt() {
             <div className='flex w-full'>
                 <span>CHANGE: &#8369;{receiptholder.change}</span>
             </div>
+            <div className='flex w-full'>
+                <span>VAT AMOUNT (12%): &#8369;{parseInt(receiptholder.total) * 0.12}</span>
+            </div>
         </div>
         <div className='w-full flex flex-col items-center gap-[0px] text-[12px]'>
             <div className='w-full flex flex-row items-center gap-[10px]'>
