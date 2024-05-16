@@ -90,6 +90,14 @@ async function CreateOrderRequest(payload: CreateOrderRequestInterface) {
   })
 }
 
+async function GetOrdersListRequest(token: string) {
+  return await Axios.get(`${BACKDOOR}/api/orders/getorders/${token}`).then((response) => {
+    return response;
+  }).catch((err) => {
+    throw new Error(err);
+  })
+}
+
 export {
     LoginRequest,
     RegisterAccountRequest,
@@ -100,5 +108,6 @@ export {
     GetProductsListRequest,
     InitialSetupDeviceVerificationRequest,
     GetFilesListResponseNeonRemote,
-    CreateOrderRequest
+    CreateOrderRequest,
+    GetOrdersListRequest
 }

@@ -89,7 +89,7 @@ export interface ProductDataInterface {
 }
 
 export interface CartItemInterface {
-    pendingID: number;
+    pendingID?: number;
     product: ProductDataInterface;
     quantity: number;
 }
@@ -145,4 +145,18 @@ export interface ReceiptHolderInterface {
     total: string;
     amount: string;
     change: string;
+}
+
+export interface OrdersListInterface {
+    orderID: string,
+    orderSet: CartItemInterface[],
+    dateMade: string,
+    totalAmount: number,
+    receivedAmount: number,
+    orderMadeBy: {
+        accountID: string,
+        userID: string,
+        deviceID: string
+    },
+    dateUpdated: string
 }
