@@ -49,7 +49,7 @@ function OrdersItem({ mp }: OrdersItemProp) {
         }}
         className='w-full flex flex-col gap-[5px] overflow-y-hidden'>
             <span className='text-[14px] font-semibold'>Orders List</span>
-            <div className='w-full flex flex-row flex-wrap gap-[5px]'>
+            <div className='w-full flex flex-row flex-wrap gap-[5px] pb-[5px]'>
                 {mp.orderSet.map((ordmp: CartItemInterface, i: number) => {
                     return(
                         <div key={i} className='min-w-[400px] flex flex-row bg-white p-[10px] min-h-[90px] gap-[7px] shadow-md select-none border-[1px]'>

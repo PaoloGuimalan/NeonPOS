@@ -5,6 +5,7 @@ import { IoClose } from 'react-icons/io5';
 import { useDispatch, useSelector } from 'react-redux';
 import { dispatchnewalert } from '../../../../helpers/reusables/alertdispatching';
 import Buttonloader from '../../../../components/loaders/buttonloader';
+import Pageloader from '../../../../components/holders/pageloader';
 
 function Permissions() {
 
@@ -72,32 +73,38 @@ function Permissions() {
                     <span className='text-[15px] flex font-semibold w-full max-w-[180px]'>Actions</span>
                   </div>
                 </div>
-                {permissions.map((mp: PermissionInterface, i: number) => {
-                  return(
-                    <div key={i} className='bg-white border-[1px] p-[15px] flex w-full'>
-                      <div className='flex flex-1 gap-[10px] items-center'>
-                        <span className='text-[14px]'>{mp.permissionType}</span>
+                {permissions.length > 0 ? (
+                  permissions.map((mp: PermissionInterface, i: number) => {
+                    return(
+                      <div key={i} className='bg-white border-[1px] p-[15px] flex w-full'>
+                        <div className='flex flex-1 gap-[10px] items-center'>
+                          <span className='text-[14px]'>{mp.permissionType}</span>
+                        </div>
+                        <div className='flex flex-1 flex-row gap-[5px]'>
+                          {mp.allowedUsers.map((mpp: string, ii: number) => {
+                            return (
+                              <div key={ii} className='text-[14px] bg-accent-tertiary text-white flex p-[5px] pl-[8px] pr-[8px]'>
+                                <span>{mpp}</span>
+                              </div>
+                            )
+                          })}
+                        </div>
+                        <div className='w-full max-w-[180px] flex flex-row gap-[5px]'>
+                          <button className='bg-shade cursor-pointer flex flex-1 justify-center items-center h-[30px] shadow-sm h-[40px] text-white font-semibold rounded-[4px]'>
+                            <span className='text-[14px]'>{mp.isEnabled ? "Disable" : "Enable"}</span>
+                          </button>
+                          <button className='bg-red-500 cursor-pointer flex flex-1 justify-center items-center h-[30px] shadow-sm h-[40px] text-white font-semibold rounded-[4px]'>
+                            <span className='text-[14px]'>Delete</span>
+                          </button>
+                        </div>
                       </div>
-                      <div className='flex flex-1 flex-row gap-[5px]'>
-                        {mp.allowedUsers.map((mpp: string, ii: number) => {
-                          return (
-                            <div key={ii} className='text-[14px] bg-accent-tertiary text-white flex p-[5px] pl-[8px] pr-[8px]'>
-                              <span>{mpp}</span>
-                            </div>
-                          )
-                        })}
-                      </div>
-                      <div className='w-full max-w-[180px] flex flex-row gap-[5px]'>
-                        <button className='bg-shade cursor-pointer flex flex-1 justify-center items-center h-[30px] shadow-sm h-[40px] text-white font-semibold rounded-[4px]'>
-                          <span className='text-[14px]'>{mp.isEnabled ? "Disable" : "Enable"}</span>
-                        </button>
-                        <button className='bg-red-500 cursor-pointer flex flex-1 justify-center items-center h-[30px] shadow-sm h-[40px] text-white font-semibold rounded-[4px]'>
-                          <span className='text-[14px]'>Delete</span>
-                        </button>
-                      </div>
-                    </div>
-                  )
-                })}
+                    )
+                  })
+                ) : (
+                  <div className='w-full flex flex-1'>
+                    <Pageloader />
+                  </div>
+                )}
             </div>
         </div>
         <div className='w-full max-w-[450px] bg-shade p-[0px] flex flex-col pt-[20px] pb-[20px] pr-[10px] gap-[10px]'>
@@ -178,7 +185,7 @@ function Permissions() {
                 <div className='w-full h-fit flex flex-col gap-[5px] pt-[10px]'>
                   <button disabled={isPermissionSaving} onClick={CreateNewPermissionProcess} className='h-[30px] bg-accent-tertiary cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
                     {isPermissionSaving ? (
-                      <Buttonloader />
+                      <Buttonloader size='14px' />
                     ) : (
                       <span className='text-[14px]'>Add</span>
                     )}

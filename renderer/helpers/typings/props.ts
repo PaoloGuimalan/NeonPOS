@@ -14,3 +14,12 @@ export interface ReusableModalProp {
 export interface OrdersItemProp {
     mp: OrdersListInterface;
 }
+
+export interface ButtonloaderProp {
+    size: string;
+}
+
+export interface UnderdevelopmentProp {
+    header: string;
+    message: string;
+}

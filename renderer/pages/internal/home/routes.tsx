@@ -8,6 +8,7 @@ import Account from './tabs/account';
 import Permissions from './tabs/permissions';
 import Users from './tabs/users';
 import Orders from './tabs/orders';
+import Welcome from '../../../components/holders/welcome';
 
 function Routes({ tab }: RoutesProp) {
   switch(tab){
@@ -26,7 +27,7 @@ function Routes({ tab }: RoutesProp) {
     case routing.ACCOUNT_ROUTE:
         return <Account />;
     default:
-        break;
+        return <Welcome />;
   }
 }
 

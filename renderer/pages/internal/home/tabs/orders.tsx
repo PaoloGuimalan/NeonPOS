@@ -6,6 +6,7 @@ import { GetOrdersListRequest } from '../../../../helpers/https/requests';
 import sign from 'jwt-encode';
 import { JWT_SECRET } from '../../../../helpers/typings/keys';
 import OrdersItem from '../../../../components/widgets/ordersitem';
+import Pageloader from '../../../../components/holders/pageloader';
 
 function Orders() {
 
@@ -42,14 +43,14 @@ function Orders() {
           <input type='text' placeholder='Search an order using Order ID' value={orderIDInput} onChange={(e) => { setorderIDInput(e.target.value) }} className='w-full max-w-[400px] border-[1px] h-[35px] text-[14px] pl-[10px] pr-[10px]' />
           <button disabled={isOrdersLoading} onClick={() => { GetOrdersListProcess(orderIDInput) }} className='h-[35px] w-[120px] bg-accent-tertiary cursor-pointer shadow-sm text-white font-semibold rounded-[0px] flex items-center justify-center'>
             {isOrdersLoading ? (
-              <Buttonloader />
+              <Buttonloader size='14px' />
             ) : (
               <span className='text-[14px]'>Search</span>
             )}
           </button>
           <button disabled={isOrdersLoading} onClick={() => { GetOrdersListProcess(""); setorderIDInput("") }} className='h-[35px] w-[120px] bg-header border-[1px] cursor-pointer shadow-sm text-black font-semibold rounded-[0px] flex items-center justify-center'>
             {isOrdersLoading ? (
-              <Buttonloader />
+              <Buttonloader size='14px' />
             ) : (
               <span className='text-[14px]'>Clear</span>
             )}
@@ -64,13 +65,19 @@ function Orders() {
                 <span className='text-[15px] flex flex-1 font-semibold justify-end'>Date Made</span>
               </div>
             </div>
-            <div className='flex flex-col gap-[0px]'>
-              {orderlist.map((mp: OrdersListInterface, i: number) => {
-                return(
-                  <OrdersItem key={i} mp={mp} />
-                )
-              })}
-            </div>
+            {orderlist.length > 0 ? (
+              <div className='flex flex-col gap-[0px]'>
+                {orderlist.map((mp: OrdersListInterface, i: number) => {
+                  return(
+                    <OrdersItem key={i} mp={mp} />
+                  )
+                })}
+              </div>
+            ) : (
+              <div className='w-full flex flex-1'>
+                <Pageloader />
+              </div>
+            )}
           </div>
         </div>
       </div>

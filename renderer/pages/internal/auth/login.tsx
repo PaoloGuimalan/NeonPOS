@@ -177,7 +177,7 @@ function Login() {
             <div className='w-full max-w-[370px] pt-[10px] flex flex-col items-center gap-[15px]'>
                 <button disabled={isLoggingIn} onClick={LoginProcess} className='bg-accent-secondary hover:bg-accent-hover cursor-pointer w-full max-w-[200px] shadow-sm h-[40px] text-white font-semibold rounded-[7px]'>
                   {isLoggingIn ? (
-                    <Buttonloader />
+                    <Buttonloader size='14px' />
                   ) : (
                     <span>Login</span>
                   )}

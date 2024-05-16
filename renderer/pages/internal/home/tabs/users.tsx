@@ -3,6 +3,7 @@ import { GetUsersRequest, RegisterAccountRequest } from '../../../../helpers/htt
 import { AuthenticationInterface, SettingsInterface, UserAccountInterface } from '../../../../helpers/typings/interfaces';
 import { useDispatch, useSelector } from 'react-redux';
 import { dispatchnewalert } from '../../../../helpers/reusables/alertdispatching';
+import Pageloader from '../../../../components/holders/pageloader';
 
 function Users() {
 
@@ -81,7 +82,8 @@ function Users() {
         <div className='flex flex-1 flex-col p-[20px] gap-[10px]'>
             <span className='font-semibold text-[20px]'>Users</span>
             <div className='w-full flex flex-row gap-[5px] p-[15px] pt-[15px] h-full overflow-y-scroll'>
-                <div className='w-full h-fit flex flex-row flex-wrap gap-[7px]'>
+                {userslist.length > 0 ? (
+                  <div className='w-full h-fit flex flex-row flex-wrap gap-[7px]'>
                   {userslist.map((mp: UserAccountInterface, i: number) => {
                     return(
                       <div key={i} className='bg-white shadow-md flex flex-col p-[20px] h-fit w-full max-w-[350px]'>
@@ -114,6 +116,9 @@ function Users() {
                     )
                   })}
                 </div>
+                ) : (
+                  <Pageloader />
+                )}
             </div>
         </div>
         {authentication.user.permissions.includes("add_new_user") && (

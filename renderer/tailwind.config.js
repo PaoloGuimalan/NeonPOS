@@ -19,7 +19,7 @@ module.exports = {
       primary: "#ffffff",
       secondary: "#e8e8e8",
       tertiary: "#6db33f",
-      shade: "#f0f2f5",
+      shade: "rgba(240, 242, 245, 0.8)", //#f0f2f5
       header: "#fafafa",
       modal: "rgba(0,0,0,0.8)",
       accent: {
