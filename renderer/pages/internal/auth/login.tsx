@@ -119,6 +119,10 @@ function Login() {
     window.ipc.send('execute-command', 'gnome-terminal');
     settoggleSettingsModal(false);
   }
+
+  const ShutdownSystem = () => {
+    window.ipc.send('execute-command', 'systemctl poweroff');
+  }
   
   return (
     <div style={{ background: `url(${NeonPOSSVG.src})`, backgroundSize: "cover", backgroundPosition: "bottom", backgroundRepeat: "no-repeat" }} className={`w-full h-full bg-primary absolute flex flex-1 flex-row font-Inter`}>
@@ -144,7 +148,7 @@ function Login() {
                   <button onClick={ResetSetup} className='h-[30px] w-full bg-orange-500 cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
                     <span className='text-[14px]'>Reset</span>
                   </button>
-                  <button onClick={ResetSetup} className='h-[30px] w-full bg-red-500 cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
+                  <button onClick={ShutdownSystem} className='h-[30px] w-full bg-red-500 cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
                     <span className='text-[14px]'>Shutdown</span>
                   </button>
               </div>
