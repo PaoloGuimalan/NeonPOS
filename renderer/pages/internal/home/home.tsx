@@ -164,7 +164,7 @@ function Home() {
                   <span className='text-[12px]'>Inventory</span>
                 </motion.button>
               )}
-              {authentication.user.permissions.includes("navigate_permissions") || authentication.user.accountType === "Admin" && ( //authentication.user.permissions.includes("navigate_permissions")
+              {(authentication.user.permissions.includes("navigate_permissions") || authentication.user.accountType === "Admin") && ( //authentication.user.permissions.includes("navigate_permissions")
                 <motion.button
                 animate={{
                   backgroundColor: currenttab === routing.PERMISSIONS_ROUTE ? "white" : "transparent",
