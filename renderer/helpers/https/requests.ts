@@ -42,6 +42,14 @@ async function GetUsersRequest(userID: string){
   })
 }
 
+async function GetSpecificUserRequest(userID: string, accountID: string){
+  return await Axios.get(`${BACKDOOR}/api/auth/getusers/${userID}/${accountID}`).then((response) => {
+    return response;
+  }).catch((err) => {
+    throw new Error(err);
+  })
+}
+
 async function RegisterAccountRequest(payload: RegisterAccountInterface) {
   return await Axios.post(`${BACKDOOR}/api/auth/register`, payload).then((response) => {
     return response;
@@ -109,5 +117,6 @@ export {
     InitialSetupDeviceVerificationRequest,
     GetFilesListResponseNeonRemote,
     CreateOrderRequest,
-    GetOrdersListRequest
+    GetOrdersListRequest,
+    GetSpecificUserRequest
 }

@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import { CreateNewPermissionRequest, GetPermissionsRequest } from '../../../../helpers/https/requests'
-import { PermissionInterface, SettingsInterface } from '../../../../helpers/typings/interfaces'
+import { CreateNewPermissionRequest, GetPermissionsRequest, GetSpecificUserRequest } from '../../../../helpers/https/requests'
+import { AuthenticationInterface, PermissionInterface, SettingsInterface } from '../../../../helpers/typings/interfaces'
 import { IoClose } from 'react-icons/io5';
 import { useDispatch, useSelector } from 'react-redux';
 import { dispatchnewalert } from '../../../../helpers/reusables/alertdispatching';
 import Buttonloader from '../../../../components/loaders/buttonloader';
 import Pageloader from '../../../../components/holders/pageloader';
+import { SET_AUTHENTICATION } from '../../../../helpers/redux/types/types';
 
 function Permissions() {
 
+  const authentication: AuthenticationInterface = useSelector((state: any) => state.authentication);
   const settings: SettingsInterface = useSelector((state: any) => state.settings);
   const dispatch = useDispatch();
 
@@ -31,6 +33,27 @@ function Permissions() {
     })
   }
 
+  const GetSpecificUserProcess = () => {
+    GetSpecificUserRequest(settings.userID, authentication.user.accountID).then((response) => {
+      if(response.data.status){
+        // alert(JSON.stringify(response.data.result));
+        dispatch({
+          type: SET_AUTHENTICATION,
+          payload: {
+            authentication: {
+              auth: true,
+              user: {
+                ...response.data.result[0]
+              }
+            }
+          }
+        })
+      }
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
+
   const CreateNewPermissionProcess = () => {
     if(permissionType.trim() !== "" && allowedusers.length > 0){
       setisPermissionSaving(true);
@@ -45,6 +68,7 @@ function Permissions() {
           setpermissionType("");
           setallowedusers([]);
           dispatchnewalert(dispatch, "success", "New permission has been added");
+          GetSpecificUserProcess();
         }
         setisPermissionSaving(false);
       }).catch((err) => {
