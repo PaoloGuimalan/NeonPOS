@@ -62,6 +62,8 @@ function Menu() {
     setamountreceived(0);
     setpasscode("");
     setdiscount(0);
+    setisOrderVoided(false);
+    setpreviousOrderID("");
   }
 
   const GetProductsListProcess = () => {
@@ -116,8 +118,8 @@ function Menu() {
       totalAmount: cartTotalHolder,
       receivedAmount: amountreceived,
       timeMade: timeGetter(),
-      status: "Initial",
-      voidedFrom: previousOrderID,
+      status: isOrderVoided ? "Renewed" : "Initial",
+      voidedFrom: isOrderVoided ? previousOrderID : "",
       discount: discount,
       orderMadeBy: {
           accountID: authentication.user.accountID,
