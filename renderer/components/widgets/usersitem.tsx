@@ -35,6 +35,10 @@ function Usersitem({ mp, GetUsersProcess }: UsersitemProp) {
     })
   }
 
+  const DisableUserAccountProcess = () => {
+    dispatchnewalert(dispatch, "info", "Disable account still in progress");
+  }
+
   return (
     <div className='bg-white shadow-md flex flex-col p-[20px] h-fit w-full max-w-[350px]'>
         <div className='w-full'>
@@ -52,7 +56,7 @@ function Usersitem({ mp, GetUsersProcess }: UsersitemProp) {
             <div className='flex flex-row justify-end gap-[4px]'>
             {(authentication.user.accountID !== mp.accountID) && (
                 authentication.user.permissions.includes("disable_user") && (
-                <button className='text-[14px] w-fit bg-orange-500 text-white flex p-[5px] pl-[8px] pr-[8px] rounded-[4px]'>
+                <button onClick={DisableUserAccountProcess} className='text-[14px] w-fit bg-orange-500 text-white flex p-[5px] pl-[8px] pr-[8px] rounded-[4px]'>
                     <span>Disable</span>
                 </button>
                 )

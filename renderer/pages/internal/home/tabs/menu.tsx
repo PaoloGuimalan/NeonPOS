@@ -415,32 +415,34 @@ function Menu() {
                     )
                   })}
                 </div>
-                <div className='bg-shade p-[10px] flex flex-col gap-[5px]'>
-                  <div className='w-full bg-white p-[10px] flex flex-col'>
-                    <div className='w-full flex flex-row items-center'>
-                      <span className='text-[14px] font-semibold w-full max-w-[80px]'>Void Order</span>
-                      <div id='div_toggle_switch_container'>
-                        <label className="switch">
-                            <input type="checkbox" id='input_switch_server_create' checked={isOrderVoided} onChange={(e) => {
-                              setisOrderVoided(e.target.checked)
-                            }} />
-                            <span className="slider round"></span>
-                        </label>
+                {authentication.user.permissions.includes("void_orders") && (
+                  <div className='bg-shade p-[10px] flex flex-col gap-[5px]'>
+                    <div className='w-full bg-white p-[10px] flex flex-col'>
+                      <div className='w-full flex flex-row items-center'>
+                        <span className='text-[14px] font-semibold w-full max-w-[80px]'>Void Order</span>
+                        <div id='div_toggle_switch_container'>
+                          <label className="switch">
+                              <input type="checkbox" id='input_switch_server_create' checked={isOrderVoided} onChange={(e) => {
+                                setisOrderVoided(e.target.checked)
+                              }} />
+                              <span className="slider round"></span>
+                          </label>
+                        </div>
                       </div>
+                      <motion.div
+                      initial={{
+                        height: "0px"
+                      }}
+                      animate={{
+                        height: isOrderVoided ? "auto": "0px"
+                      }}
+                      className='w-full flex flex-row overflow-y-hidden'>
+                        <span className='text-[14px] font-semibold'>Previous Order ID: </span>
+                        <input type='text' value={previousOrderID} onChange={(e) => { setpreviousOrderID(e.target.value) }} placeholder='Input Order ID to be voided' className='flex flex-1 h-[20px] pl-[5px] pr-[5px] text-[14px] outline-none' />
+                      </motion.div>
                     </div>
-                    <motion.div
-                    initial={{
-                      height: "0px"
-                    }}
-                    animate={{
-                      height: isOrderVoided ? "auto": "0px"
-                    }}
-                    className='w-full flex flex-row overflow-y-hidden'>
-                      <span className='text-[14px] font-semibold'>Previous Order ID: </span>
-                      <input type='text' value={previousOrderID} onChange={(e) => { setpreviousOrderID(e.target.value) }} placeholder='Input Order ID to be voided' className='flex flex-1 h-[20px] pl-[5px] pr-[5px] text-[14px] outline-none' />
-                    </motion.div>
                   </div>
-                </div>
+                )}
                 <div className='bg-shade p-[10px] flex flex-col gap-[5px]'>
                   <div className='w-full bg-white p-[10px] flex flex-col'>
                     <span className='text-[14px] font-semibold'>Cart Total: &#8369; {cartTotalHolder}</span>

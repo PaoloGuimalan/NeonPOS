@@ -45,6 +45,7 @@ function Users() {
     setlastname("");
     setpassword("");
     setconfirmpassword("");
+    setaccountType("");
   }
 
   const RegisterAccountProcess = () => {
