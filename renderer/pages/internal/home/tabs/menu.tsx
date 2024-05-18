@@ -251,7 +251,7 @@ function Menu() {
     return () => {
       window.ipc.send('display-invoice', null);
     }
-  },[cartlist, amountreceived, cartTotalHolder]);
+  },[cartlist, amountreceived, cartTotalHolder, discount]);
 
   return (
     <div className='w-full flex flex-row bg-shade font-Inter'>
