@@ -39,6 +39,7 @@ function External() {
           <div className='w-full flex flex-col'>
             <div className='text-[17px]'>Total: <span className='font-semibold'>&#8369; {invoice ? invoice.total : 0}</span></div>
             <div className='text-[17px]'>Amount Received: <span className='font-semibold'>&#8369; {invoice ? invoice.amountreceived : 0}</span></div>
+            <div className='text-[17px]'>Discount ({invoice.discount}%): <span className='font-semibold'>&#8369; {invoice.total * (invoice.discount / 100)}</span></div>
             <div className='text-[17px]'>Change: <span className='font-semibold'>&#8369; {invoice ? invoice.change : 0}</span></div>
           </div>
         </div>

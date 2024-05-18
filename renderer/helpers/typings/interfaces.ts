@@ -122,6 +122,7 @@ export interface InvoiceInterface {
     total: number;
     amountreceived: number;
     change: number;
+    discount: number;
 }
 
 export interface CreateOrderRequestInterface {

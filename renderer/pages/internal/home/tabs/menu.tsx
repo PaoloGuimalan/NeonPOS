@@ -208,7 +208,8 @@ function Menu() {
       cartlist: cartlist,
       total: cartTotalHolder,
       amountreceived: amountreceived,
-      change: amountreceived - cartTotalHolder
+      change: amountreceived - cartTotalHolder,
+      discount: discount ? discount : 0
     }));
   }
 
@@ -292,7 +293,10 @@ function Menu() {
                           <div className='w-full flex flex-row'>
                             <span className='text-[14px] font-semibold'>Ammount Received: &#8369; {amountreceived}</span>
                           </div>
-                          <span className='text-[14px] font-semibold'>Change: &#8369; {amountreceived - cartTotalHolder}</span>
+                          <div className='w-full flex flex-row'>
+                            <span className='text-[14px] font-semibold'>Discount ({discount}%): &#8369; {cartTotalHolder * (discount / 100)}</span>
+                          </div>
+                          <span className='text-[14px] font-semibold'>Change: &#8369; {amountreceived - (cartTotalHolder - (cartTotalHolder * (discount / 100)))}</span>
                         </div>
                       </div>
                   </div>

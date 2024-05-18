@@ -89,6 +89,9 @@ function Receipt() {
                 <span>AMOUNT: &#8369;{receiptholder.amount}</span>
             </div>
             <div className='flex w-full'>
+                <span>DISCOUNT ({receiptholder.discount}%): &#8369;{parseInt(receiptholder.total) * (parseInt(receiptholder.discount) / 100)}</span>
+            </div>
+            <div className='flex w-full'>
                 <span>CHANGE: &#8369;{receiptholder.change}</span>
             </div>
             <div className='flex w-full'>
