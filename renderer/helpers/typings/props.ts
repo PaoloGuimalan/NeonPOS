@@ -1,4 +1,4 @@
-import { OrdersListInterface } from "./interfaces";
+import { OrdersListInterface, PermissionInterface } from "./interfaces";
 
 export interface ActionProp {
     type: string,
@@ -22,4 +22,10 @@ export interface ButtonloaderProp {
 export interface UnderdevelopmentProp {
     header: string;
     message: string;
+}
+
+export interface PermissionitemProp { 
+    mp: PermissionInterface; 
+    GetPermissionsProcess: () => void; 
+    GetSpecificUserProcess: () => void;
 }

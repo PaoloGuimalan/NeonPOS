@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { CreateNewPermissionRequest, GetPermissionsRequest, GetSpecificUserRequest } from '../../../../helpers/https/requests'
+import { CreateNewPermissionRequest, DeletePermissionRequest, GetPermissionsRequest, GetSpecificUserRequest } from '../../../../helpers/https/requests'
 import { AuthenticationInterface, PermissionInterface, SettingsInterface } from '../../../../helpers/typings/interfaces'
 import { IoClose } from 'react-icons/io5';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,6 +7,9 @@ import { dispatchnewalert } from '../../../../helpers/reusables/alertdispatching
 import Buttonloader from '../../../../components/loaders/buttonloader';
 import Pageloader from '../../../../components/holders/pageloader';
 import { SET_AUTHENTICATION } from '../../../../helpers/redux/types/types';
+import sign from 'jwt-encode';
+import { JWT_SECRET } from '../../../../helpers/typings/keys';
+import Permissionitem from '../../../../components/widgets/permissionitem';
 
 function Permissions() {
 
@@ -15,6 +18,7 @@ function Permissions() {
   const dispatch = useDispatch();
 
   const [isPermissionSaving, setisPermissionSaving] = useState<boolean>(false);
+  const [isPermissionDeleting, setisPermissionDeleting] = useState<boolean>(false);
 
   const [permissions, setpermissions] = useState<PermissionInterface[]>([]);
 
@@ -100,28 +104,7 @@ function Permissions() {
                 {permissions.length > 0 ? (
                   permissions.map((mp: PermissionInterface, i: number) => {
                     return(
-                      <div key={i} className='bg-white border-[1px] p-[15px] flex w-full'>
-                        <div className='flex flex-1 gap-[10px] items-center'>
-                          <span className='text-[14px]'>{mp.permissionType}</span>
-                        </div>
-                        <div className='flex flex-1 flex-row gap-[5px]'>
-                          {mp.allowedUsers.map((mpp: string, ii: number) => {
-                            return (
-                              <div key={ii} className='text-[14px] bg-accent-tertiary text-white flex p-[5px] pl-[8px] pr-[8px]'>
-                                <span>{mpp}</span>
-                              </div>
-                            )
-                          })}
-                        </div>
-                        <div className='w-full max-w-[180px] flex flex-row gap-[5px]'>
-                          <button className='bg-shade cursor-pointer flex flex-1 justify-center items-center h-[30px] shadow-sm h-[40px] text-white font-semibold rounded-[4px]'>
-                            <span className='text-[14px]'>{mp.isEnabled ? "Disable" : "Enable"}</span>
-                          </button>
-                          <button className='bg-red-500 cursor-pointer flex flex-1 justify-center items-center h-[30px] shadow-sm h-[40px] text-white font-semibold rounded-[4px]'>
-                            <span className='text-[14px]'>Delete</span>
-                          </button>
-                        </div>
-                      </div>
+                      <Permissionitem key={i} mp={mp} GetPermissionsProcess={GetPermissionsProcess} GetSpecificUserProcess={GetSpecificUserProcess} />
                     )
                   })
                 ) : (
