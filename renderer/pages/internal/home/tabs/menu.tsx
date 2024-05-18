@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { IoCartSharp } from 'react-icons/io5';
 import { MdAddToPhotos, MdClose } from 'react-icons/md';
-import { AuthenticationInterface, CartItemInterface, ProductDataInterface, ReceiptHolderInterface, SettingsInterface } from '../../../../helpers/typings/interfaces';
+import { TbCategoryPlus } from "react-icons/tb";
+import { AuthenticationInterface, CartItemInterface, CategoriesListInterface, ProductDataInterface, ReceiptHolderInterface, SettingsInterface } from '../../../../helpers/typings/interfaces';
 import { useDispatch, useSelector } from 'react-redux';
-import { AddProductRequest, CreateOrderRequest, GetProductsListRequest, LoginRequest } from '../../../../helpers/https/requests';
+import { AddProductRequest, CreateCategoryRequest, CreateOrderRequest, GetCategoriesListRequest, GetProductsListRequest, LoginRequest } from '../../../../helpers/https/requests';
 import ReusableModal from '../../../../components/modals/reusablemodal';
 import { motion } from 'framer-motion';
 import { dispatchnewalert } from '../../../../helpers/reusables/alertdispatching';
@@ -11,6 +12,8 @@ import { arrayMax } from '../../../../helpers/reusables/numbersorters';
 import { dateGetter, timeGetter } from '../../../../helpers/reusables/generatefns';
 import Buttonloader from '../../../../components/loaders/buttonloader';
 import Pageloader from '../../../../components/holders/pageloader';
+import sign from 'jwt-encode';
+import { JWT_SECRET } from '../../../../helpers/typings/keys';
 
 function Menu() {
 
@@ -19,6 +22,7 @@ function Menu() {
 
   const [togglewidget, settogglewidget] = useState<string>("cart");
   const [productlist, setproductlist] = useState<ProductDataInterface[]>([]);
+  const [categorieslist, setcategorieslist] = useState<CategoriesListInterface[]>([]);
 
   const [isFinalizingOrder, setisFinalizingOrder] = useState<boolean>(false);
   const [isSubmittingNewProduct, setisSubmittingNewProduct] = useState<boolean>(false);
@@ -27,6 +31,9 @@ function Menu() {
   const [productPrice, setproductPrice] = useState<number>(0);
   const [productQuantity, setproductQuantity] = useState<number>(0);
   const [category, setcategory] = useState<string>("");
+
+  const [categoryName, setcategoryName] = useState<string>("");
+  const [isCategorySaving, setisCategorySaving] = useState<boolean>(false);
 
   const [cartlist, setcartlist] = useState<CartItemInterface[]>([]);
   const [amountreceived, setamountreceived] = useState<number>(0);
@@ -111,6 +118,7 @@ function Menu() {
       orderSet: cartlist,
       totalAmount: cartTotalHolder,
       receivedAmount: amountreceived,
+      timeMade: timeGetter(),
       status: "Initial",
       voidedFrom: "",
       discount: "",
@@ -174,8 +182,25 @@ function Menu() {
     }
   }
 
+  const GetCategoriesListProcess = () => {
+    const encodedsettings = sign({accountID: authentication.user.accountID, ...settings}, JWT_SECRET);
+    GetCategoriesListRequest(encodedsettings).then((response) => {
+      if(response.data.status){
+        // alert(JSON.stringify(response.data));
+        setcategorieslist(response.data.result);
+      }
+      else{
+        dispatchnewalert(dispatch, "error", response.data.message);
+      }
+    }).catch((err) => {
+      dispatchnewalert(dispatch, "error", "Error making categories list request");
+      console.log(err);
+    })
+  }
+
   useEffect(() => {
     GetProductsListProcess();
+    GetCategoriesListProcess();
   },[settings]);
 
   const BroadcastInvoice = () =>{
@@ -185,6 +210,38 @@ function Menu() {
       amountreceived: amountreceived,
       change: amountreceived - cartTotalHolder
     }));
+  }
+
+  const AddCategoryProcess = () => {
+    if(categoryName.trim() !== ""){
+      setisCategorySaving(true);
+      const encodedtoken = sign({
+        categoryName: categoryName,
+        from: {
+            accountID: authentication.user.accountID,
+            userID: settings.userID,
+            deviceID: settings.deviceID
+        }
+      }, JWT_SECRET);
+      CreateCategoryRequest(encodedtoken).then((response) => {
+        if(response.data.status){
+          GetCategoriesListProcess();
+          setcategoryName("");
+          dispatchnewalert(dispatch, "success", "A category has been created");
+        }
+        else{
+          dispatchnewalert(dispatch, "error", response.data.message);
+        }
+        setisCategorySaving(false);
+      }).catch((err) => {
+        setisCategorySaving(false);
+        dispatchnewalert(dispatch, "error", "Error making create category request");
+        console.log(err);
+      })
+    }
+    else{
+      dispatchnewalert(dispatch, "warning", "Please provide a category name");
+    }
   }
 
   useEffect(() => {
@@ -288,6 +345,12 @@ function Menu() {
                 <button onClick={() => { settogglewidget("add_product") }} className='text-text-secondary min-h-[40px] min-w-[130px] pl-[10px] pr-[10px] bg-white cursor-pointer shadow-sm rounded-[4px] flex flex-row items-center justify-center gap-[5px]'>
                   <MdAddToPhotos style={{ fontSize: "20px" }} />
                   <span className='text-[14px]'>Add Product</span>
+                </button>
+              )}
+              {authentication.user.permissions.includes("add_category") && (
+                <button onClick={() => { settogglewidget("add_category") }} className='text-text-secondary min-h-[40px] min-w-[130px] pl-[10px] pr-[10px] bg-white cursor-pointer shadow-sm rounded-[4px] flex flex-row items-center justify-center gap-[5px]'>
+                  <TbCategoryPlus style={{ fontSize: "20px" }} />
+                  <span className='text-[14px]'>Add Category</span>
                 </button>
               )}
             </div>
@@ -429,13 +492,11 @@ function Menu() {
                   <div className='w-full flex flex-row gap-[5px]'>
                     <select value={category} onChange={(e) => { setcategory(e.target.value) }} className='w-full border-[1px] h-[35px] text-[14px] pl-[10px] pr-[10px]' >
                       <option value={null}>--Select Category--</option>
-                      <option value="Meals">Meals</option>
-                      <option value="Beverage">Beverage</option>
-                      <option value="Dessert">Dessert</option>
-                      <option value="Pasta">Pasta</option>
-                      <option value="Pastry">Pastry</option>
-                      <option value="Soup">Soup</option>
-                      <option value="Extra">Extra</option>
+                      {categorieslist.map((mp: CategoriesListInterface, i: number) => {
+                        return(
+                          <option key={i} value={mp.categoryName}>{mp.categoryName}</option>
+                        )
+                      })}
                     </select>
                   </div>
                 </div>
@@ -448,6 +509,29 @@ function Menu() {
                     )}
                   </button>
                   <button onClick={ClearAddProductFields} className='h-[30px] bg-red-500 cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
+                    <span className='text-[14px]'>Clear</span>
+                  </button>
+                </div>
+            </div>
+        </div>
+        )}
+        {togglewidget === "add_category" && authentication.user.permissions.includes("add_category") && (
+          <div className='w-full max-w-[450px] bg-shade p-[0px] flex flex-col pt-[20px] pb-[20px] pr-[10px] gap-[10px]'>
+            <span className='font-semibold text-[20px]'>Add Category</span>
+            <div className='shadow-lg border-[1px] w-full flex flex-col gap-[10px] bg-white p-[15px] pt-[20px] h-fit'>
+                <div className='w-full flex flex-col gap-[5px]'>
+                  <span className='text-[15px] font-semibold'>Category Name</span>
+                  <input type='text' value={categoryName} onChange={(e) => { setcategoryName(e.target.value) }} placeholder='Input category name' className='w-full border-[1px] h-[35px] text-[14px] pl-[10px] pr-[10px]' />
+                </div>
+                <div className='w-full h-fit flex flex-col gap-[5px] pt-[10px]'>
+                  <button disabled={isCategorySaving} onClick={AddCategoryProcess} className='h-[30px] bg-accent-tertiary cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
+                    {isCategorySaving ? (
+                      <Buttonloader size='14px' />
+                    ) : (
+                      <span className='text-[14px]'>Save Category</span>
+                    )}
+                  </button>
+                  <button onClick={() => { setcategoryName(""); }} className='h-[30px] bg-red-500 cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
                     <span className='text-[14px]'>Clear</span>
                   </button>
                 </div>

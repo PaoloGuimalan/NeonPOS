@@ -122,6 +122,26 @@ async function RemoveUserRequest(token: string) {
   })
 }
 
+async function GetCategoriesListRequest(token: string){
+  return await Axios.get(`${BACKDOOR}/api/orders/category`, {
+    headers: {
+      "access_token": token
+    }
+  }).then((response) => {
+    return response;
+  }).catch((err) => {
+    throw new Error(err);
+  })
+}
+
+async function CreateCategoryRequest(token: string){
+  return await Axios.post(`${BACKDOOR}/api/orders/category`, { token: token }).then((response) => {
+    return response;
+  }).catch((err) => {
+    throw new Error(err);
+  })
+}
+
 export {
     LoginRequest,
     RegisterAccountRequest,
@@ -136,5 +156,7 @@ export {
     GetOrdersListRequest,
     GetSpecificUserRequest,
     DeletePermissionRequest,
-    RemoveUserRequest
+    RemoveUserRequest,
+    GetCategoriesListRequest,
+    CreateCategoryRequest
 }

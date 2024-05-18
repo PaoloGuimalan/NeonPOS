@@ -47,6 +47,7 @@ function OrdersItem({ mp }: OrdersItemProp) {
             </div>
             <div className='flex flex-1 flex-col items-end'>
                 <span className='text-[14px] font-semibold'>{mp.dateMade}</span>
+                <span className='text-[14px] font-semibold'>{mp.timeMade}</span>
             </div>
         </div>
         <motion.div
