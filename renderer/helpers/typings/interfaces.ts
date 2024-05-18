@@ -131,7 +131,7 @@ export interface CreateOrderRequestInterface {
     timeMade: string,
     status?: string,
     voidedFrom?: string,
-    discount?: string,
+    discount?: number,
     orderMadeBy: {
         accountID: string,
         userID: string,
@@ -149,6 +149,7 @@ export interface ReceiptHolderInterface {
     total: string;
     amount: string;
     change: string;
+    discount: string;
 }
 
 export interface OrdersListInterface {

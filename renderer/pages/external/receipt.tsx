@@ -13,6 +13,7 @@ function Receipt() {
     total: "",
     amount: "",
     change: "",
+    discount: "",
   });
 
   useEffect(() => {

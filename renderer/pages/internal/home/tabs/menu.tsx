@@ -21,6 +21,10 @@ function Menu() {
   const authentication: AuthenticationInterface = useSelector((state: any) => state.authentication);
   const settings: SettingsInterface = useSelector((state: any) => state.settings);
 
+  const [isOrderVoided, setisOrderVoided] = useState<boolean>(false);
+  const [previousOrderID, setpreviousOrderID] = useState<string>("");
+  const [discount, setdiscount] = useState<number>(0);
+
   const [togglewidget, settogglewidget] = useState<string>("cart");
   const [productlist, setproductlist] = useState<ProductDataInterface[]>([]);
   const [categorieslist, setcategorieslist] = useState<CategoriesListInterface[]>([]);
@@ -57,6 +61,7 @@ function Menu() {
     setcartlist([]);
     setamountreceived(0);
     setpasscode("");
+    setdiscount(0);
   }
 
   const GetProductsListProcess = () => {
@@ -97,7 +102,7 @@ function Menu() {
   }
 
   const ConfirmOrder = () => {
-    if(cartlist.length > 0 && amountreceived >= cartTotalHolder){
+    if(cartlist.length > 0 && (amountreceived >= cartTotalHolder) && (discount === 0 || discount >= 0)){
       setconfirmmodaltrigger(true);
     }
     else{
@@ -112,8 +117,8 @@ function Menu() {
       receivedAmount: amountreceived,
       timeMade: timeGetter(),
       status: "Initial",
-      voidedFrom: "",
-      discount: "",
+      voidedFrom: previousOrderID,
+      discount: discount,
       orderMadeBy: {
           accountID: authentication.user.accountID,
           userID: settings.userID,
@@ -132,6 +137,7 @@ function Menu() {
           total: cartTotalHolder.toString(),
           amount: amountreceived.toString(),
           change: (amountreceived - cartTotalHolder).toString(),
+          discount: discount.toString()
         }
 
         window.ipc.send("ready-print", JSON.stringify(printTemplateData));
@@ -409,12 +415,43 @@ function Menu() {
                 </div>
                 <div className='bg-shade p-[10px] flex flex-col gap-[5px]'>
                   <div className='w-full bg-white p-[10px] flex flex-col'>
+                    <div className='w-full flex flex-row items-center'>
+                      <span className='text-[14px] font-semibold w-full max-w-[80px]'>Void Order</span>
+                      <div id='div_toggle_switch_container'>
+                        <label className="switch">
+                            <input type="checkbox" id='input_switch_server_create' checked={isOrderVoided} onChange={(e) => {
+                              setisOrderVoided(e.target.checked)
+                            }} />
+                            <span className="slider round"></span>
+                        </label>
+                      </div>
+                    </div>
+                    <motion.div
+                    initial={{
+                      height: "0px"
+                    }}
+                    animate={{
+                      height: isOrderVoided ? "auto": "0px"
+                    }}
+                    className='w-full flex flex-row overflow-y-hidden'>
+                      <span className='text-[14px] font-semibold'>Previous Order ID: </span>
+                      <input type='text' value={previousOrderID} onChange={(e) => { setpreviousOrderID(e.target.value) }} placeholder='Input Order ID to be voided' className='flex flex-1 h-[20px] pl-[5px] pr-[5px] text-[14px] outline-none' />
+                    </motion.div>
+                  </div>
+                </div>
+                <div className='bg-shade p-[10px] flex flex-col gap-[5px]'>
+                  <div className='w-full bg-white p-[10px] flex flex-col'>
                     <span className='text-[14px] font-semibold'>Cart Total: &#8369; {cartTotalHolder}</span>
                     <div className='w-full flex flex-row'>
                       <span className='text-[14px] font-semibold'>Amount Received: &#8369; </span>
                       <input type='number' value={amountreceived} onChange={(e) => { setamountreceived(parseInt(e.target.value)) }} min={0.00} step={0.001} placeholder='Input amount received' className='flex flex-1 h-[20px] pl-[5px] pr-[5px] text-[14px] outline-none' />
                     </div>
-                    <span className='text-[14px] font-semibold'>Change: &#8369; {amountreceived - cartTotalHolder}</span>
+                    <div className='w-full flex flex-row'>
+                      <span className='text-[14px] font-semibold'>Discount: </span>
+                      <input type='number' value={discount} onChange={(e) => { setdiscount(parseInt(e.target.value)) }} min={0} max={100} step={1} placeholder='Input discount percentage' className='flex flex-1 max-w-[65px] h-[20px] pl-[5px] pr-[5px] text-[14px] outline-none' />
+                      <span className='text-[14px] font-semibold'>%</span>
+                    </div>
+                    <span className='text-[14px] font-semibold'>Change: &#8369; {amountreceived - (cartTotalHolder - (cartTotalHolder * (discount / 100)))}</span>
                   </div>
                 </div>
                 <div className='w-full h-fit flex flex-col gap-[5px] pt-[10px]'>

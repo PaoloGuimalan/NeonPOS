@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { dispatchnewalert } from '../../../../helpers/reusables/alertdispatching';
 import Pageloader from '../../../../components/holders/pageloader';
 import Usersitem from '../../../../components/widgets/usersitem';
+import Buttonloader from '../../../../components/loaders/buttonloader';
 
 function Users() {
 
@@ -12,6 +13,8 @@ function Users() {
   const settings: SettingsInterface = useSelector((state: any) => state.settings);
 
   const dispatch = useDispatch();
+
+  const [isUserAdding, setisUserAdding] = useState<boolean>(false);
 
   const [userslist, setuserslist] = useState<UserAccountInterface[]>([]);
 
@@ -47,6 +50,7 @@ function Users() {
   const RegisterAccountProcess = () => {
     if((password === confirmpassword) && password.trim() !== "" && authentication.user.permissions.includes("add_new_user")){
       if(firstname.trim() !== "" && lastname.trim() !== "" && accountType !== "--Select Type--"){
+        setisUserAdding(true);
         RegisterAccountRequest({
           firstname: firstname,
           middlename: middlename,
@@ -61,8 +65,10 @@ function Users() {
             GetUsersProcess();
             ClearFields();
           }
+          setisUserAdding(false);
         }).catch((err) => {
           console.log(err);
+          setisUserAdding(false);
         })
       }
       else{
@@ -127,8 +133,12 @@ function Users() {
                     <input type='password' value={confirmpassword} onChange={(e) => { setconfirmpassword(e.target.value) }} placeholder='Input desired password' className='w-full border-[1px] h-[35px] text-[14px] pl-[10px] pr-[10px]' />
                   </div>
                   <div className='w-full h-fit flex flex-col gap-[5px] pt-[10px]'>
-                    <button onClick={RegisterAccountProcess} className='h-[30px] bg-accent-tertiary cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
-                      <span className='text-[14px]'>Add</span>
+                    <button disabled={isUserAdding} onClick={RegisterAccountProcess} className='h-[30px] bg-accent-tertiary cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
+                      {isUserAdding ? (
+                        <Buttonloader size='14px' />
+                      ) : (
+                        <span className='text-[14px]'>Add</span>
+                      )}
                     </button>
                     <button onClick={ClearFields} className='h-[30px] bg-red-500 cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
                       <span className='text-[14px]'>Clear</span>
