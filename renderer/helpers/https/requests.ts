@@ -142,6 +142,14 @@ async function CreateCategoryRequest(token: string){
   })
 }
 
+async function DeleteProductRequest(token: string) {
+  return await Axios.delete(`${BACKDOOR}/api/menu/removeproduct/${token}`).then((response) => {
+    return response;
+  }).catch((err) => {
+    throw new Error(err);
+  })
+}
+
 export {
     LoginRequest,
     RegisterAccountRequest,
@@ -158,5 +166,6 @@ export {
     DeletePermissionRequest,
     RemoveUserRequest,
     GetCategoriesListRequest,
-    CreateCategoryRequest
+    CreateCategoryRequest,
+    DeleteProductRequest
 }

@@ -1,4 +1,5 @@
-import { OrdersListInterface, PermissionInterface, UserAccountInterface } from "./interfaces";
+import { Dispatch, SetStateAction } from "react";
+import { CartItemInterface, OrdersListInterface, PermissionInterface, ProductDataInterface, UserAccountInterface } from "./interfaces";
 
 export interface ActionProp {
     type: string,
@@ -33,4 +34,11 @@ export interface PermissionitemProp {
 export interface UsersitemProp {
     mp: UserAccountInterface;
     GetUsersProcess: () => void;
+}
+
+export interface ProductitemProp {
+    mp: ProductDataInterface,
+    cartlist: CartItemInterface[],
+    setcartlist: Dispatch<SetStateAction<CartItemInterface[]>>,
+    GetProductsListProcess: () => void,
 }
