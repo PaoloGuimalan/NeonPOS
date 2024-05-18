@@ -111,6 +111,9 @@ function Menu() {
       orderSet: cartlist,
       totalAmount: cartTotalHolder,
       receivedAmount: amountreceived,
+      status: "Initial",
+      voidedFrom: "",
+      discount: "",
       orderMadeBy: {
           accountID: authentication.user.accountID,
           userID: settings.userID,

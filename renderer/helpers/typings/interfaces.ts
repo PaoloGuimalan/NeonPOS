@@ -128,6 +128,9 @@ export interface CreateOrderRequestInterface {
     orderSet: CartItemInterface[];
     totalAmount: number,
     receivedAmount: number,
+    status?: string,
+    voidedFrom?: string,
+    discount?: string,
     orderMadeBy: {
         accountID: string,
         userID: string,
@@ -158,5 +161,8 @@ export interface OrdersListInterface {
         userID: string,
         deviceID: string
     },
-    dateUpdated: string
+    dateUpdated: string,
+    status?: string,
+    voidedFrom?: string,
+    discount?: string,
 }

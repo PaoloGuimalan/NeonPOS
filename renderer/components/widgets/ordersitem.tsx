@@ -22,6 +22,9 @@ function OrdersItem({ mp }: OrdersItemProp) {
                 </button>
                 <span className='text-[14px]'>Cashier: {mp.orderMadeBy.accountID}</span>
                 <span className='text-[14px]'>Device ID: {mp.orderMadeBy.deviceID}</span>
+                {(mp.voidedFrom && mp.voidedFrom.trim() !== "") && (
+                    <span className='text-[14px]'>Voided From: {mp.voidedFrom}</span>
+                )}
             </div>
             <div className='flex flex-1 flex-col items-center'>
                 <div className='flex flex-row gap-[20px]'>
@@ -29,10 +32,16 @@ function OrdersItem({ mp }: OrdersItemProp) {
                         <span className='text-[14px]'>Total: &#8369;{mp.totalAmount}</span>
                         <span className='text-[14px]'>Amount: &#8369;{mp.receivedAmount}</span>
                         <span className='text-[14px]'>Change: &#8369;{mp.receivedAmount - mp.totalAmount}</span>
+                        <span style={{ backgroundColor: mp.status? mp.status === "Voided" ? "red" : "#87CEEB" : "transparent", color: "white" }} 
+                        className='text-[14px] w-fit p-[2px] px-[10px] mt-[5px] rounded-[4px] font-semibold'>{mp.status}</span>
                     </div>
-                        <div className='flex flex-col'>
+                    <div className='flex flex-col'>
                         <span className='text-[14px]'>Items: {mp.orderSet.length}</span>
                         <span className='text-[14px]'>VAT (12%): &#8369;{(mp.totalAmount * 0.12).toFixed(2)}</span>
+                        <span className='text-[14px]'>
+                            Discount ({(mp.discount && mp.discount.trim() !== "") ? mp.discount : 0}%): 
+                            &#8369;--
+                        </span>
                     </div>
                 </div>
             </div>

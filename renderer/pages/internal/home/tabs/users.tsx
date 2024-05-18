@@ -4,6 +4,7 @@ import { AuthenticationInterface, SettingsInterface, UserAccountInterface } from
 import { useDispatch, useSelector } from 'react-redux';
 import { dispatchnewalert } from '../../../../helpers/reusables/alertdispatching';
 import Pageloader from '../../../../components/holders/pageloader';
+import Usersitem from '../../../../components/widgets/usersitem';
 
 function Users() {
 
@@ -86,33 +87,7 @@ function Users() {
                   <div className='w-full h-fit flex flex-row flex-wrap gap-[7px]'>
                   {userslist.map((mp: UserAccountInterface, i: number) => {
                     return(
-                      <div key={i} className='bg-white shadow-md flex flex-col p-[20px] h-fit w-full max-w-[350px]'>
-                        <div className='w-full'>
-                          <span className='font-semibold text-[17px]'>{mp.accountName.lastname}, {mp.accountName.firstname}, {mp.accountName.middlename}</span>
-                        </div>
-                        <div className='w-full'>
-                          <span className='text-[14px]'>{mp.accountID}</span>
-                        </div>
-                        <div className='w-full pt-[15px] flex flex-row'>
-                          <div className='flex flex-1'>
-                            <div className='text-[14px] w-fit bg-accent-tertiary text-white flex p-[5px] pl-[8px] pr-[8px]'>
-                              <span>{mp.accountType}</span>
-                            </div>
-                          </div>
-                          <div className='flex flex-row justify-end gap-[4px]'>
-                            {authentication.user.permissions.includes("disable_user") && (
-                              <button className='text-[14px] w-fit bg-orange-500 text-white flex p-[5px] pl-[8px] pr-[8px] rounded-[4px]'>
-                                <span>Disable</span>
-                              </button>
-                            )}
-                            {authentication.user.permissions.includes("delete_user") && (
-                              <button className='text-[14px] w-fit bg-red-500 text-white flex p-[5px] pl-[8px] pr-[8px] rounded-[4px]'>
-                                <span>Remove</span>
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                      </div>
+                      <Usersitem key={i} mp={mp} GetUsersProcess={GetUsersProcess} />
                     )
                   })}
                 </div>

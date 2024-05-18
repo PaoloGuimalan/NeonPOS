@@ -1,8 +1,8 @@
 import Axios from 'axios';
 import { AddProductRequestInterface, CreateNewPermissionPayloadInterface, CreateOrderRequestInterface, GetFilesListResponseNeonRemoteInterface, InitialSetupDeviceVerificationRequestInterface, LoginPayloadInterface, RegisterAccountInterface } from '../typings/interfaces';
 
-const BACKDOOR = 'http://localhost:3000';
-// const BACKDOOR = 'https://neon-pos-api.vercel.app';
+// const BACKDOOR = 'http://localhost:3000';
+const BACKDOOR = 'https://neon-pos-api.vercel.app';
 const NEONSERVICE = 'https://neonaiserver.onrender.com';
 
 async function LoginRequest(payload: LoginPayloadInterface){
@@ -114,6 +114,14 @@ async function DeletePermissionRequest(token: string) {
   })
 }
 
+async function RemoveUserRequest(token: string) {
+  return await Axios.delete(`${BACKDOOR}/api/auth/removeuser/${token}`).then((response) => {
+    return response;
+  }).catch((err) => {
+    throw new Error(err);
+  })
+}
+
 export {
     LoginRequest,
     RegisterAccountRequest,
@@ -127,5 +135,6 @@ export {
     CreateOrderRequest,
     GetOrdersListRequest,
     GetSpecificUserRequest,
-    DeletePermissionRequest
+    DeletePermissionRequest,
+    RemoveUserRequest
 }
