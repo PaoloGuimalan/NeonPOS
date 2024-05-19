@@ -116,7 +116,9 @@ function Login() {
   // }
 
   const OpenTerminal = () => {
-    window.ipc.send('execute-command', 'gnome-terminal');
+    // window.ipc.send('execute-command', 'gnome-terminal');
+    // settoggleSettingsModal(false);
+    window.ipc.send('execute-command', 'xdg-open https://neonremote.netlify.app');
     settoggleSettingsModal(false);
   }
 
@@ -140,7 +142,7 @@ function Login() {
               </div>
               <div className='w-full flex flex-1 flex-col items-center justify-center gap-[3px]'>
                   <button onClick={OpenTerminal} className='h-[30px] w-full bg-green-500 cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
-                    <span className='text-[14px]'>Enable Connection</span>
+                    <span className='text-[14px]'>Open Neon Remote</span>
                   </button>
                   {/* <button onClick={OpenTerminal} className='h-[30px] w-full bg-orange-500 cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
                     <span className='text-[14px]'>Open Terminal</span>

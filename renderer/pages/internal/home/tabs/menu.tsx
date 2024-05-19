@@ -29,6 +29,8 @@ function Menu() {
   const [productlist, setproductlist] = useState<ProductDataInterface[]>([]);
   const [categorieslist, setcategorieslist] = useState<CategoriesListInterface[]>([]);
 
+  const [categoryFilter, setcategoryFilter] = useState<string>("All");
+
   const [isFinalizingOrder, setisFinalizingOrder] = useState<boolean>(false);
   const [isSubmittingNewProduct, setisSubmittingNewProduct] = useState<boolean>(false);
 
@@ -358,18 +360,58 @@ function Menu() {
                 </button>
               )}
             </div>
-            <div className='w-full flex flex-row gap-[5px] p-[15px] pt-[15px] pl-[0px] pr-[0px] h-full overflow-y-scroll'>
-                {productlist.length > 0 ? (
-                  <div className='w-full h-fit flex flex-row flex-wrap gap-[7px]'>
-                    {productlist.map((mp: ProductDataInterface, i: number) => {
-                      return(
-                        <Productitem key={i} mp={mp} cartlist={cartlist} setcartlist={setcartlist} GetProductsListProcess={GetProductsListProcess} />
-                      )
-                    })}
-                  </div>
-                ) : (
-                  <Pageloader />
-                )}
+            <div className='w-full flex flex-col gap-[10px] p-[15px] pt-[15px] pl-[0px] pr-[0px] h-full overflow-y-scroll'>
+                <div className='sticky top-0 w-full flex flex-row gap-[2px]'>
+                  <motion.button
+                  initial={{
+                    backgroundColor: "white",
+                    color: "black"
+                  }}
+                  animate={{
+                    backgroundColor: categoryFilter === "All" ? "#12051c" : "white",
+                    color: categoryFilter === "All" ? "white" : "black"
+                  }}
+                  onClick={() => { setcategoryFilter("All") }} className='rounded-[4px] w-fit min-w-[50px] bg-white border-[1px] shadow-md p-[2px] pl-[7px] pr-[7px]'>
+                    <span className='text-[14px] font-Inter'>All</span>
+                  </motion.button>
+                  {categorieslist.map((mp: CategoriesListInterface, i: number) => {
+                    return(
+                      <motion.button
+                      initial={{
+                        backgroundColor: "white",
+                        color: "black"
+                      }}
+                      animate={{
+                        backgroundColor: categoryFilter === mp.categoryName ? "#12051c" : "white",
+                        color: categoryFilter === mp.categoryName ? "white" : "black"
+                      }}
+                      key={i} onClick={() => { setcategoryFilter(mp.categoryName) }} className='rounded-[4px] w-fit bg-white border-[1px] shadow-md p-[2px] pl-[7px] pr-[7px]'>
+                        <span className='text-[14px] font-Inter'>{mp.categoryName}</span>
+                      </motion.button>
+                    )
+                  })}
+                </div>
+                <div className='w-full flex flex-1 flex-row gap-[5px]'>
+                  {productlist.length > 0 ? (
+                    <div className='w-full h-fit flex flex-row flex-wrap gap-[7px]'>
+                      {categoryFilter === "All" ? (
+                        productlist.map((mp: ProductDataInterface, i: number) => {
+                          return(
+                            <Productitem key={i} mp={mp} cartlist={cartlist} setcartlist={setcartlist} GetProductsListProcess={GetProductsListProcess} />
+                          )
+                        })
+                      ) : (
+                        productlist.filter((flt: ProductDataInterface) => flt.category === categoryFilter).map((mp: ProductDataInterface, i: number) => {
+                          return(
+                            <Productitem key={i} mp={mp} cartlist={cartlist} setcartlist={setcartlist} GetProductsListProcess={GetProductsListProcess} />
+                          )
+                        })
+                      )}
+                    </div>
+                  ) : (
+                    <Pageloader />
+                  )}
+                </div>
             </div>
         </div>
         {togglewidget === "cart" && (
