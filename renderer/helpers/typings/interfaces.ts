@@ -130,6 +130,7 @@ export interface CreateOrderRequestInterface {
     totalAmount: number,
     receivedAmount: number,
     timeMade: string,
+    dateMade: string,
     status?: string,
     voidedFrom?: string,
     discount?: number,
@@ -180,4 +181,17 @@ export interface CategoriesListInterface {
         userID: string,
         deviceID: string
     }
+}
+
+export interface DailyReportInterface {
+    accountID: string,
+    deviceID: string,
+    dateMade: string,
+    numberofsales: number,
+    totalsales: number,
+    discount: number,
+    discounttotal: number,
+    saleswdiscount: number,
+    taxtotal: number,
+    taxedsales: number
 }

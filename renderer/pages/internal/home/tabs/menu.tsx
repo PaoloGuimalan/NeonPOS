@@ -120,6 +120,7 @@ function Menu() {
       totalAmount: cartTotalHolder,
       receivedAmount: amountreceived,
       timeMade: timeGetter(),
+      dateMade: dateGetter(),
       status: isOrderVoided ? "Renewed" : "Initial",
       voidedFrom: isOrderVoided ? previousOrderID : "",
       discount: discount,

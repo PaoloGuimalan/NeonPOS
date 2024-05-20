@@ -150,6 +150,14 @@ async function DeleteProductRequest(token: string) {
   })
 }
 
+async function GenerateDailyReport(token: string) {
+  return await Axios.get(`${BACKDOOR}/api/accounting/generatereport/${token}`).then((response) => {
+    return response;
+  }).catch((err) => {
+    throw new Error(err);
+  })
+}
+
 export {
     LoginRequest,
     RegisterAccountRequest,
@@ -167,5 +175,6 @@ export {
     RemoveUserRequest,
     GetCategoriesListRequest,
     CreateCategoryRequest,
-    DeleteProductRequest
+    DeleteProductRequest,
+    GenerateDailyReport
 }
