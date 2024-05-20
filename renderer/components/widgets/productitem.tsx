@@ -45,9 +45,9 @@ function Productitem({ mp, cartlist, setcartlist, GetProductsListProcess }: Prod
         <div className='w-full'>
             <img src={mp.previews[0]} className='w-full h-[200px] max-w-[100%] select-none' />
         </div>
-        <div className='w-full flex flex-col gap-[4px]'>
+        <div title={mp.productName} className='w-full flex flex-col gap-[4px]'>
             <div className='w-full flex flex-row gap-[5px]'>
-                <span className='text-[14px] font-semibold flex flex-1'>{mp.productName}</span>
+                <span className='text-[14px] font-semibold flex flex-1 marquee'>{mp.productName}</span>
                 <div className='text-[12px] w-fit bg-orange-500 text-white flex p-[2px] pl-[8px] pr-[8px]'>
                     <span>&#8369; {mp.productPrice}</span>
                 </div>

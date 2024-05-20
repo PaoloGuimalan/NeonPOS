@@ -275,11 +275,11 @@ function Menu() {
                       <div className='bg-shade p-[20px] flex flex-1 flex-col gap-[7px] overflow-y-scroll'>
                         {cartlist.map((mp: CartItemInterface, i: number) => {
                           return(
-                            <div key={i} className='w-full flex flex-row bg-white p-[10px] min-h-[90px] gap-[7px] shadow-md select-none'>
+                            <div key={i} title={mp.product.productName} className='w-full flex flex-row bg-white p-[10px] min-h-[90px] gap-[7px] shadow-md select-none'>
                               <img src={mp.product.previews[0]} className='h-full max-w-[80px]' />
                               <div className='flex flex-1 flex-col'>
                                 <div className='w-full flex flex-row'>
-                                  <span className='text-[14px] font-semibold flex flex-1'>{mp.product.productName}</span>
+                                  <span className='text-[14px] font-semibold flex flex-1 marquee'>{mp.product.productName}</span>
                                   <span className='text-[14px]'>&#8369; {mp.product.productPrice} x {mp.quantity}</span>
                                 </div>
                                 <div className='w-full flex flex-row pt-[25px]'>
@@ -361,9 +361,9 @@ function Menu() {
                 </button>
               )}
             </div>
-            <div className='w-full flex flex-col gap-[10px] p-[15px] pt-[15px] pl-[0px] pr-[0px] h-full overflow-y-scroll'>
-                <div className='sticky top-0 w-full flex flex-row gap-[2px]'>
-                  <motion.button
+            <div className='w-full max-w-[calc(100vw-570px)] flex flex-row h-[50px]'>
+                <div className='w-full flex flex-row gap-[2px] overflow-x-scroll overflow-y-hidden thinscroller pb-[5px]'>
+                <motion.button
                   initial={{
                     backgroundColor: "white",
                     color: "black"
@@ -386,12 +386,14 @@ function Menu() {
                         backgroundColor: categoryFilter === mp.categoryName ? "#12051c" : "white",
                         color: categoryFilter === mp.categoryName ? "white" : "black"
                       }}
-                      key={i} onClick={() => { setcategoryFilter(mp.categoryName) }} className='rounded-[4px] w-fit bg-white border-[1px] shadow-md p-[2px] pl-[7px] pr-[7px]'>
+                      key={i} onClick={() => { setcategoryFilter(mp.categoryName) }} className='rounded-[4px] w-fit min-w-fit bg-white border-[1px] shadow-md p-[2px] pl-[7px] pr-[7px]'>
                         <span className='text-[14px] font-Inter'>{mp.categoryName}</span>
                       </motion.button>
                     )
                   })}
                 </div>
+            </div>
+            <div className='w-full flex flex-col gap-[10px] p-[15px] pt-[5px] pl-[0px] pr-[0px] h-full overflow-y-scroll'>
                 <div className='w-full flex flex-1 flex-row gap-[5px]'>
                   {productlist.length > 0 ? (
                     <div className='w-full h-fit flex flex-row flex-wrap gap-[7px]'>
@@ -416,7 +418,7 @@ function Menu() {
             </div>
         </div>
         {togglewidget === "cart" && (
-          <div className='w-full max-w-[450px] bg-shade p-[0px] flex flex-col pt-[20px] pb-[20px] pr-[10px] gap-[10px]'>
+          <div className='w-[450px] bg-shade p-[0px] flex flex-col pt-[20px] pb-[20px] pr-[10px] gap-[10px]'>
             <span className='font-semibold text-[20px]'>Cart</span>
             <div className='shadow-lg border-[1px] w-full flex flex-col gap-[10px] bg-white p-[15px] pt-[20px] h-fit'>
                 <div className='bg-shade p-[20px] flex flex-col gap-[7px] h-[400px] overflow-y-scroll'>
@@ -424,11 +426,11 @@ function Menu() {
                     return (a.pendingID - b.pendingID);
                   }).map((mp: CartItemInterface, i: number) => {
                     return(
-                      <div key={i} className='w-full flex flex-row bg-white p-[10px] min-h-[90px] gap-[7px] shadow-md select-none'>
+                      <div key={i} title={mp.product.productName} className='w-full flex flex-row bg-white p-[10px] min-h-[90px] gap-[7px] shadow-md select-none'>
                         <img src={mp.product.previews[0]} className='h-full max-w-[80px]' />
                         <div className='flex flex-1 flex-col'>
                           <div className='w-full flex flex-row'>
-                            <span className='text-[14px] font-semibold flex flex-1'>{mp.product.productName}</span>
+                            <span className='text-[14px] font-semibold flex flex-1 marquee'>{mp.product.productName}</span>
                             <span className='text-[12px]'>&#8369; {mp.product.productPrice} x {mp.quantity}</span>
                           </div>
                           <div className='w-full flex flex-row flex-1'>
@@ -520,7 +522,7 @@ function Menu() {
         </div>
         )}
         {togglewidget === "add_product" && authentication.user.permissions.includes("add_menu") && (
-          <div className='w-full max-w-[450px] bg-shade p-[0px] flex flex-col pt-[20px] pb-[20px] pr-[10px] gap-[10px]'>
+          <div className='w-[450px] bg-shade p-[0px] flex flex-col pt-[20px] pb-[20px] pr-[10px] gap-[10px]'>
             <span className='font-semibold text-[20px]'>Add Product</span>
             <div className='shadow-lg border-[1px] w-full flex flex-col gap-[10px] bg-white p-[15px] pt-[20px] h-fit'>
                 <div className='w-full flex flex-col gap-[5px]'>
@@ -560,7 +562,7 @@ function Menu() {
         </div>
         )}
         {togglewidget === "add_category" && authentication.user.permissions.includes("add_category") && (
-          <div className='w-full max-w-[450px] bg-shade p-[0px] flex flex-col pt-[20px] pb-[20px] pr-[10px] gap-[10px]'>
+          <div className='w-[450px] max-w-[450px] bg-shade p-[0px] flex flex-col pt-[20px] pb-[20px] pr-[10px] gap-[10px]'>
             <span className='font-semibold text-[20px]'>Add Category</span>
             <div className='shadow-lg border-[1px] w-full flex flex-col gap-[10px] bg-white p-[15px] pt-[20px] h-fit'>
                 <div className='w-full flex flex-col gap-[5px]'>

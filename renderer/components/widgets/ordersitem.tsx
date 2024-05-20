@@ -87,11 +87,11 @@ function OrdersItem({ mp }: OrdersItemProp) {
             <div className='w-full flex flex-row flex-wrap gap-[5px] pb-[5px]'>
                 {mp.orderSet.map((ordmp: CartItemInterface, i: number) => {
                     return(
-                        <div key={i} className='min-w-[400px] flex flex-row bg-white p-[10px] min-h-[90px] gap-[7px] shadow-md select-none border-[1px]'>
+                        <div key={i} title={ordmp.product.productName} className='min-w-[400px] flex flex-row bg-white p-[10px] min-h-[90px] gap-[7px] shadow-md select-none border-[1px]'>
                             <img src={ordmp.product.previews[0]} className='h-full max-w-[80px]' />
                             <div className='flex flex-1 flex-col'>
                                 <div className='w-full flex flex-row'>
-                                    <span className='text-[14px] font-semibold flex flex-1'>{ordmp.product.productName}</span>
+                                    <span className='text-[14px] font-semibold flex flex-1 marquee'>{ordmp.product.productName}</span>
                                     <span className='text-[12px]'>&#8369; {ordmp.product.productPrice} x {ordmp.quantity}</span>
                                 </div>
                                 <div className='w-full flex flex-row flex-1'>
