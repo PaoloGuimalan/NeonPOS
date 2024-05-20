@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { DailyReportInterface } from '../../helpers/typings/interfaces'
+import { timeGetter } from '../../helpers/reusables/generatefns';
 
 function GenerateReport() {
 
@@ -52,6 +53,9 @@ function GenerateReport() {
         <div className='w-full flex flex-col items-center gap-[0px] text-[12px]'>
             <div className='flex w-full'>
                 <span>DATE: {dailyreport.dateMade}</span>
+            </div>
+            <div className='flex w-full'>
+                <span>TIME GENERATED: {timeGetter()}</span>
             </div>
         </div>
         <div className='w-full flex flex-col items-center gap-[0px] text-[12px]'>
