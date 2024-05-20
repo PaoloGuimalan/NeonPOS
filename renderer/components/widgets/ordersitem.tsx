@@ -2,11 +2,31 @@ import React, { useState } from 'react'
 import { RiArrowDownSLine, RiArrowRightSLine } from 'react-icons/ri'
 import { OrdersItemProp } from '../../helpers/typings/props'
 import { motion } from 'framer-motion';
-import { CartItemInterface } from '../../helpers/typings/interfaces';
+import { AuthenticationInterface, CartItemInterface, ReceiptHolderInterface, SettingsInterface } from '../../helpers/typings/interfaces';
+import { useSelector } from 'react-redux';
 
 function OrdersItem({ mp }: OrdersItemProp) {
 
+  const authentication: AuthenticationInterface = useSelector((state: any) => state.authentication);
+  const settings: SettingsInterface = useSelector((state: any) => state.settings);
   const [expandOrder, setexpandOrder] = useState<boolean>(false);
+
+  const RePrintProcess = () => {
+    const printTemplateData: ReceiptHolderInterface = {
+        cashier: authentication.user.accountName.firstname,
+        orderID: mp.orderID,
+        deviceID: settings.deviceID,
+        date: mp.dateMade,
+        time: mp.timeMade || "",
+        cartlist: mp.orderSet,
+        total: mp.totalAmount.toString(),
+        amount: mp.receivedAmount.toString(),
+        change: (mp.receivedAmount - mp.totalAmount).toString(),
+        discount: mp.discount.toString()
+      }
+
+      window.ipc.send("ready-print", JSON.stringify(printTemplateData));
+  }
 
   return (
     <div className='w-full bg-white p-[15px] border-[1px] min-h-[100px] flex flex-col gap-[10px]'>
@@ -48,6 +68,11 @@ function OrdersItem({ mp }: OrdersItemProp) {
             <div className='flex flex-1 flex-col items-end'>
                 <span className='text-[14px] font-semibold'>{mp.dateMade}</span>
                 <span className='text-[14px] font-semibold'>{mp.timeMade}</span>
+                <div className='flex flex-1 flex-col justify-end'>
+                    <button onClick={RePrintProcess} className='h-[35px] w-[70px] rounded-[5px] bg-green-500 cursor-pointer shadow-sm text-white font-semibold rounded-[0px] flex items-center justify-center'>
+                        <span className='text-[14px]'>Reprint</span>
+                    </button>
+                </div>
             </div>
         </div>
         <motion.div
