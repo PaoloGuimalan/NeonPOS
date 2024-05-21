@@ -24,7 +24,7 @@ function timeGetter(){
   var hour = String(today.getHours() % 12 || 12);
   var minutes = String(today.getMinutes() >= 9? today.getMinutes() : `0${today.getMinutes()}`)
   var seconds = String(today.getSeconds() >= 9? today.getSeconds() : `0${today.getSeconds()}`)
-  var timeIndicator = parseInt(hour) >= 12? "am" : "pm"
+  var timeIndicator = parseInt(hour) <= 12? "am" : "pm"
 
   return `${hour}:${minutes}:${seconds} ${timeIndicator}`;
 }
