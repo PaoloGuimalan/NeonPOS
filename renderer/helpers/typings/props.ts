@@ -14,6 +14,7 @@ export interface ReusableModalProp {
 
 export interface OrdersItemProp {
     mp: OrdersListInterface;
+    GetOrdersListProcess: (orderID: string) => void;
 }
 
 export interface ButtonloaderProp {

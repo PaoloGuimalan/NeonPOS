@@ -14,6 +14,7 @@ function Receipt() {
     amount: "",
     change: "",
     discount: "",
+    isPending: null,
   });
 
   useEffect(() => {
@@ -85,18 +86,24 @@ function Receipt() {
             <div className='flex w-full'>
                 <span>TOTAL: &#8369;{receiptholder.total}</span>
             </div>
-            <div className='flex w-full'>
-                <span>AMOUNT: &#8369;{receiptholder.amount}</span>
-            </div>
-            <div className='flex w-full'>
-                <span>DISCOUNT ({receiptholder.discount}%): &#8369;{parseInt(receiptholder.total) * (parseInt(receiptholder.discount) / 100)}</span>
-            </div>
-            <div className='flex w-full'>
-                <span>CHANGE: &#8369;{receiptholder.change}</span>
-            </div>
-            <div className='flex w-full'>
-                <span>VAT AMOUNT (12%): &#8369;{parseInt(receiptholder.total) * 0.12}</span>
-            </div>
+            {receiptholder.isPending !== null && (
+                receiptholder.isPending === false && (
+                    <>
+                    <div className='flex w-full'>
+                        <span>AMOUNT: &#8369;{receiptholder.amount}</span>
+                    </div>
+                    <div className='flex w-full'>
+                        <span>DISCOUNT ({receiptholder.discount}%): &#8369;{parseInt(receiptholder.total) * (parseInt(receiptholder.discount) / 100)}</span>
+                    </div>
+                    <div className='flex w-full'>
+                        <span>CHANGE: &#8369;{receiptholder.change}</span>
+                    </div>
+                    <div className='flex w-full'>
+                        <span>VAT AMOUNT (12%): &#8369;{parseInt(receiptholder.total) * 0.12}</span>
+                    </div>
+                    </>
+                )
+            )}
         </div>
         <div className='w-full flex flex-col items-center gap-[0px] text-[12px]'>
             <div className='w-full flex flex-row items-center gap-[10px]'>

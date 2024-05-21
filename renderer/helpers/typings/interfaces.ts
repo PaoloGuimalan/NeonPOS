@@ -134,6 +134,17 @@ export interface CreateOrderRequestInterface {
     status?: string,
     voidedFrom?: string,
     discount?: number,
+    tableNumber?: string,
+    orderMadeBy: {
+        accountID: string,
+        userID: string,
+        deviceID: string
+    }
+}
+
+export interface CloseOrderInterface {
+    orderID: string,
+    amountreceived: number,
     orderMadeBy: {
         accountID: string,
         userID: string,
@@ -152,6 +163,7 @@ export interface ReceiptHolderInterface {
     amount: string;
     change: string;
     discount: string;
+    isPending: boolean | null;
 }
 
 export interface OrdersListInterface {
@@ -161,6 +173,7 @@ export interface OrdersListInterface {
     timeMade?: string,
     totalAmount: number,
     receivedAmount: number,
+    tableNumber?: string,
     orderMadeBy: {
         accountID: string,
         userID: string,

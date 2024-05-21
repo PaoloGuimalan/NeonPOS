@@ -1,8 +1,8 @@
 import Axios from 'axios';
-import { AddProductRequestInterface, CreateNewPermissionPayloadInterface, CreateOrderRequestInterface, GetFilesListResponseNeonRemoteInterface, InitialSetupDeviceVerificationRequestInterface, LoginPayloadInterface, RegisterAccountInterface } from '../typings/interfaces';
+import { AddProductRequestInterface, CloseOrderInterface, CreateNewPermissionPayloadInterface, CreateOrderRequestInterface, GetFilesListResponseNeonRemoteInterface, InitialSetupDeviceVerificationRequestInterface, LoginPayloadInterface, RegisterAccountInterface } from '../typings/interfaces';
 
-// const BACKDOOR = 'http://localhost:3000';
-const BACKDOOR = 'https://neon-pos-api.vercel.app';
+const BACKDOOR = 'http://localhost:3000';
+// const BACKDOOR = 'https://neon-pos-api.vercel.app';
 const NEONSERVICE = 'https://neonaiserver.onrender.com';
 
 async function LoginRequest(payload: LoginPayloadInterface){
@@ -158,6 +158,14 @@ async function GenerateDailyReport(token: string) {
   })
 }
 
+async function CloseOrderRequest(payload: CloseOrderInterface) {
+  return await Axios.post(`${BACKDOOR}/api/orders/closeorder`, payload).then((response) => {
+    return response;
+  }).catch((err) => {
+    throw new Error(err);
+  })
+}
+
 export {
     LoginRequest,
     RegisterAccountRequest,
@@ -176,5 +184,6 @@ export {
     GetCategoriesListRequest,
     CreateCategoryRequest,
     DeleteProductRequest,
-    GenerateDailyReport
+    GenerateDailyReport,
+    CloseOrderRequest
 }

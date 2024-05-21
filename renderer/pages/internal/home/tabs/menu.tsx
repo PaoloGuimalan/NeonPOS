@@ -34,6 +34,8 @@ function Menu() {
   const [isFinalizingOrder, setisFinalizingOrder] = useState<boolean>(false);
   const [isSubmittingNewProduct, setisSubmittingNewProduct] = useState<boolean>(false);
 
+  const [tableNumber, settableNumber] = useState<number>(0);
+
   const [productName, setproductName] = useState<string>("");
   const [productPrice, setproductPrice] = useState<number>(0);
   const [productQuantity, setproductQuantity] = useState<number>(0);
@@ -66,6 +68,7 @@ function Menu() {
     setdiscount(0);
     setisOrderVoided(false);
     setpreviousOrderID("");
+    settableNumber(0);
   }
 
   const GetProductsListProcess = () => {
@@ -106,7 +109,7 @@ function Menu() {
   }
 
   const ConfirmOrder = () => {
-    if(cartlist.length > 0 && (amountreceived >= cartTotalHolder) && (discount === 0 || discount >= 0)){
+    if(cartlist.length > 0 && ((amountreceived >= cartTotalHolder) || (amountreceived == 0)) && (tableNumber !== 0) && (discount === 0 || discount >= 0)){
       setconfirmmodaltrigger(true);
     }
     else{
@@ -121,7 +124,8 @@ function Menu() {
       receivedAmount: amountreceived,
       timeMade: timeGetter(),
       dateMade: dateGetter(),
-      status: isOrderVoided ? "Renewed" : "Initial",
+      status: amountreceived === 0 ? "Pending" : isOrderVoided ? "Renewed" : "Initial",
+      tableNumber: tableNumber.toString(),
       voidedFrom: isOrderVoided ? previousOrderID : "",
       discount: discount,
       orderMadeBy: {
@@ -132,22 +136,45 @@ function Menu() {
     }).then((response) => {
       if(response.data.status){
         dispatchnewalert(dispatch, "success", "Order has been saved");
-        const printTemplateData: ReceiptHolderInterface = {
-          cashier: authentication.user.accountName.firstname,
-          orderID: response.data.result.orderID,
-          deviceID: settings.deviceID,
-          date: dateGetter(),
-          time: timeGetter(),
-          cartlist: cartlist,
-          total: cartTotalHolder.toString(),
-          amount: amountreceived.toString(),
-          change: (amountreceived - cartTotalHolder).toString(),
-          discount: discount.toString()
+        if(amountreceived === 0){
+          const printTemplateData: ReceiptHolderInterface = {
+            cashier: authentication.user.accountName.firstname,
+            orderID: response.data.result.orderID,
+            deviceID: settings.deviceID,
+            date: dateGetter(),
+            time: timeGetter(),
+            cartlist: cartlist,
+            total: cartTotalHolder.toString(),
+            amount: amountreceived.toString(),
+            change: (amountreceived - cartTotalHolder).toString(),
+            discount: discount.toString(),
+            isPending: true
+          }
+  
+          window.ipc.send("ready-print", JSON.stringify(printTemplateData));
+          setconfirmmodaltrigger(false);
+          ClearCartFields();
         }
-
-        window.ipc.send("ready-print", JSON.stringify(printTemplateData));
-        setconfirmmodaltrigger(false);
-        ClearCartFields();
+        else{
+          //print cart list
+          const printTemplateData: ReceiptHolderInterface = {
+            cashier: authentication.user.accountName.firstname,
+            orderID: response.data.result.orderID,
+            deviceID: settings.deviceID,
+            date: dateGetter(),
+            time: timeGetter(),
+            cartlist: cartlist,
+            total: cartTotalHolder.toString(),
+            amount: amountreceived.toString(),
+            change: (amountreceived - cartTotalHolder).toString(),
+            discount: discount.toString(),
+            isPending: false,
+          }
+  
+          window.ipc.send("ready-print", JSON.stringify(printTemplateData));
+          setconfirmmodaltrigger(false);
+          ClearCartFields();
+        }
       }
       else{
         dispatchnewalert(dispatch, "warning", response.data.message);
@@ -494,6 +521,14 @@ function Menu() {
                 )}
                 <div className='bg-shade p-[10px] flex flex-col gap-[5px]'>
                   <div className='w-full bg-white p-[10px] flex flex-col'>
+                    <div className='w-full flex flex-row'>
+                      <span className='text-[14px] font-semibold'>Table Number: </span>
+                      <input type='number' value={tableNumber} onChange={(e) => { settableNumber(parseInt(e.target.value)) }} min={0} step={1} max={30} placeholder='Input amount received' className='flex flex-1 h-[20px] pl-[5px] pr-[5px] text-[14px] outline-none' />
+                    </div>
+                  </div>
+                </div>
+                <div className='bg-shade p-[10px] flex flex-col gap-[5px]'>
+                  <div className='w-full bg-white p-[10px] flex flex-col'>
                     <span className='text-[14px] font-semibold'>Cart Total: &#8369; {cartTotalHolder}</span>
                     <div className='w-full flex flex-row'>
                       <span className='text-[14px] font-semibold'>Amount Received: &#8369; </span>
@@ -512,8 +547,9 @@ function Menu() {
                     <span className='text-[14px]'>Confirm</span>
                   </button>
                   <button onClick={() => {
-                    setcartlist([]);
-                    setamountreceived(0);
+                    // setcartlist([]);
+                    // setamountreceived(0);
+                    ClearCartFields();
                   }} className='h-[30px] bg-red-500 cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
                     <span className='text-[14px]'>Clear</span>
                   </button>

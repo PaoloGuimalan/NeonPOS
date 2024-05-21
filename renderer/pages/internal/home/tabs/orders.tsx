@@ -7,6 +7,7 @@ import sign from 'jwt-encode';
 import { JWT_SECRET } from '../../../../helpers/typings/keys';
 import OrdersItem from '../../../../components/widgets/ordersitem';
 import Pageloader from '../../../../components/holders/pageloader';
+import { motion } from 'framer-motion';
 
 function Orders() {
 
@@ -14,6 +15,8 @@ function Orders() {
 
   const [orderIDInput, setorderIDInput] = useState<string>("");
   const [orderlist, setorderlist] = useState<OrdersListInterface[]>([]);
+
+  const [ordersFilter, setordersFilter] = useState<string>("Pending");
 
   const [isOrdersLoading, setisOrdersLoading] = useState<boolean>(false);
 
@@ -56,6 +59,30 @@ function Orders() {
             )}
           </button>
         </div>
+        <div className='w-full flex flex-row gap-[4px]'>
+          <motion.button 
+          initial={{
+            backgroundColor: "white",
+            color: "black"
+          }}
+          animate={{
+            backgroundColor: ordersFilter === "Pending" ? "#12051c" : "white",
+            color: ordersFilter === "Pending" ? "white" : "black"
+          }}
+          onClick={() => { setordersFilter("Pending") }}
+          className='shadow-lg border-[1px] min-h-[40px] min-w-[130px] pl-[10px] pr-[10px] cursor-pointer shadow-sm rounded-[4px] flex flex-row items-center justify-center gap-[5px]'>Pending</motion.button>
+          <motion.button 
+          initial={{
+            backgroundColor: "white",
+            color: "black"
+          }}
+          animate={{
+            backgroundColor: ordersFilter === "Closed" ? "#12051c" : "white",
+            color: ordersFilter === "Closed" ? "white" : "black"
+          }}
+          onClick={() => { setordersFilter("Closed") }}
+          className='shadow-lg border-[1px] min-h-[40px] min-w-[130px] pl-[10px] pr-[10px] cursor-pointer shadow-sm rounded-[4px] flex flex-row items-center justify-center gap-[5px]'>Closed</motion.button>
+        </div>
         <div className='w-full flex flex-col flex-1 pt-[0px] h-full overflow-y-scroll'>
           <div className='w-full bg-white flex flex-col flex-1 p-[15px] pt-[0px]'>
             <div className='w-full sticky top-0 pt-[15px] bg-white'>
@@ -67,9 +94,16 @@ function Orders() {
             </div>
             {orderlist.length > 0 ? (
               <div className='flex flex-col gap-[0px]'>
-                {orderlist.map((mp: OrdersListInterface, i: number) => {
+                {orderlist.filter((flt: OrdersListInterface) => {
+                  if(ordersFilter === "Closed"){
+                    return flt.status === "Renewed" || flt.status === "Initial" || flt.status === "Voided";
+                  }
+                  else{
+                    return flt.status === ordersFilter;
+                  }
+                }).map((mp: OrdersListInterface, i: number) => {
                   return(
-                    <OrdersItem key={i} mp={mp} />
+                    <OrdersItem key={i} mp={mp} GetOrdersListProcess={GetOrdersListProcess} />
                   )
                 })}
               </div>
