@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion';
 import { AiOutlineLogout } from "react-icons/ai";
-import { MdAccountBox, MdAccountCircle, MdDashboard, MdInventory, MdLock, MdOutlineRestaurantMenu } from "react-icons/md";
+import { MdAccountBox, MdAccountCircle, MdClose, MdDashboard, MdInventory, MdLock, MdOutlineRestaurantMenu, MdSettings } from "react-icons/md";
 import Routes from './routes';
 import { routing } from '../../../utils/routesoptions';
 import { AlertsItem, AuthenticationInterface, SettingsInterface } from '../../../helpers/typings/interfaces';
@@ -10,11 +10,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { SET_AUTHENTICATION } from '../../../helpers/redux/types/types';
 import { authenticationstate } from '../../../helpers/redux/types/states';
 import Alert from '../../../components/widgets/alert';
-import { dispatchclearalerts } from '../../../helpers/reusables/alertdispatching';
+import { dispatchclearalerts, dispatchnewalert } from '../../../helpers/reusables/alertdispatching';
 import { CloseSSENotifications, SSENotificationsTRequest } from '../../../helpers/https/sse';
 import { GetFilesListResponseNeonRemote } from '../../../helpers/https/requests';
 import NeonPOSSVG from '../../../assets/NeonPOS_BG.svg'
 import { IoReceiptSharp } from 'react-icons/io5';
+import ReusableModal from '../../../components/modals/reusablemodal';
 
 function Home() {
 
@@ -25,6 +26,7 @@ function Home() {
   const router = useRouter();
 
   const [currenttab, setcurrenttab] = useState<string>("");
+  const [toggleTroubleshoot, settoggleTroubleshoot] = useState<boolean>(false);
 
   useEffect(() => {
     dispatchclearalerts(dispatch);
@@ -80,9 +82,61 @@ function Home() {
     }
   },[settings])
 
+  const OpenNeonRemote = () => {
+    // window.ipc.send('execute-command', 'gnome-terminal');
+    // settoggleSettingsModal(false);
+    window.ipc.send('execute-command', 'xdg-open https://neonremote.netlify.app');
+    settoggleTroubleshoot(false);
+  }
+
+  const RestartReportWindow = () => {
+    if(settings.setup === "POS"){
+      window.ipc.send('restart-report-window', '');
+      settoggleTroubleshoot(false);
+    }
+    else{
+      dispatchnewalert(dispatch, "warning", "Action unavailable, current setup is not POS type.")
+    }
+  }
+
+  const RestartReceiptWindow = () => {
+    if(settings.setup === "POS"){
+      window.ipc.send('restart-receipt-window', '');
+      settoggleTroubleshoot(false);
+    }
+    else{
+      dispatchnewalert(dispatch, "warning", "Action unavailable, current setup is not POS type.")
+    }
+  }
+
   return (
     authentication.auth && (
       <div style={{ background: `url(${NeonPOSSVG.src})`, backgroundSize: "cover", backgroundPosition: "bottom", backgroundRepeat: "no-repeat" }} className={`w-full h-full bg-primary absolute flex flex-1 flex-row`}>
+        {toggleTroubleshoot && (
+          <ReusableModal shaded={true} padded={false} children={
+            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.4 }} className='bg-white w-[95%] h-[95%] max-w-[450px] max-h-[180px] rounded-[7px] p-[20px] pb-[5px] flex flex-col'>
+              <div className='w-full flex flex-row'>
+                <div className='flex flex-1'>
+                  <span className='text-[16px] font-semibold'>Troubleshoot Settings</span>
+                </div>
+                <div className='w-fit'>
+                  <button onClick={() => { settoggleTroubleshoot(false); }}><MdClose /></button>
+                </div>
+              </div>
+              <div className='w-full flex flex-1 flex-col items-center justify-center gap-[3px]'>
+                  <button onClick={OpenNeonRemote} className='h-[30px] w-full bg-green-500 cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
+                    <span className='text-[14px]'>Open Neon Remote</span>
+                  </button>
+                  <button onClick={RestartReceiptWindow} className='h-[30px] w-full bg-green-700 cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
+                    <span className='text-[14px]'>Restart Receipt Window</span>
+                  </button>
+                  <button onClick={RestartReportWindow} className='h-[30px] w-full bg-orange-500 cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
+                    <span className='text-[14px]'>Restart Report Window</span>
+                  </button>
+              </div>
+            </motion.div>
+          } />
+        )}
         <div id='div_alerts_container' ref={scrollDivAlerts}>
           {alerts.map((al: any, i: number) => {
             return(
@@ -219,7 +273,18 @@ function Home() {
                 </motion.button>
               )}
             </div>
-            <div className='bg-transparent w-full h-[100px] flex items-center justify-center p-[7px]'>
+            <div className='bg-transparent w-full h-[200px] flex flex-col items-center justify-end p-[7px]'>
+              <motion.button
+              initial={{
+                color: "white"
+              }}
+              whileHover={{
+                background: "white",
+                color: "black"
+              }}
+              onClick={() => { settoggleTroubleshoot(!toggleTroubleshoot) }} className='text-red w-full h-[70px] rounded-[10px] flex items-center justify-center'>
+                <MdSettings style={{ fontSize: "27px" }} />
+              </motion.button>
               <motion.button
               initial={{
                 color: "red"
