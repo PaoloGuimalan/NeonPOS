@@ -5,7 +5,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router';
 import Alert from '../components/widgets/alert';
 import Setup from './setup/setup';
-import { SET_SETTINGS } from '../helpers/redux/types/types';
+import { SET_AUTHENTICATION, SET_SETTINGS } from '../helpers/redux/types/types';
+import Pageloader from '../components/holders/pageloader';
 
 export default function HomePage() {
 
@@ -16,6 +17,7 @@ export default function HomePage() {
   const router = useRouter();
 
   const [isSettingsDone, setisSettingsDone] = useState<boolean | null>(null);
+  const [isAuthLoading, setisAuthLoading] = useState<boolean>(true);
 
   const scrollDivAlerts = useRef<HTMLDivElement>(null);
 
@@ -67,6 +69,25 @@ export default function HomePage() {
     }
   }, [settings]);
 
+  useEffect(() => {
+    const authenticationtoken = localStorage.getItem("authentication");
+    if(authenticationtoken){
+      dispatch({
+        type: SET_AUTHENTICATION,
+        payload: {
+          authentication: {
+            auth: true,
+            user: JSON.parse(authenticationtoken).user
+          }
+        }
+      })
+      setisAuthLoading(false);
+    }
+    else{
+      setisAuthLoading(false);
+    }
+  },[])
+
   return (
     <React.Fragment>
       <div id='div_alerts_container' ref={scrollDivAlerts}>
@@ -78,7 +99,11 @@ export default function HomePage() {
       </div>
       {isSettingsDone !== null && (
         isSettingsDone ? (
-          <Login />
+          isAuthLoading ? (
+            <Pageloader />
+          ) : (
+            <Login />
+          )
         ) : (
           <Setup />
         )

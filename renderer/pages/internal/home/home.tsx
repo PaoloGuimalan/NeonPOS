@@ -41,6 +41,7 @@ function Home() {
   const LogoutProcess = () => {
     CloseSSENotifications();
     dispatchclearalerts(dispatch);
+    localStorage.removeItem("authentication");
     dispatch({
       type: SET_AUTHENTICATION,
       payload: {

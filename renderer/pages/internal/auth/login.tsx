@@ -66,6 +66,12 @@ function Login() {
               }
             }
           })
+          localStorage.setItem("authentication", JSON.stringify({
+            user: {
+              ...response.data.result[0],
+              permissions: permissionsmapper
+            }
+          }))
           router.push("/internal/home/home");
           dispatchnewalert(dispatch, "success", "Successfully logged in");
           return;
@@ -75,7 +81,7 @@ function Login() {
         dispatchnewalert(dispatch, "warning", "Credentials are incorrect");
       }
 
-      setaccountID("");
+      // setaccountID("");
       setpassword("");
     }).catch((err) => {
       setisLoggingIn(false);
