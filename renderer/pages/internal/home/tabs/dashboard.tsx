@@ -14,7 +14,7 @@ function Dashboard() {
   const dispatch = useDispatch();
 
   const PrintDailyReportProcess = () => {
-    const encodedtoken = sign({ userID: settings.userID, deviceID: "DVC_38954373367696878919", datescope: "05/21/2024", timescope: timeGetter() }, JWT_SECRET);
+    const encodedtoken = sign({ userID: settings.userID, deviceID: settings.deviceID, datescope: dateGetter(), timescope: timeGetter() }, JWT_SECRET);
     GenerateDailyReport(encodedtoken).then((response) => {
       if(response.data.status){
         const printTemplateData: DailyReportInterface = {
