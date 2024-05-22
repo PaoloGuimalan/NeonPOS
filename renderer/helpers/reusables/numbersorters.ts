@@ -8,6 +8,11 @@ function arrayMax(arr: number[]) {
     return max;
 };
 
+function toFixedIfNecessary( value: string, dp: number ){
+  return +parseFloat(value).toFixed( dp );
+}
+
 export {
-    arrayMax
+    arrayMax,
+    toFixedIfNecessary
 }

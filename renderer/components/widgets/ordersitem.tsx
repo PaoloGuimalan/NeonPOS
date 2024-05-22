@@ -30,10 +30,10 @@ function OrdersItem({ mp, GetOrdersListProcess }: OrdersItemProp) {
         date: mp.dateMade,
         time: mp.timeMade || "",
         cartlist: mp.orderSet,
-        total: mp.totalAmount.toString(),
-        amount: mp.receivedAmount.toString(),
-        change: (mp.receivedAmount - mp.totalAmount).toString(),
-        discount: mp.discount.toString(),
+        total: mp.totalAmount.toFixed(2).toString(),
+        amount: mp.receivedAmount.toFixed(2).toString(),
+        change: (mp.receivedAmount - mp.totalAmount).toFixed(2).toString(),
+        discount: parseInt(mp.discount).toFixed(0).toString(),
         isPending: false,
       }
 
@@ -48,10 +48,10 @@ function OrdersItem({ mp, GetOrdersListProcess }: OrdersItemProp) {
         date: mp.dateMade,
         time: mp.timeMade,
         cartlist: mp.orderSet,
-        total: mp.totalAmount.toString(),
-        amount: mp.receivedAmount.toString(),
-        change: (mp.receivedAmount - mp.totalAmount).toString(),
-        discount: mp.discount.toString(),
+        total: mp.totalAmount.toFixed(2).toString(),
+        amount: mp.receivedAmount.toFixed(2).toString(),
+        change: (mp.receivedAmount - mp.totalAmount).toFixed(2).toString(),
+        discount: parseInt(mp.discount).toFixed(0).toString(),
         isPending: true,
     }
 
@@ -86,10 +86,10 @@ function OrdersItem({ mp, GetOrdersListProcess }: OrdersItemProp) {
                         date: response.data.result[0].dateMade,
                         time: response.data.result[0].timeMade,
                         cartlist: response.data.result[0].orderSet,
-                        total: response.data.result[0].totalAmount.toString(),
-                        amount: response.data.result[0].receivedAmount.toString(),
-                        change: (response.data.result[0].receivedAmount - response.data.result[0].totalAmount).toString(),
-                        discount: response.data.result[0].discount.toString(),
+                        total: response.data.result[0].totalAmount.toFixed(2).toString(),
+                        amount: response.data.result[0].receivedAmount.toFixed(2).toString(),
+                        change: (response.data.result[0].receivedAmount - response.data.result[0].totalAmount).toFixed(2).toString(),
+                        discount: response.data.result[0].discount.toFixed(0).toString(),
                         isPending: false,
                     }
 
@@ -164,9 +164,9 @@ function OrdersItem({ mp, GetOrdersListProcess }: OrdersItemProp) {
             <div className='flex flex-1 flex-col items-center'>
                 <div className='flex flex-row gap-[20px]'>
                     <div className='flex flex-col'>
-                        <span className='text-[14px]'>Total: &#8369;{mp.totalAmount}</span>
-                        <span className='text-[14px]'>Amount: &#8369;{mp.receivedAmount}</span>
-                        <span className='text-[14px]'>Change: &#8369;{mp.receivedAmount - (mp.totalAmount - (mp.totalAmount * ((mp.discount ? parseInt(mp.discount) : 0) / 100)))}</span>
+                        <span className='text-[14px]'>Total: &#8369;{mp.totalAmount.toFixed(2)}</span>
+                        <span className='text-[14px]'>Amount: &#8369;{mp.receivedAmount.toFixed(2)}</span>
+                        <span className='text-[14px]'>Change: &#8369;{(mp.receivedAmount - (mp.totalAmount - (mp.totalAmount * ((mp.discount ? parseInt(mp.discount) : 0) / 100)))).toFixed(2)}</span>
                         <span style={{ backgroundColor: mp.status? mp.status === "Pending" ? "orange" : mp.status === "Voided" ? "red" : "#87CEEB" : "transparent", color: "white" }} 
                         className='text-[14px] w-fit p-[2px] px-[10px] mt-[5px] rounded-[4px] font-semibold'>{mp.status}</span>
                     </div>
@@ -174,8 +174,8 @@ function OrdersItem({ mp, GetOrdersListProcess }: OrdersItemProp) {
                         <span className='text-[14px]'>Items: {mp.orderSet.length}</span>
                         <span className='text-[14px]'>VAT (12%): &#8369;{(mp.totalAmount * 0.12).toFixed(2)}</span>
                         <span className='text-[14px]'>
-                            Discount ({mp.discount ? mp.discount : 0}%): 
-                            &#8369;{mp.discount ? (mp.totalAmount * (parseInt(mp.discount) / 100)) : 0}
+                            Discount ({mp.discount ? parseInt(mp.discount).toFixed(0) : 0}%): 
+                            &#8369;{mp.discount ? (mp.totalAmount * (parseInt(mp.discount) / 100)).toFixed(2) : 0}
                         </span>
                         <span className='text-[14px]'>Table Number: {mp.tableNumber || "None"}</span>
                     </div>

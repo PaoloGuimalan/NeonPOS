@@ -14,7 +14,7 @@ function Dashboard() {
   const dispatch = useDispatch();
 
   const PrintDailyReportProcess = () => {
-    const encodedtoken = sign({ userID: settings.userID, deviceID: settings.deviceID, datescope: dateGetter(), timescope: timeGetter() }, JWT_SECRET);
+    const encodedtoken = sign({ userID: settings.userID, deviceID: "DVC_38954373367696878919", datescope: "05/21/2024", timescope: timeGetter() }, JWT_SECRET);
     GenerateDailyReport(encodedtoken).then((response) => {
       if(response.data.status){
         const printTemplateData: DailyReportInterface = {
@@ -22,12 +22,12 @@ function Dashboard() {
           deviceID: settings.deviceID,
           dateMade: response.data.result[0].dateMade,
           numberofsales: response.data.result[0].numberofsales,
-          totalsales: response.data.result[0].totalsales,
-          discount: response.data.result[0].discount,
-          discounttotal: response.data.result[0].discounttotal,
-          saleswdiscount: response.data.result[0].saleswdiscount,
-          taxtotal: response.data.result[0].taxtotal,
-          taxedsales: response.data.result[0].taxedsales
+          totalsales: response.data.result[0].totalsales.toFixed(2),
+          discount: response.data.result[0].discount.toFixed(0),
+          discounttotal: response.data.result[0].discounttotal.toFixed(2),
+          saleswdiscount: response.data.result[0].saleswdiscount.toFixed(2),
+          taxtotal: response.data.result[0].taxtotal.toFixed(2),
+          taxedsales: response.data.result[0].taxedsales.toFixed(2)
         }
     
         window.ipc.send("ready-generate", JSON.stringify(printTemplateData));

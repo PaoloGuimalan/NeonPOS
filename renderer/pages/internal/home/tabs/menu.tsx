@@ -144,10 +144,10 @@ function Menu() {
             date: dateGetter(),
             time: timeGetter(),
             cartlist: cartlist,
-            total: cartTotalHolder.toString(),
-            amount: amountreceived.toString(),
-            change: (amountreceived - cartTotalHolder).toString(),
-            discount: discount.toString(),
+            total: cartTotalHolder.toFixed(2).toString(),
+            amount: amountreceived.toFixed(2).toString(),
+            change: (amountreceived - cartTotalHolder).toFixed(2).toString(),
+            discount: discount.toFixed(0).toString(),
             isPending: true
           }
   
@@ -164,10 +164,10 @@ function Menu() {
             date: dateGetter(),
             time: timeGetter(),
             cartlist: cartlist,
-            total: cartTotalHolder.toString(),
-            amount: amountreceived.toString(),
-            change: (amountreceived - cartTotalHolder).toString(),
-            discount: discount.toString(),
+            total: cartTotalHolder.toFixed(2).toString(),
+            amount: amountreceived.toFixed(2).toString(),
+            change: (amountreceived - cartTotalHolder).toFixed(2).toString(),
+            discount: discount.toFixed(0).toString(),
             isPending: false,
           }
   

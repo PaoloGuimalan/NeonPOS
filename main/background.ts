@@ -133,6 +133,9 @@ if (isProd) {
           nodeIntegration: true,
         },
       })
+      receiptWindow.on("close", () => {
+        receiptWindow = null;
+      });
       if (isProd) {
         // mainWindow.webContents.openDevTools()
         await receiptWindow.loadURL('app://./external/receipt')
@@ -160,6 +163,9 @@ if (isProd) {
           nodeIntegration: true,
         },
       })
+      generateReportWindow.on("close", () => {
+        generateReportWindow = null;
+      });
       if (isProd) {
         // mainWindow.webContents.openDevTools()
         await generateReportWindow.loadURL('app://./external/generatereport')
@@ -199,108 +205,134 @@ if (isProd) {
   })
 
   ipcMain.on('restart-report-window', async (event, command) => {
-    if(generateReportWindow){
-      generateReportWindow.close();
-      generateReportWindow = null;
-      generateReportWindow = createWindow('generate_report', {
-        // kiosk: true,
-        width: 300,
-        height: 0,
-        frame: false,
-        skipTaskbar: true,
-        fullscreen: false,
-        x: 0,
-        y: height + 30,
-        resizable: false,
-        // alwaysOnTop: true,
-        webPreferences: {
-          preload: path.join(__dirname, 'preload.js'),
-          nodeIntegration: true,
-        },
-      })
-      if (isProd) {
-        await generateReportWindow.loadURL('app://./external/generatereport')
-      } else {
-        const port = process.argv[2]
-        await generateReportWindow.loadURL(`http://localhost:${port}/external/generatereport`)
+    try{
+      if(generateReportWindow){
+        console.log("GENERATE WINDOW CL ST: ", generateReportWindow.isClosable());
+        if(generateReportWindow.isClosable()){
+          generateReportWindow.close();
+        }
+        generateReportWindow = null;
+        generateReportWindow = createWindow('generate_report', {
+          // kiosk: true,
+          width: 300,
+          height: 0,
+          frame: false,
+          skipTaskbar: true,
+          fullscreen: false,
+          x: 0,
+          y: height + 30,
+          resizable: false,
+          // alwaysOnTop: true,
+          webPreferences: {
+            preload: path.join(__dirname, 'preload.js'),
+            nodeIntegration: true,
+          },
+        })
+        generateReportWindow.on("close", () => {
+          generateReportWindow = null;
+        });
+        if (isProd) {
+          await generateReportWindow.loadURL('app://./external/generatereport')
+        } else {
+          const port = process.argv[2]
+          await generateReportWindow.loadURL(`http://localhost:${port}/external/generatereport`)
+        }
       }
-    }
-    else{
-      generateReportWindow = createWindow('generate_report', {
-        // kiosk: true,
-        width: 300,
-        height: 0,
-        frame: false,
-        skipTaskbar: true,
-        fullscreen: false,
-        x: 0,
-        y: height + 30,
-        resizable: false,
-        // alwaysOnTop: true,
-        webPreferences: {
-          preload: path.join(__dirname, 'preload.js'),
-          nodeIntegration: true,
-        },
-      })
-      if (isProd) {
-        await generateReportWindow.loadURL('app://./external/generatereport')
-      } else {
-        const port = process.argv[2]
-        await generateReportWindow.loadURL(`http://localhost:${port}/external/generatereport`)
+      else{
+        generateReportWindow = createWindow('generate_report', {
+          // kiosk: true,
+          width: 300,
+          height: 0,
+          frame: false,
+          skipTaskbar: true,
+          fullscreen: false,
+          x: 0,
+          y: height + 30,
+          resizable: false,
+          // alwaysOnTop: true,
+          webPreferences: {
+            preload: path.join(__dirname, 'preload.js'),
+            nodeIntegration: true,
+          },
+        })
+        generateReportWindow.on("close", () => {
+          generateReportWindow = null;
+        });
+        if (isProd) {
+          await generateReportWindow.loadURL('app://./external/generatereport')
+        } else {
+          const port = process.argv[2]
+          await generateReportWindow.loadURL(`http://localhost:${port}/external/generatereport`)
+        }
       }
+    }catch(ex){
+      console.log("GEN WINDOW ERR: ", ex);
     }
   })
 
   ipcMain.on('restart-receipt-window', async (event, command) => {
-    if(receiptWindow){
-      receiptWindow.close();
-      receiptWindow = null;
-      receiptWindow = createWindow('receipt', {
-        // kiosk: true,
-        width: 300,
-        height: 0,
-        frame: false,
-        skipTaskbar: true,
-        fullscreen: false,
-        x: 0,
-        y: height + 30,
-        resizable: false,
-        // alwaysOnTop: true,
-        webPreferences: {
-          preload: path.join(__dirname, 'preload.js'),
-          nodeIntegration: true,
-        },
-      })
-      if (isProd) {
-        await receiptWindow.loadURL('app://./external/receipt')
-      } else {
-        const port = process.argv[2]
-        await receiptWindow.loadURL(`http://localhost:${port}/external/receipt`)
+    try{
+      if(receiptWindow){
+        console.log("RECEIPT WINDOW: ", receiptWindow.isClosable());
+        if(receiptWindow.isClosable()){
+          receiptWindow.close();
+        }
+        receiptWindow = null;
+        receiptWindow = createWindow('receipt', {
+          // kiosk: true,
+          width: 300,
+          height: 0,
+          frame: false,
+          skipTaskbar: true,
+          fullscreen: false,
+          x: 0,
+          y: height + 30,
+          resizable: false,
+          // alwaysOnTop: true,
+          webPreferences: {
+            preload: path.join(__dirname, 'preload.js'),
+            nodeIntegration: true,
+          },
+        })
+        receiptWindow.on("close", () => {
+          receiptWindow = null;
+        });
+        if (isProd) {
+          await receiptWindow.loadURL('app://./external/receipt')
+        } else {
+          const port = process.argv[2]
+          await receiptWindow.loadURL(`http://localhost:${port}/external/receipt`)
+        }
       }
-    }
-    else{
-      receiptWindow = createWindow('receipt', {
-        // kiosk: true,
-        width: 300,
-        height: 0,
-        frame: false,
-        skipTaskbar: true,
-        fullscreen: false,
-        x: 0,
-        y: height + 30,
-        resizable: false,
-        // alwaysOnTop: true,
-        webPreferences: {
-          preload: path.join(__dirname, 'preload.js'),
-          nodeIntegration: true,
-        },
-      })
-      if (isProd) {
-        await receiptWindow.loadURL('app://./external/receipt')
-      } else {
-        const port = process.argv[2]
-        await receiptWindow.loadURL(`http://localhost:${port}/external/receipt`)
+      else{
+        receiptWindow = createWindow('receipt', {
+          // kiosk: true,
+          width: 300,
+          height: 0,
+          frame: false,
+          skipTaskbar: true,
+          fullscreen: false,
+          x: 0,
+          y: height + 30,
+          resizable: false,
+          // alwaysOnTop: true,
+          webPreferences: {
+            preload: path.join(__dirname, 'preload.js'),
+            nodeIntegration: true,
+          },
+        })
+        receiptWindow.on("close", () => {
+          receiptWindow = null;
+        });
+        if (isProd) {
+          await receiptWindow.loadURL('app://./external/receipt')
+        } else {
+          const port = process.argv[2]
+          await receiptWindow.loadURL(`http://localhost:${port}/external/receipt`)
+        }
       }
+    }catch(ex){
+      console.log("REC WINDOW ERR: ", ex);
     }
   })
 
