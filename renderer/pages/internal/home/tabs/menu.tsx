@@ -125,7 +125,7 @@ function Menu() {
       timeMade: timeGetter(),
       dateMade: dateGetter(),
       status: amountreceived === 0 ? "Pending" : isOrderVoided ? "Renewed" : "Initial",
-      tableNumber: tableNumber.toString(),
+      tableNumber: isNaN(tableNumber) ? "C/O" : tableNumber.toString(),
       voidedFrom: isOrderVoided ? previousOrderID : "",
       discount: discount,
       orderMadeBy: {

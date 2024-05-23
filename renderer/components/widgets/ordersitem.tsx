@@ -61,7 +61,7 @@ function OrdersItem({ mp, GetOrdersListProcess }: OrdersItemProp) {
   }
 
   const PrintSummary = () => {
-    if(amountreceived >= mp.totalAmount){
+    if(amountreceived >= (mp.totalAmount - mp.totalAmount * (parseInt(mp.discount) / 100))){
         setisClosingOrder(true);
         CloseOrderRequest({
             orderID: mp.orderID,
