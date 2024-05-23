@@ -89,7 +89,7 @@ function Receipt() {
             </div>
             <div className='w-full flex flex-col items-center gap-[0px] text-[12px]'>
                 <div className='flex w-full'>
-                    <span>TOTAL: &#8369;{receiptholder.total}</span>
+                    <span>TOTAL: &#8369;{(parseInt(receiptholder.total) - parseInt(receiptholder.total) * (parseInt(receiptholder.discount) / 100))}</span>
                 </div>
                 {receiptholder.isPending !== null && (
                     receiptholder.isPending === false && (

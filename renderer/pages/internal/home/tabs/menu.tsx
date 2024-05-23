@@ -4,11 +4,11 @@ import { MdAddToPhotos, MdClose } from 'react-icons/md';
 import { TbCategoryPlus } from "react-icons/tb";
 import { AuthenticationInterface, CartItemInterface, CategoriesListInterface, ProductDataInterface, ReceiptHolderInterface, SettingsInterface } from '../../../../helpers/typings/interfaces';
 import { useDispatch, useSelector } from 'react-redux';
-import { AddProductRequest, CreateCategoryRequest, CreateOrderRequest, GetCategoriesListRequest, GetProductsListRequest, LoginRequest } from '../../../../helpers/https/requests';
+import { AddProductRequest, CreateCategoryRequest, CreateOrderRequest, GetCategoriesListRequest, GetOrdersListRequest, GetProductsListRequest, LoginRequest } from '../../../../helpers/https/requests';
 import ReusableModal from '../../../../components/modals/reusablemodal';
 import { motion } from 'framer-motion';
 import { dispatchnewalert } from '../../../../helpers/reusables/alertdispatching';
-import { arrayMax } from '../../../../helpers/reusables/numbersorters';
+import { arrayMax, isNumeric } from '../../../../helpers/reusables/numbersorters';
 import { dateGetter, timeGetter } from '../../../../helpers/reusables/generatefns';
 import Buttonloader from '../../../../components/loaders/buttonloader';
 import Pageloader from '../../../../components/holders/pageloader';
@@ -20,6 +20,9 @@ function Menu() {
 
   const authentication: AuthenticationInterface = useSelector((state: any) => state.authentication);
   const settings: SettingsInterface = useSelector((state: any) => state.settings);
+
+  const [isLoadingOrder, setisLoadingOrder] = useState<boolean>(false);
+  const [isOrderLoaded, setisOrderLoaded] = useState<boolean>(false);
 
   const [isOrderVoided, setisOrderVoided] = useState<boolean>(false);
   const [previousOrderID, setpreviousOrderID] = useState<string>("");
@@ -69,6 +72,7 @@ function Menu() {
     setisOrderVoided(false);
     setpreviousOrderID("");
     settableNumber(0);
+    setisOrderLoaded(false);
   }
 
   const GetProductsListProcess = () => {
@@ -110,7 +114,22 @@ function Menu() {
 
   const ConfirmOrder = () => {
     if(cartlist.length > 0 && ((amountreceived >= cartTotalHolder) || (amountreceived == 0)) && (tableNumber !== 0) && (discount === 0 || discount >= 0)){
-      setconfirmmodaltrigger(true);
+      if(isOrderVoided){
+        if(previousOrderID.trim() === ""){
+          dispatchnewalert(dispatch, "warning", "Please provide an Order ID");
+        }
+        else{
+          if(isOrderLoaded){
+            setconfirmmodaltrigger(true);
+          }
+          else{
+            dispatchnewalert(dispatch, "warning", "Order ID is not loaded yet");
+          }
+        }
+      }
+      else{
+        setconfirmmodaltrigger(true);
+      }
     }
     else{
       dispatchnewalert(dispatch, "warning", "Order is still incomplete");
@@ -274,6 +293,49 @@ function Menu() {
     }
     else{
       dispatchnewalert(dispatch, "warning", "Please provide a category name");
+    }
+  }
+
+  const GetOrdersListProcess = (orderID: string) => {
+    if(orderID.trim() === ""){
+      dispatchnewalert(dispatch, "warning", "Please provide an Order ID");
+    }
+    else{
+      setisLoadingOrder(true);
+      const encodeuserID = sign({ userID: settings.userID, orderID: orderID }, JWT_SECRET);
+      GetOrdersListRequest(encodeuserID).then((response) => {
+        if(response.data.status){
+          // setorderlist(response.data.result);
+          if(response.data.result.length > 0){
+            const data = response.data.result[0];
+            const toloadcart: CartItemInterface[] = response.data.result[0].orderSet.map((mp: CartItemInterface, i: number) => ({
+              pendingID: i + 1,
+              product: mp.product,
+              quantity: mp.quantity,
+            }))
+            // load order data to cart
+            setcartlist(toloadcart);
+            setamountreceived(data.receivedAmount);
+            setdiscount(data.discount);
+            settableNumber(isNumeric(data.tableNumber) ? parseInt(data.tableNumber) : 0);
+            // end of load data to cart
+            // alert(JSON.stringify(response.data.result[0], null, 4))
+            setisOrderLoaded(true);
+            dispatchnewalert(dispatch, "info", "Order ID has been loaded");
+          }
+          else{
+            dispatchnewalert(dispatch, "warning", "Cannot find Order ID");
+          }
+        }
+        else{
+          dispatchnewalert(dispatch, "error", response.data.message);
+        }
+        setisLoadingOrder(false);
+      }).catch((err) => {
+        setisLoadingOrder(false);
+        dispatchnewalert(dispatch, "error", "Error loading order request");
+        console.log(err);
+      })
     }
   }
 
@@ -524,9 +586,18 @@ function Menu() {
                       animate={{
                         height: isOrderVoided ? "auto": "0px"
                       }}
-                      className='w-full flex flex-row overflow-y-hidden'>
-                        <span className='text-[14px] font-semibold'>Previous Order ID: </span>
-                        <input type='text' value={previousOrderID} onChange={(e) => { setpreviousOrderID(e.target.value) }} placeholder='Input Order ID to be voided' className='flex flex-1 h-[20px] pl-[5px] pr-[5px] text-[14px] outline-none' />
+                      className='w-full flex flex-col overflow-y-hidden gap-[7px]'>
+                        <div className=' w-full flex flex-row'>
+                          <span className='text-[14px] font-semibold'>Previous Order ID: </span>
+                          <input type='text' value={previousOrderID} onChange={(e) => { setpreviousOrderID(e.target.value) }} placeholder='Input Order ID to be voided' className='flex flex-1 h-[20px] pl-[5px] pr-[5px] text-[14px] outline-none' />
+                        </div>
+                        <button disabled={isLoadingOrder} onClick={() => { GetOrdersListProcess(previousOrderID); }} className='min-h-[30px] rounded-[4px] text-[12px] justify-center text-white bg-blue-500 border-[1px] p-[5px] pl-[10px] pr-[10px] font-semibold flex flex-row items-center gap-[2px]'>
+                          {isLoadingOrder ? (
+                            <Buttonloader size='14px' />
+                          ) : (
+                            <span className='select-none'>Load Order ID</span>
+                          )}
+                        </button>
                       </motion.div>
                     </div>
                   </div>

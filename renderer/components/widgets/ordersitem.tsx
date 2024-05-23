@@ -175,7 +175,7 @@ function OrdersItem({ mp, GetOrdersListProcess }: OrdersItemProp) {
             <div className='flex flex-1 flex-col items-center'>
                 <div className='flex flex-row gap-[20px]'>
                     <div className='flex flex-col'>
-                        <span className='text-[14px]'>Total: &#8369;{mp.totalAmount.toFixed(2)}</span>
+                        <span className='text-[14px]'>Total: &#8369;{(mp.totalAmount - mp.totalAmount * (parseInt(mp.discount) / 100)).toFixed(2)}</span>
                         <span className='text-[14px]'>Amount: &#8369;{mp.receivedAmount.toFixed(2)}</span>
                         <span className='text-[14px]'>Change: &#8369;{(mp.receivedAmount - (mp.totalAmount - (mp.totalAmount * ((mp.discount ? parseInt(mp.discount) : 0) / 100)))).toFixed(2)}</span>
                         <span style={{ backgroundColor: mp.status? mp.status === "Pending" ? "orange" : mp.status === "Voided" ? "red" : "#87CEEB" : "transparent", color: "white" }} 
