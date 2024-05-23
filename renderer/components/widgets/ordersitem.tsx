@@ -34,6 +34,7 @@ function OrdersItem({ mp, GetOrdersListProcess }: OrdersItemProp) {
         amount: mp.receivedAmount.toFixed(2).toString(),
         change: (mp.receivedAmount - mp.totalAmount).toFixed(2).toString(),
         discount: parseInt(mp.discount).toFixed(0).toString(),
+        tableNumber: mp.tableNumber,
         isPending: false,
       }
 
@@ -52,6 +53,7 @@ function OrdersItem({ mp, GetOrdersListProcess }: OrdersItemProp) {
         amount: mp.receivedAmount.toFixed(2).toString(),
         change: (mp.receivedAmount - mp.totalAmount).toFixed(2).toString(),
         discount: parseInt(mp.discount).toFixed(0).toString(),
+        tableNumber: mp.tableNumber,
         isPending: true,
     }
 
@@ -90,6 +92,7 @@ function OrdersItem({ mp, GetOrdersListProcess }: OrdersItemProp) {
                         amount: response.data.result[0].receivedAmount.toFixed(2).toString(),
                         change: (response.data.result[0].receivedAmount - response.data.result[0].totalAmount).toFixed(2).toString(),
                         discount: response.data.result[0].discount.toFixed(0).toString(),
+                        tableNumber: mp.tableNumber,
                         isPending: false,
                     }
 

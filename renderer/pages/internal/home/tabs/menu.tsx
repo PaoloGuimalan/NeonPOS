@@ -148,6 +148,7 @@ function Menu() {
             amount: amountreceived.toFixed(2).toString(),
             change: (amountreceived - cartTotalHolder).toFixed(2).toString(),
             discount: discount.toFixed(0).toString(),
+            tableNumber: isNaN(tableNumber) ? "C/O" : tableNumber.toString(),
             isPending: true
           }
   
@@ -168,6 +169,7 @@ function Menu() {
             amount: amountreceived.toFixed(2).toString(),
             change: (amountreceived - cartTotalHolder).toFixed(2).toString(),
             discount: discount.toFixed(0).toString(),
+            tableNumber: isNaN(tableNumber) ? "C/O" : tableNumber.toString(),
             isPending: false,
           }
   

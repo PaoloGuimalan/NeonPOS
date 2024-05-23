@@ -163,6 +163,7 @@ export interface ReceiptHolderInterface {
     amount: string;
     change: string;
     discount: string;
+    tableNumber: string;
     isPending: boolean | null;
 }
 

@@ -14,6 +14,7 @@ function Receipt() {
     amount: "",
     change: "",
     discount: "",
+    tableNumber: "",
     isPending: null,
   });
 
