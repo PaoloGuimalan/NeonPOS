@@ -229,8 +229,8 @@ function Menu() {
   }
 
   useEffect(() => {
-    GetProductsListProcess();
     GetCategoriesListProcess();
+    GetProductsListProcess();
   },[settings]);
 
   const BroadcastInvoice = () =>{
@@ -387,6 +387,16 @@ function Menu() {
                   <span className='text-[14px]'>Add Category</span>
                 </button>
               )}
+              <div className='flex flex-1 justify-end'>
+                <button onClick={() => {
+                  setproductlist([]);
+                  setcategorieslist([]);
+                  GetCategoriesListProcess();
+                  GetProductsListProcess();
+                }} className='text-text-secondary min-h-[40px] min-w-[100px] pl-[10px] pr-[10px] bg-white cursor-pointer shadow-sm rounded-[4px] flex flex-row items-center justify-center gap-[5px]'>
+                  <span className='text-[14px] font-semibold text-black'>Refresh</span>
+                </button>
+              </div>
             </div>
             <div className='w-full max-w-[calc(100vw-570px)] flex flex-row h-[50px]'>
                 <div className='w-full flex flex-row gap-[2px] overflow-x-scroll overflow-y-hidden thinscroller pb-[5px]'>

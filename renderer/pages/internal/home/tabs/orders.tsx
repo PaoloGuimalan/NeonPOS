@@ -55,7 +55,7 @@ function Orders() {
             {isOrdersLoading ? (
               <Buttonloader size='14px' />
             ) : (
-              <span className='text-[14px]'>Clear</span>
+              <span className='text-[14px]'>{orderIDInput.trim() !== "" ? "Clear" : "Refresh"}</span>
             )}
           </button>
         </div>
