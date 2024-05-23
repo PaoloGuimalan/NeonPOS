@@ -150,14 +150,22 @@ function OrdersItem({ mp, GetOrdersListProcess }: OrdersItemProp) {
         )}
         <div className='flex flex-row w-full'>
             <div className='flex flex-1 flex-col'>
-                <button onClick={() => { setexpandOrder(!expandOrder) }} className='text-[16px] font-semibold flex flex-row items-center gap-[2px]'>
-                    <span>{mp.orderID}</span>
-                    {expandOrder ? (
-                        <RiArrowDownSLine style={{ fontSize: "20px" }} />
-                    ) : (
-                        <RiArrowRightSLine style={{ fontSize: "20px" }} />
-                    )}
-                </button>
+                <div className='flex flex-row gap-[10px]'>
+                    <button onClick={() => { setexpandOrder(!expandOrder) }} className='text-[16px] font-semibold flex flex-row items-center gap-[2px]'>
+                        <span className='select-none'>{mp.orderID}</span>
+                        {expandOrder ? (
+                            <RiArrowDownSLine style={{ fontSize: "20px" }} />
+                        ) : (
+                            <RiArrowRightSLine style={{ fontSize: "20px" }} />
+                        )}
+                    </button>
+                    <button onClick={() => { 
+                        navigator.clipboard.writeText(mp.orderID);
+                        dispatchnewalert(dispatch, "info", `${mp.orderID} copied to clipboard`);
+                    }} className='rounded-[4px] text-[12px] bg-white border-[1px] p-[5px] pl-[7px] pr-[7px] font-semibold flex flex-row items-center gap-[2px]'>
+                        <span className='select-none'>Copy Order ID</span>
+                    </button>
+                </div>
                 <span className='text-[14px]'>Cashier: {mp.orderMadeBy.accountID}</span>
                 <span className='text-[14px]'>Device ID: {mp.orderMadeBy.deviceID}</span>
                 {(mp.voidedFrom && mp.voidedFrom.trim() !== "") && (
