@@ -569,7 +569,7 @@ function Menu() {
                   <div className='bg-shade p-[10px] flex flex-col gap-[5px]'>
                     <div className='w-full bg-white p-[10px] flex flex-col'>
                       <div className='w-full flex flex-row items-center'>
-                        <span className='text-[14px] font-semibold w-full max-w-[80px]'>Void Order</span>
+                        <span className='text-[14px] font-semibold w-full max-w-[135px]'>Renew/Void Order</span>
                         <div id='div_toggle_switch_container'>
                           <label className="switch">
                               <input type="checkbox" id='input_switch_server_create' checked={isOrderVoided} onChange={(e) => {

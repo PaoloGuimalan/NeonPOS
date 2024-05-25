@@ -166,6 +166,14 @@ async function CloseOrderRequest(payload: CloseOrderInterface) {
   })
 }
 
+async function CloseOrderRequestV2(payload: CloseOrderInterface) {
+  return await Axios.post(`${BACKDOOR}/api/orders/closeorderV2`, payload).then((response) => {
+    return response;
+  }).catch((err) => {
+    throw new Error(err);
+  })
+}
+
 export {
     LoginRequest,
     RegisterAccountRequest,
@@ -185,5 +193,6 @@ export {
     CreateCategoryRequest,
     DeleteProductRequest,
     GenerateDailyReport,
-    CloseOrderRequest
+    CloseOrderRequest,
+    CloseOrderRequestV2
 }

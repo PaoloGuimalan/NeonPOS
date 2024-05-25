@@ -145,6 +145,8 @@ export interface CreateOrderRequestInterface {
 export interface CloseOrderInterface {
     orderID: string,
     amountreceived: number,
+    discount?: number,
+    isRenewed?: boolean,
     orderMadeBy: {
         accountID: string,
         userID: string,

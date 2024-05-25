@@ -6,7 +6,7 @@ import { AuthenticationInterface, CartItemInterface, ReceiptHolderInterface, Set
 import { useDispatch, useSelector } from 'react-redux';
 import ReusableModal from '../modals/reusablemodal';
 import { MdClose } from 'react-icons/md';
-import { CloseOrderRequest } from '../../helpers/https/requests';
+import { CloseOrderRequestV2 } from '../../helpers/https/requests'; //CloseOrderRequest
 import { dispatchnewalert } from '../../helpers/reusables/alertdispatching';
 import Buttonloader from '../loaders/buttonloader';
 
@@ -20,6 +20,7 @@ function OrdersItem({ mp, GetOrdersListProcess }: OrdersItemProp) {
   const [toCloseOrder, settoCloseOrder] = useState<boolean>(false);
 
   const [amountreceived, setamountreceived] = useState<number>(0);
+  const [discountholder, setdiscountholder] = useState<string>(mp.discount);
   const [isClosingOrder, setisClosingOrder] = useState<boolean>(false);
 
   const RePrintProcess = () => {
@@ -33,7 +34,7 @@ function OrdersItem({ mp, GetOrdersListProcess }: OrdersItemProp) {
         total: mp.totalAmount.toFixed(2).toString(),
         amount: mp.receivedAmount.toFixed(2).toString(),
         change: (mp.receivedAmount - mp.totalAmount).toFixed(2).toString(),
-        discount: parseInt(mp.discount).toFixed(0).toString(),
+        discount: parseInt(discountholder).toFixed(0).toString(),
         tableNumber: mp.tableNumber,
         isPending: false,
       }
@@ -52,7 +53,7 @@ function OrdersItem({ mp, GetOrdersListProcess }: OrdersItemProp) {
         total: mp.totalAmount.toFixed(2).toString(),
         amount: mp.receivedAmount.toFixed(2).toString(),
         change: (mp.receivedAmount - mp.totalAmount).toFixed(2).toString(),
-        discount: parseInt(mp.discount).toFixed(0).toString(),
+        discount: parseInt(discountholder).toFixed(0).toString(),
         tableNumber: mp.tableNumber,
         isPending: true,
     }
@@ -63,11 +64,13 @@ function OrdersItem({ mp, GetOrdersListProcess }: OrdersItemProp) {
   }
 
   const PrintSummary = () => {
-    if(amountreceived >= (mp.totalAmount - mp.totalAmount * (parseInt(mp.discount) / 100))){
+    if(amountreceived >= (mp.totalAmount - mp.totalAmount * (parseInt(discountholder) / 100))){
         setisClosingOrder(true);
-        CloseOrderRequest({
+        CloseOrderRequestV2({
             orderID: mp.orderID,
             amountreceived: amountreceived,
+            discount: parseInt(discountholder),
+            isRenewed: mp.voidedFrom.trim() !== "" ? true : false,
             orderMadeBy: {
                 accountID: authentication.user.accountID,
                 userID: settings.userID,
@@ -120,13 +123,13 @@ function OrdersItem({ mp, GetOrdersListProcess }: OrdersItemProp) {
     <div className='w-full bg-white p-[15px] border-[1px] min-h-[100px] flex flex-col gap-[10px]'>
         {toCloseOrder && (
             <ReusableModal shaded={true} padded={true} children={
-                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.4 }} className='bg-white w-[95%] h-[95%] max-w-[600px] max-h-[190px] p-[20px] rounded-[7px] flex flex-col gap-[10px]'>
+                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.4 }} className='bg-white w-[95%] h-[95%] max-w-[600px] max-h-[250px] p-[20px] rounded-[7px] flex flex-col gap-[10px]'>
                     <div className='w-full flex flex-row'>
                         <div className='flex flex-1'>
                             <span className='text-[16px] font-semibold'>Close Order</span>
                         </div>
                         <div className='w-fit'>
-                            <button disabled={isClosingOrder} onClick={() => { settoCloseOrder(false); }}><MdClose /></button>
+                            <button disabled={isClosingOrder} onClick={() => { settoCloseOrder(false); setdiscountholder(mp.discount); }}><MdClose /></button>
                         </div>
                     </div>
                     <div className='w-full flex flex-col gap-[5px]'>
@@ -135,7 +138,12 @@ function OrdersItem({ mp, GetOrdersListProcess }: OrdersItemProp) {
                             <span className='text-[16px]'>&#8369;</span>
                             <input type='number' value={amountreceived} onChange={(e) => { setamountreceived(parseInt(e.target.value)) }} min={0.00} step={0.001} placeholder='Input amount received' className='border-[1px] flex flex-1 p-[10px] pl-[5px] pr-[5px] text-[14px] outline-none' />
                         </div>
-                        <div className='w-full flex pl-[20px]'>
+                        <div className='flex flex-row gap-[10px] items-center'>
+                            <span className='text-[14px]'>Discount: </span>
+                            <input type='number' value={discountholder.toString()} onChange={(e) => { setdiscountholder(e.target.value) }} min={0.00} step={0.001} placeholder='Input discount' className='border-[1px] flex flex-1 p-[10px] pl-[5px] pr-[5px] text-[14px] outline-none' />
+                            <span className='text-[16px]'> %</span>
+                        </div>
+                        <div className='w-full flex pl-[20px] pt-[15px]'>
                             <button disabled={isClosingOrder} onClick={PrintSummary} className='h-[35px] w-full bg-accent-tertiary cursor-pointer shadow-sm text-white font-semibold rounded-[4px]'>
                                 {isClosingOrder ? (
                                     <Buttonloader size='14px' />
@@ -175,9 +183,9 @@ function OrdersItem({ mp, GetOrdersListProcess }: OrdersItemProp) {
             <div className='flex flex-1 flex-col items-center'>
                 <div className='flex flex-row gap-[20px]'>
                     <div className='flex flex-col'>
-                        <span className='text-[14px]'>Total: &#8369;{(mp.totalAmount - mp.totalAmount * (parseInt(mp.discount) / 100)).toFixed(2)}</span>
+                        <span className='text-[14px]'>Total: &#8369;{(mp.totalAmount - mp.totalAmount * (parseInt(discountholder) / 100)).toFixed(2)}</span>
                         <span className='text-[14px]'>Amount: &#8369;{mp.receivedAmount.toFixed(2)}</span>
-                        <span className='text-[14px]'>Change: &#8369;{(mp.receivedAmount - (mp.totalAmount - (mp.totalAmount * ((mp.discount ? parseInt(mp.discount) : 0) / 100)))).toFixed(2)}</span>
+                        <span className='text-[14px]'>Change: &#8369;{(mp.receivedAmount - (mp.totalAmount - (mp.totalAmount * ((discountholder ? parseInt(discountholder) : 0) / 100)))).toFixed(2)}</span>
                         <span style={{ backgroundColor: mp.status? mp.status === "Pending" ? "orange" : mp.status === "Voided" ? "red" : "#87CEEB" : "transparent", color: "white" }} 
                         className='text-[14px] w-fit p-[2px] px-[10px] mt-[5px] rounded-[4px] font-semibold'>{mp.status}</span>
                     </div>
@@ -185,8 +193,8 @@ function OrdersItem({ mp, GetOrdersListProcess }: OrdersItemProp) {
                         <span className='text-[14px]'>Items: {mp.orderSet.length}</span>
                         <span className='text-[14px]'>VAT (12%): &#8369;{(mp.totalAmount * 0.12).toFixed(2)}</span>
                         <span className='text-[14px]'>
-                            Discount ({mp.discount ? parseInt(mp.discount).toFixed(0) : 0}%): 
-                            &#8369;{mp.discount ? (mp.totalAmount * (parseInt(mp.discount) / 100)).toFixed(2) : 0}
+                            Discount ({discountholder ? parseInt(discountholder).toFixed(0) : 0}%): 
+                            &#8369;{discountholder ? (mp.totalAmount * (parseInt(discountholder) / 100)).toFixed(2) : 0}
                         </span>
                         <span className='text-[14px]'>Table Number: {mp.tableNumber || "None"}</span>
                     </div>
