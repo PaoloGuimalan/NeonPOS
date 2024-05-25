@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { AuthenticationInterface, DailyReportInterface, SettingsInterface } from '../../../../helpers/typings/interfaces'
 import { useDispatch, useSelector } from 'react-redux'
 import { GenerateDailyReport } from '../../../../helpers/https/requests';
@@ -12,6 +12,19 @@ function Dashboard() {
   const authentication: AuthenticationInterface = useSelector((state: any) => state.authentication);
   const settings: SettingsInterface = useSelector((state: any) => state.settings);
   const dispatch = useDispatch();
+
+  const [dailyReportDisplay, setdailyReportDisplay] = useState<DailyReportInterface>({
+    accountID: "",
+    deviceID: "",
+    dateMade: "",
+    numberofsales: 0,
+    totalsales: 0,
+    discount: 0,
+    discounttotal: 0,
+    saleswdiscount: 0,
+    taxtotal: 0,
+    taxedsales: 0
+  })
 
   const PrintDailyReportProcess = () => {
     const encodedtoken = sign({ userID: settings.userID, deviceID: settings.deviceID, datescope: dateGetter(), timescope: timeGetter() }, JWT_SECRET);
@@ -40,6 +53,53 @@ function Dashboard() {
       console.log(err);
     })
   }
+
+  const GetDailyReportProcess = () => {
+    const encodedtoken = sign({ userID: settings.userID, deviceID: settings.deviceID, datescope: dateGetter(), timescope: timeGetter() }, JWT_SECRET);
+    GenerateDailyReport(encodedtoken).then((response) => {
+      if(response.data.status){
+        if(response.data.result.length > 0){
+          setdailyReportDisplay({
+            accountID: authentication.user.accountID,
+            deviceID: settings.deviceID,
+            dateMade: response.data.result[0].dateMade,
+            numberofsales: response.data.result[0].numberofsales,
+            totalsales: response.data.result[0].totalsales.toFixed(2),
+            discount: response.data.result[0].discount.toFixed(0),
+            discounttotal: response.data.result[0].discounttotal.toFixed(2),
+            saleswdiscount: response.data.result[0].saleswdiscount.toFixed(2),
+            taxtotal: response.data.result[0].taxtotal.toFixed(2),
+            taxedsales: response.data.result[0].taxedsales.toFixed(2)
+          });
+        }
+        else{
+          setdailyReportDisplay({
+            accountID: authentication.user.accountID,
+            deviceID: settings.deviceID,
+            dateMade: "",
+            numberofsales: 0,
+            totalsales: 0,
+            discount: 0,
+            discounttotal: 0,
+            saleswdiscount: 0,
+            taxtotal: 0,
+            taxedsales: 0
+          })
+          dispatchnewalert(dispatch, "warning", "No records to generate yet");
+        }
+      }
+      else{
+        dispatchnewalert(dispatch, "error", response.data.message);
+      }
+    }).catch((err) => {
+      dispatchnewalert(dispatch, "error", "Error making request to generate report");
+      console.log(err);
+    })
+  }
+
+  useEffect(() => {
+    GetDailyReportProcess();
+  },[]);
 
   return (
     <div className='w-full h-full flex flex-row bg-shade font-Inter'>
@@ -88,16 +148,16 @@ function Dashboard() {
               </div>
               <div className='flex flex-1 gap-[4px]'>
                 <div className='flex flex-row flex-1 bg-header shadow-md border-[1px] p-[15px] rounded-[4px] gap-[4px]'>
-                  <span className='text-[14px] font-semibold'>Sales this month: </span>
-                  <span className='text-[14px]'>&#8369;--</span>
+                  <span className='text-[14px] font-semibold'>Sales this day: </span>
+                  <span className='text-[14px]'>&#8369; {dailyReportDisplay.totalsales}</span>
                 </div>
                 <div className='flex flex-row flex-1 bg-header shadow-md border-[1px] p-[15px] rounded-[4px] gap-[4px]'>
-                  <span className='text-[14px] font-semibold'>VAT Total this month: </span>
-                  <span className='text-[14px]'>&#8369;--</span>
+                  <span className='text-[14px] font-semibold'>Discounted Sales this day ({dailyReportDisplay.discount}%): </span>
+                  <span className='text-[14px]'>&#8369; {dailyReportDisplay.saleswdiscount}</span>
                 </div>
                 <div className='flex flex-row flex-1 bg-header shadow-md border-[1px] p-[15px] rounded-[4px] gap-[4px]'>
-                  <span className='text-[14px] font-semibold'>Gross Margin: </span>
-                  <span className='text-[14px]'>--%</span>
+                  <span className='text-[14px] font-semibold'>VAT Total this day: </span>
+                  <span className='text-[14px]'>&#8369; {dailyReportDisplay.taxtotal}</span>
                 </div>
               </div>
             </div>
