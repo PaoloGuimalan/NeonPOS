@@ -7,11 +7,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { SET_AUTHENTICATION, SET_SETTINGS } from '../../../helpers/redux/types/types';
 import { useRouter } from 'next/router';
 import { dispatchnewalert } from '../../../helpers/reusables/alertdispatching';
-import { MdClose, MdSettings } from 'react-icons/md';
+import { MdArrowBackIos, MdClose, MdSettings } from 'react-icons/md';
 import ReusableModal from '../../../components/modals/reusablemodal';
 import { motion } from 'framer-motion';
 import { settingsstate } from '../../../helpers/redux/types/states';
-import { SettingsInterface } from '../../../helpers/typings/interfaces';
+import { SavedAccountSessionsInterface, SettingsInterface } from '../../../helpers/typings/interfaces';
 import Buttonloader from '../../../components/loaders/buttonloader';
 
 function Login() {
@@ -20,6 +20,12 @@ function Login() {
 
   const [accountID, setaccountID] = useState<string>("");
   const [password, setpassword] = useState<string>("");
+  const [saveSession, setsaveSession] = useState<boolean>(false);
+
+  const [savedAccountSessions, setsavedAccountSessions] = useState<SavedAccountSessionsInterface[]>([]);
+
+  const [isFromSession, setisFromSession] = useState<boolean>(false);
+  const [accountNamePreview, setaccountNamePreview] = useState<string>("");
 
   const [toggleSettingsModal, settoggleSettingsModal] = useState<boolean>(false);
   const [isLoggingIn, setisLoggingIn] = useState<boolean>(false);
@@ -54,6 +60,43 @@ function Login() {
       if(response.data.status){
         if(response.data.result){
           const permissionsmapper = response.data.result[0].permissions.map((mp: any) => mp.permissionType);
+          if(saveSession){
+            const currentaccountsession = localStorage.getItem("account_sessions");
+            if(currentaccountsession){
+              const parsedcurraccountsessions: SavedAccountSessionsInterface[] = JSON.parse(currentaccountsession);
+              if(parsedcurraccountsessions.length > 0){
+                const accIDChecker = parsedcurraccountsessions.map((mp: SavedAccountSessionsInterface) => mp.accountID);
+                if(!accIDChecker.includes(response.data.result[0].accountID)){
+                  const JsonConvertedsessions = JSON.stringify([
+                    ...parsedcurraccountsessions,
+                    {
+                      accountID: response.data.result[0].accountID,
+                      accountName: response.data.result[0].accountName
+                    }
+                  ]);
+                  localStorage.setItem("account_sessions", JsonConvertedsessions);
+                }
+              }
+              else{
+                const JsonConvertedsessions = JSON.stringify([
+                  {
+                    accountID: response.data.result[0].accountID,
+                    accountName: response.data.result[0].accountName
+                  }
+                ]);
+                localStorage.setItem("account_sessions", JsonConvertedsessions);
+              }
+            }
+            else{
+              const JsonConvertedsessions = JSON.stringify([
+                {
+                  accountID: response.data.result[0].accountID,
+                  accountName: response.data.result[0].accountName
+                }
+              ]);
+              localStorage.setItem("account_sessions", JsonConvertedsessions);
+            }
+          }
           dispatch({
             type: SET_AUTHENTICATION,
             payload: {
@@ -90,6 +133,25 @@ function Login() {
     })
   }
 
+  const CheckSessions = () => {
+    const accountsessions = localStorage.getItem("account_sessions");
+    if(accountsessions){
+      const parsedaccsessions = JSON.parse(accountsessions);
+      setsavedAccountSessions(parsedaccsessions);
+      // alert(JSON.stringify(parsedaccsessions, null, 4));
+    }
+  }
+
+  const RemoveSession = (accountIDProp: string) => {
+    const accountsessions = localStorage.getItem("account_sessions");
+    if(accountsessions){
+      const parsedaccsessions: SavedAccountSessionsInterface[] = JSON.parse(accountsessions);
+      localStorage.setItem("account_sessions", JSON.stringify([...parsedaccsessions.filter((flt: SavedAccountSessionsInterface) => flt.accountID !== accountIDProp)]));
+      setsavedAccountSessions([...parsedaccsessions.filter((flt: SavedAccountSessionsInterface) => flt.accountID !== accountIDProp)]);
+      // alert(JSON.stringify(parsedaccsessions, null, 4));
+    }
+  }
+
   useEffect(() => {
     window.ipc.on('command-output', (event: string) => {
       dispatchnewalert(dispatch, "info", event);
@@ -98,6 +160,8 @@ function Login() {
     window.ipc.on('command-error', (event: string) => {
       dispatchnewalert(dispatch, "error", event);
     });
+
+    CheckSessions();
   },[]);
 
   const ResetSetup = () => {
@@ -139,7 +203,34 @@ function Login() {
   
   return (
     <div style={{ background: `url(${NeonPOSSVG.src})`, backgroundSize: "cover", backgroundPosition: "bottom", backgroundRepeat: "no-repeat" }} className={`w-full h-full bg-primary absolute flex flex-1 flex-row font-Inter`}>
-        <div className={`h-full bg-transparent flex flex-1`} /> {/**bg-secondary */}
+        <div className={`h-full bg-transparent flex flex-1 items-center justify-center`} >
+          {savedAccountSessions.length > 0 && (
+            <div className='bg-shade flex flex-col w-[95%] h-[95%] max-w-[1000px] max-h-[800px] p-[20px] gap-[10px]'>
+              <span className='font-Inter font-semibold text-[16px] text-text-tertiary'>Recent Sessions</span>
+              <div className='flex flex-row flex-wrap flex-1 overflow-y-auto gap-[10px]'>
+                {savedAccountSessions.map((mp: SavedAccountSessionsInterface, i: number) => {
+                  return(
+                    <div key={i} title={`${mp.accountName.firstname} ${mp.accountName.middlename} ${mp.accountName.lastname}`} className='cursor-pointer select-none bg-white flex flex-col h-[220px] w-[180px] p-[10px] pb-[20px] rounded-[7px] border-[1px] shadow-md items-center gap-[5px]'>
+                      <div className='w-full h-[50px] relative -mb-[50px] flex justify-end'>
+                        <div className='w-fit'>
+                          <button onClick={() => { RemoveSession(mp.accountID) }}><MdClose /></button>
+                        </div>
+                      </div>
+                      <div onClick={() => { setisFromSession(true); setaccountID(mp.accountID); setpassword(""); setaccountNamePreview(`${mp.accountName.firstname} ${mp.accountName.middlename} ${mp.accountName.lastname}`); }} className='w-full flex flex-1 items-center justify-center'>
+                        <div className='w-[130px] h-[130px] rounded-[130px] bg-accent-tertiary text-white flex items-center justify-center text-[50px] font-semibold'>
+                          {mp.accountName.firstname[0]}{mp.accountName.lastname[0]}
+                        </div>
+                      </div>
+                      <span onClick={() => { setisFromSession(true); setaccountID(mp.accountID); setpassword(""); setaccountNamePreview(`${mp.accountName.firstname} ${mp.accountName.middlename} ${mp.accountName.lastname}`); }} className='text-[14px] font-semibold font-Inter text-center text-text-tertiary overflow-hidden truncate w-full pl-[5px] pr-[5px]'>
+                        {`${mp.accountName.firstname} ${mp.accountName.middlename} ${mp.accountName.lastname}`}
+                      </span>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+        </div> {/**bg-secondary */}
         {toggleSettingsModal && (
           <ReusableModal shaded={true} padded={false} children={
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.4 }} className='bg-white w-[95%] h-[95%] max-w-[450px] max-h-[200px] rounded-[7px] p-[20px] pb-[5px] flex flex-col'>
@@ -177,21 +268,34 @@ function Login() {
                 <img src={NeonPOS.src} className='h-[100px]' />
                 <span className='text-[20px] font-semibold text-accent-secondary'>Login</span>
             </div>
+            {isFromSession && (
+              <span className='text-[18px] text-accent-primary font-semibold font-Inter text-center text-text-tertiary overflow-hidden truncate w-full pl-[5px] pr-[5px]'>
+                {accountNamePreview}
+              </span>
+            )}
             <div className='w-full max-w-[370px] flex flex-col gap-[15px]'>
-              <div className='border-[1px] shadow-sm h-[45px] rounded-[7px] flex flex-row' >
-                <div className='w-[45px] flex items-center justify-center'>
-                  <FcAssistant style={{ fontSize: "22px" }} />
+              {!isFromSession && (
+                <div className='border-[1px] shadow-sm h-[45px] rounded-[7px] flex flex-row' >
+                  <div className='w-[45px] flex items-center justify-center'>
+                    <FcAssistant style={{ fontSize: "22px" }} />
+                  </div>
+                  <input placeholder='Employee ID' value={accountID} onChange={(e) => { setaccountID(e.target.value) }} className='bg-transparent outline-none text-[14px] w-full h-full flex flex-1' />
                 </div>
-                <input placeholder='Employee ID' value={accountID} onChange={(e) => { setaccountID(e.target.value) }} className='bg-transparent outline-none text-[14px] w-full h-full flex flex-1' />
-              </div>
+              )}
               <div className='border-[1px] shadow-sm h-[45px] rounded-[7px] flex flex-row' >
                 <div className='w-[45px] flex items-center justify-center'>
                   <FcUnlock style={{ fontSize: "22px" }} />
                 </div>
                 <input placeholder='Password' type='password' value={password} onChange={(e) => { setpassword(e.target.value); }} className='bg-transparent outline-none text-[14px] w-full h-full flex flex-1' />
               </div>
+              {!isFromSession && (
+                <div className='h-[25px] pl-[10px] pr-[10px] rounded-[7px] flex flex-row items-center justify-start w-full gap-[7px]' >
+                  <input type='checkbox' checked={saveSession} onChange={(e) => { setsaveSession(e.target.checked) }} className='cursor-pointer bg-transparent outline-none text-[14px] h-full' />
+                  <span className='text-[13px] mt-[2px]'>Save login session</span>
+                </div>
+              )}
             </div>
-            <div className='w-full max-w-[370px] pt-[10px] flex flex-col items-center gap-[15px]'>
+            <div className={`w-full max-w-[370px] ${isFromSession && "pt-[10px]"} flex flex-col items-center gap-[5px]`}>
                 <button disabled={isLoggingIn} onClick={LoginProcess} className='bg-accent-secondary hover:bg-accent-hover cursor-pointer w-full max-w-[200px] shadow-sm h-[40px] text-white font-semibold rounded-[7px]'>
                   {isLoggingIn ? (
                     <Buttonloader size='14px' />
@@ -199,6 +303,20 @@ function Login() {
                     <span>Login</span>
                   )}
                 </button>
+                {isFromSession && (
+                  <button disabled={isLoggingIn} onClick={() => { setaccountID(""); setpassword(""); setisFromSession(false); setaccountNamePreview(""); }} className='pl-[10px] pr-[10px] bg-accent-tertiary flex flex-row items-center justify-start cursor-pointer w-full max-w-[150px] shadow-sm h-[35px] text-white rounded-[7px]'>
+                    {isLoggingIn ? (
+                      <Buttonloader size='14px' />
+                    ) : (
+                      <>
+                        <div className='text-[14px] relative w-[20px] -mr-[10px]'>
+                          <MdArrowBackIos />
+                        </div>
+                        <span className='text-[14px] flex w-[calc(100%-20px)] justify-center'>Back</span>
+                      </>
+                    )}
+                  </button>
+                )}
             </div>
           </div>
         </div>

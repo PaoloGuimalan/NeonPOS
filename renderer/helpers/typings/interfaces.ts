@@ -211,3 +211,12 @@ export interface DailyReportInterface {
     taxtotal: number,
     taxedsales: number
 }
+
+export interface SavedAccountSessionsInterface { 
+    accountID: string;
+    accountName: { 
+        firstname: string; 
+        middlename: string; 
+        lastname: string; 
+    };
+}
