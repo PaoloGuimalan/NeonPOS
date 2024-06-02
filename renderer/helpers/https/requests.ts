@@ -1,8 +1,8 @@
 import Axios from 'axios';
 import { AddProductRequestInterface, CloseOrderInterface, CreateNewPermissionPayloadInterface, CreateOrderRequestInterface, GetFilesListResponseNeonRemoteInterface, InitialSetupDeviceVerificationRequestInterface, LoginPayloadInterface, RegisterAccountInterface } from '../typings/interfaces';
 
-const BACKDOOR = 'http://localhost:3000';
-// const BACKDOOR = 'https://neon-pos-api.vercel.app';
+// const BACKDOOR = 'http://localhost:3000';
+const BACKDOOR = 'https://neon-pos-api.vercel.app';
 const NEONSERVICE = 'https://neonaiserver.onrender.com';
 
 async function LoginRequest(payload: LoginPayloadInterface){
