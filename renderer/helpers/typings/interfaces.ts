@@ -219,4 +219,6 @@ export interface SavedAccountSessionsInterface {
         middlename: string; 
         lastname: string; 
     };
+    deviceID: string;
+    userID: string;
 }

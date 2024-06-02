@@ -71,7 +71,22 @@ function Login() {
                     ...parsedcurraccountsessions,
                     {
                       accountID: response.data.result[0].accountID,
-                      accountName: response.data.result[0].accountName
+                      accountName: response.data.result[0].accountName,
+                      deviceID: settings.deviceID,
+                      userID: settings.userID
+                    }
+                  ]);
+                  localStorage.setItem("account_sessions", JsonConvertedsessions);
+                }
+                else{
+                  const parsedaccsessionsnoncurrent = parsedcurraccountsessions.filter((flt) => flt.accountID !== response.data.result[0].accountID)
+                  const JsonConvertedsessions = JSON.stringify([
+                    ...parsedaccsessionsnoncurrent,
+                    {
+                      accountID: response.data.result[0].accountID,
+                      accountName: response.data.result[0].accountName,
+                      deviceID: settings.deviceID,
+                      userID: settings.userID
                     }
                   ]);
                   localStorage.setItem("account_sessions", JsonConvertedsessions);
@@ -81,7 +96,9 @@ function Login() {
                 const JsonConvertedsessions = JSON.stringify([
                   {
                     accountID: response.data.result[0].accountID,
-                    accountName: response.data.result[0].accountName
+                    accountName: response.data.result[0].accountName,
+                    deviceID: settings.deviceID,
+                    userID: settings.userID
                   }
                 ]);
                 localStorage.setItem("account_sessions", JsonConvertedsessions);
@@ -91,7 +108,9 @@ function Login() {
               const JsonConvertedsessions = JSON.stringify([
                 {
                   accountID: response.data.result[0].accountID,
-                  accountName: response.data.result[0].accountName
+                  accountName: response.data.result[0].accountName,
+                  deviceID: settings.deviceID,
+                  userID: settings.userID
                 }
               ]);
               localStorage.setItem("account_sessions", JsonConvertedsessions);
@@ -137,8 +156,9 @@ function Login() {
     const accountsessions = localStorage.getItem("account_sessions");
     if(accountsessions){
       const parsedaccsessions = JSON.parse(accountsessions);
-      setsavedAccountSessions(parsedaccsessions);
-      // alert(JSON.stringify(parsedaccsessions, null, 4));
+      const filterparsedaccsessions = parsedaccsessions.filter((flt: SavedAccountSessionsInterface) => flt.deviceID === settings.deviceID && flt.userID === settings.userID);
+      setsavedAccountSessions(filterparsedaccsessions);
+      // alert(JSON.stringify(accountsessions, null, 4));
     }
   }
 
@@ -162,7 +182,7 @@ function Login() {
     });
 
     CheckSessions();
-  },[]);
+  },[settings]);
 
   const ResetSetup = () => {
     localStorage.removeItem("settings");
