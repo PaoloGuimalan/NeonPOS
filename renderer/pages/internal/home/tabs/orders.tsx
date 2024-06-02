@@ -28,7 +28,7 @@ function Orders() {
       if(response.data.status){
         setorderlist(response.data.result);
       }
-      alert(JSON.stringify(response.data));
+      // alert(JSON.stringify(response.data));
       setisOrdersLoading(false);
     }).catch((err) => {
       setisOrdersLoading(false);
