@@ -9,7 +9,8 @@ import Alert from '../../../components/widgets/alert';
 import { dispatchclearalerts, dispatchnewalert } from '../../../helpers/reusables/alertdispatching';
 import { InitialSetupDeviceVerificationRequest } from '../../../helpers/https/requests';
 import { useRouter } from 'next/router';
-import { MdClose, MdSettings } from 'react-icons/md'
+import { MdClose, MdSettings } from 'react-icons/md';
+import { CiFileOn } from "react-icons/ci";
 
 function Formtab() {
 
@@ -22,6 +23,10 @@ function Formtab() {
 
   const [isShuttingdown, setisShuttingdown] = useState<boolean>(false);
   const [toggleSettingsModal, settoggleSettingsModal] = useState<boolean>(false);
+  
+  const [formSwitch, setformSwitch] = useState<boolean>(false);
+
+  const importFileRef = useRef<HTMLInputElement | null>(null);
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -96,6 +101,32 @@ function Formtab() {
 //     dispatchnewalert(dispatch, "warning", "Cannot cancel setup");
 //   }
 
+  const readFile = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = event => {
+      if(typeof event.target.result === "string"){
+        const splittedvalue = event.target.result.split(";");
+        if(splittedvalue.length === 3){
+          // console.log(splittedvalue);
+          setNSUSRID(splittedvalue[0]);
+          setNSDVCID(splittedvalue[1]);
+          setconnectionToken(splittedvalue[2]);
+          setformSwitch(false);
+        }
+        else{
+          dispatchnewalert(dispatch, "warning", "File content is invalid");
+        }
+      }
+      else{
+        dispatchnewalert(dispatch, "warning", "File content is invalid");
+      }
+    }
+    reader.onerror = _ => {
+      dispatchnewalert(dispatch, "error", "Error reading file");
+    };
+    reader.readAsText(file);
+  }
+
   return (
     <div style={{ background: `url(${NeonPOSSVG.src})`, backgroundSize: "cover", backgroundPosition: "bottom", backgroundRepeat: "no-repeat" }} className='w-full h-full absolute flex items-center'>
         <div id='div_alerts_container' ref={scrollDivAlerts}>
@@ -156,20 +187,48 @@ function Formtab() {
                             <p className='text-[14px] font-Inter text-justify'>Introducing Neon POS, the innovative Point-of-Sales system powered by cutting-edge software, Neon Service. Seamlessly integrating state-of-the-art solutions, Neon POS offers streamlined transactions and instant insights, transforming businesses.</p>
                         </div>
                         <div className='w-full flex flex-col pt-[10px] pl-[20px] pr-[20px] gap-[20px]'>
-                            <span className='text-[14px] font-Inter font-semibold'>Enter setup details</span>
+                            <div className='w-full flex flex-row gap-[10px] items-center justify-center'>
+                              <motion.button animate={{ color: !formSwitch ? "black" : "grey" }} onClick={() => { setformSwitch(false); }} className='text-[14px] font-Inter font-semibold'>Enter setup details</motion.button>
+                              <span className='text-[14px] font-Inter'>or</span>
+                              <motion.button animate={{ color: formSwitch ? "black" : "grey" }} onClick={() => { setformSwitch(true); }} className='text-[14px] font-Inter font-semibold'>Import setup file</motion.button>
+                            </div>
                             <div className='flex flex-col w-full pl-[20px] pr-[20px] gap-[10px]'>
-                                <div className='flex flex-col w-full gap-[5px]'>
-                                    <span className='text-[12px] font-Inter font-semibold'>Neon Service User ID</span>
-                                    <input placeholder='eg: USR_00000_0000000000' value={NSUSRID} onChange={(e) => { setNSUSRID(e.target.value) }} className='font-Inter bg-transparent border-[1px] h-[35px] pl-[10px] pr-[10px] outline-none text-[12px] w-full rounded-[4px]' />
-                                </div>
-                                <div className='flex flex-col w-full gap-[5px]'>
-                                    <span className='text-[12px] font-Inter font-semibold'>Neon Service Device ID</span>
-                                    <input placeholder='eg: USR_00000_0000000000' value={NSDVCID} onChange={(e) => { setNSDVCID(e.target.value) }} className='font-Inter bg-transparent border-[1px] h-[35px] pl-[10px] pr-[10px] outline-none text-[12px] w-full rounded-[4px]' />
-                                </div>
-                                <div className='flex flex-col w-full gap-[5px]'>
-                                    <span className='text-[12px] font-Inter font-semibold'>Connection Token</span>
-                                    <input placeholder='Input connection token of this device provided in Neon Remote' value={connectionToken} onChange={(e) => { setconnectionToken(e.target.value) }} className='font-Inter bg-transparent border-[1px] h-[35px] pl-[10px] pr-[10px] outline-none text-[12px] w-full rounded-[4px]' />
-                                </div>
+                                <input ref={importFileRef} type='file' hidden onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                  if(e.target.files[0].name.split(".")[e.target.files[0].name.split(".").length - 1] === "nsrv"){
+                                    // console.log(e.target.files[0].name.split(".")[e.target.files[0].name.split(".").length - 1]);
+                                    readFile(e.target.files[0]);
+                                  }
+                                  else{
+                                    dispatchnewalert(dispatch, "warning", "Invalid file type");
+                                  }
+                                }} />
+                                {formSwitch ? (
+                                  <div className='w-full flex flex-col h-[194px]'>
+                                    <div onClick={() => {
+                                      if(importFileRef.current){
+                                        importFileRef.current.click();
+                                      }
+                                    }} className='flex flex-col items-center justify-center w-full h-full border-[2px] rounded-[7px] border-dashed select-none cursor-pointer gap-[4px]'>
+                                      <CiFileOn style={{ fontSize: "80px", color: "grey" }} />
+                                      <span className='font-Inter text-[12px] text-gray-500'>Import your .nsrv file</span>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <>
+                                    <div className='flex flex-col w-full gap-[5px]'>
+                                        <span className='text-[12px] font-Inter font-semibold'>Neon Service User ID</span>
+                                        <input placeholder='eg: USR_00000_0000000000' value={NSUSRID} onChange={(e) => { setNSUSRID(e.target.value) }} className='font-Inter bg-transparent border-[1px] h-[35px] pl-[10px] pr-[10px] outline-none text-[12px] w-full rounded-[4px]' />
+                                    </div>
+                                    <div className='flex flex-col w-full gap-[5px]'>
+                                        <span className='text-[12px] font-Inter font-semibold'>Neon Service Device ID</span>
+                                        <input placeholder='eg: USR_00000_0000000000' value={NSDVCID} onChange={(e) => { setNSDVCID(e.target.value) }} className='font-Inter bg-transparent border-[1px] h-[35px] pl-[10px] pr-[10px] outline-none text-[12px] w-full rounded-[4px]' />
+                                    </div>
+                                    <div className='flex flex-col w-full gap-[5px]'>
+                                        <span className='text-[12px] font-Inter font-semibold'>Connection Token</span>
+                                        <input placeholder='Input connection token of this device provided in Neon Remote' value={connectionToken} onChange={(e) => { setconnectionToken(e.target.value) }} className='font-Inter bg-transparent border-[1px] h-[35px] pl-[10px] pr-[10px] outline-none text-[12px] w-full rounded-[4px]' />
+                                    </div>
+                                  </>
+                                )}
                                 <div className='flex flex-col w-full gap-[5px]'>
                                     <span className='text-[12px] font-Inter font-semibold'>Setup Type</span>
                                     <select value={SetupType} onChange={(e) => { setSetupType(e.target.value) }} className='font-Inter bg-transparent border-[1px] h-[35px] pl-[10px] pr-[10px] outline-none text-[12px] w-full rounded-[4px]'>
