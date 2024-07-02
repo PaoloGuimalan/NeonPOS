@@ -2,7 +2,8 @@ import Axios from 'axios';
 import { AddProductRequestInterface, CloseOrderInterface, CreateNewPermissionPayloadInterface, CreateOrderRequestInterface, GetFilesListResponseNeonRemoteInterface, InitialSetupDeviceVerificationRequestInterface, LoginPayloadInterface, RegisterAccountInterface } from '../typings/interfaces';
 
 // const BACKDOOR = 'http://localhost:3000';
-const BACKDOOR = 'https://neon-pos-api.vercel.app';
+// const BACKDOOR = 'https://neon-pos-api.vercel.app';
+const BACKDOOR = 'https://pos-api.neonsystems.net';
 const NEONSERVICE = 'https://neonaiserver.onrender.com';
 
 async function LoginRequest(payload: LoginPayloadInterface){
@@ -125,7 +126,7 @@ async function RemoveUserRequest(token: string) {
 async function GetCategoriesListRequest(token: string){
   return await Axios.get(`${BACKDOOR}/api/orders/category`, {
     headers: {
-      "access_token": token
+      "x-access-token": token
     }
   }).then((response) => {
     return response;
